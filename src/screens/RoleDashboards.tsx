@@ -32,12 +32,14 @@ import {
 // ==========================================
 export interface AdminDashboardScreenProps {
   onLogout: () => void;
+  onNavigate?: (routeKey: string) => void;
 }
 
 type AdminTab = 'overview' | 'doctors' | 'appointments' | 'settings';
 
 export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
   onLogout,
+  onNavigate,
 }) => {
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
   const [docFilter, setDocFilter] = useState('all');
@@ -205,6 +207,26 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
               Serial: 5402-9981-NEAC-VN • Hạn dùng: 31/12/2026
             </Text>
           </View>
+        </View>
+        <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
+          <AppButton
+            title="Thẩm định NEAC"
+            variant="tonal"
+            size="sm"
+            leftIcon="shield-checkmark-outline"
+            fullWidth={false}
+            style={{ flex: 1 }}
+            onPress={() => onNavigate?.('neacPublicLookup')}
+          />
+          <AppButton
+            title="Đối soát Thuế GDT"
+            variant="outline"
+            size="sm"
+            leftIcon="receipt-outline"
+            fullWidth={false}
+            style={{ flex: 1 }}
+            onPress={() => onNavigate?.('gdtTaxPortal')}
+          />
         </View>
       </View>
     </ScrollView>
@@ -456,12 +478,14 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
 // ==========================================
 export interface DoctorDashboardScreenProps {
   onLogout: () => void;
+  onNavigate?: (routeKey: string) => void;
 }
 
 type DoctorTab = 'schedule' | 'patients' | 'prescribe' | 'profile';
 
 export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
   onLogout,
+  onNavigate,
 }) => {
   const doctor = DOCTORS[0]; // TS. BS. Lê Thu Trang
   const [activeTab, setActiveTab] = useState<DoctorTab>('schedule');
@@ -572,13 +596,17 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
 
           <View style={styles.docActionRow}>
             <AppButton
-              title="Gọi vào khám"
+              title={pt.id === '3' ? 'Mở Video Call' : 'Gọi vào khám'}
               variant="primary"
               size="sm"
-              leftIcon="megaphone-outline"
+              leftIcon={pt.id === '3' ? 'videocam-outline' : 'megaphone-outline'}
               fullWidth={false}
               style={{ flex: 1 }}
               onPress={() => {
+                if (pt.id === '3' && onNavigate) {
+                  onNavigate('teleconsult');
+                  return;
+                }
                 setQueueStatuses((prev) => ({
                   ...prev,
                   [pt.id]: 'Đang khám tại P.302',
@@ -633,11 +661,21 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
           leftIcon="scan-outline"
           badgeText="Đã duyệt"
           badgeVariant="teal"
+          actionText="Xem chi tiết DICOM"
+          onActionPress={() => onNavigate?.('labImagingResults')}
         />
         <Text style={styles.docName}>Chụp MRI Sọ não (Không cản từ)</Text>
         <Text style={[styles.docSub, { marginTop: 4 }]}>
           Nhu mô não không thấy tổn thương khu trú, hệ thống não thất cân đối, không có dấu hiệu nhồi máu não hay xuất huyết.
         </Text>
+        <AppButton
+          title="Mở bảng kết quả CĐHA & Xét nghiệm (14 chỉ số)"
+          variant="tonal"
+          size="sm"
+          leftIcon="flask-outline"
+          onPress={() => onNavigate?.('labImagingResults')}
+          style={{ marginTop: 10 }}
+        />
       </View>
     </ScrollView>
   );
@@ -679,12 +717,16 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
           size="lg"
           leftIcon="finger-print-outline"
           style={{ marginTop: 14 }}
-          onPress={() =>
-            Alert.alert(
-              'Ký số PKI thành công!',
-              'Đơn thuốc #DT-241029-01 đã được ký số bởi TS. BS. Lê Thu Trang và đồng bộ sang ứng dụng của bệnh nhân Nguyễn Văn Vũ.'
-            )
-          }
+          onPress={() => {
+            if (onNavigate) {
+              onNavigate('postConsultSummary');
+            } else {
+              Alert.alert(
+                'Ký số PKI thành công!',
+                'Đơn thuốc #DT-241029-01 đã được ký số bởi TS. BS. Lê Thu Trang và đồng bộ sang ứng dụng của bệnh nhân Nguyễn Văn Vũ.'
+              );
+            }
+          }}
         />
       </View>
     </ScrollView>

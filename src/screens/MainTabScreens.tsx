@@ -4,6 +4,7 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
+  Alert,
   StyleSheet,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -53,6 +54,7 @@ export interface HomeScreenProps {
   onBookDoctor: (doctor: DoctorItem) => void;
   onAskAI: () => void;
   onOpenProfile: () => void;
+  onNavigate: (routeKey: string) => void;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
@@ -60,6 +62,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onBookDoctor,
   onAskAI,
   onOpenProfile,
+  onNavigate,
 }) => {
   const [search, setSearch] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>('cardio');
@@ -70,6 +73,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         userName="Vũ"
         avatarUrl={PATIENT_PROFILE.avatar}
         onChatPress={onAskAI}
+        onNotificationPress={() => onNavigate('firstDoseAlert')}
         onAvatarPress={onOpenProfile}
       />
 
@@ -80,18 +84,97 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <SearchBar
           value={search}
           onChangeText={setSearch}
+          onFilterPress={() => onNavigate('directory')}
           style={{ marginBottom: 16 }}
         />
 
         <AIHeroBanner
           onAskAIPress={onAskAI}
-          style={{ marginBottom: 20 }}
+          style={{ marginBottom: 18 }}
         />
+
+        {/* Quick Smart Healthcare Services Strip */}
+        <SectionHeader
+          title="Tiện ích Y tế thông minh"
+          subtitle="Truy cập nhanh các phân hệ khám từ xa, dược phẩm & BHYT"
+          actionText="Tất cả (43)"
+          onActionPress={() => onNavigate('directory')}
+        />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 10, paddingBottom: 6, marginBottom: 18 }}
+        >
+          {[
+            {
+              icon: 'videocam-outline',
+              title: 'Khám Video',
+              sub: 'Telehealth 24/7',
+              route: 'teleconsult',
+              color: COLORS.primary,
+              bg: COLORS.primaryContainer,
+            },
+            {
+              icon: 'alarm-outline',
+              title: 'Nhật ký thuốc',
+              sub: 'Nhắc cữ uống',
+              route: 'medLog',
+              color: COLORS.secondary,
+              bg: COLORS.tintTeal,
+            },
+            {
+              icon: 'bicycle-outline',
+              title: 'Giao thuốc tận nhà',
+              sub: 'Cold Chain 2H',
+              route: 'homeDelivery',
+              color: COLORS.primary,
+              bg: COLORS.primaryContainer,
+            },
+            {
+              icon: 'people-outline',
+              title: 'Hồ sơ Gia đình',
+              sub: 'Mẹ, Vợ & Bé',
+              route: 'familyProfiles',
+              color: COLORS.secondary,
+              bg: COLORS.tintTeal,
+            },
+            {
+              icon: 'flask-outline',
+              title: 'Kết quả CĐHA',
+              sub: 'MRI & Xét nghiệm',
+              route: 'labImagingResults',
+              color: COLORS.primary,
+              bg: COLORS.primaryContainer,
+            },
+            {
+              icon: 'receipt-outline',
+              title: 'Hóa đơn VAT',
+              sub: 'Chứng thư PKI',
+              route: 'vatInvoice',
+              color: COLORS.secondary,
+              bg: COLORS.tintTeal,
+            },
+          ].map((srv) => (
+            <TouchableOpacity
+              key={srv.route}
+              activeOpacity={0.85}
+              onPress={() => onNavigate(srv.route)}
+              style={[styles.quickServiceCard, SHADOWS.sm]}
+            >
+              <View style={[styles.quickServiceIcon, { backgroundColor: srv.bg }]}>
+                <Ionicons name={srv.icon as any} size={20} color={srv.color} />
+              </View>
+              <Text style={styles.quickServiceTitle}>{srv.title}</Text>
+              <Text style={styles.quickServiceSub}>{srv.sub}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
 
         <SectionHeader
           title="Chuyên khoa"
           subtitle="Chọn khoa để đặt khám theo nhu cầu"
           actionText="Xem tất cả"
+          onActionPress={() => onSelectDoctor(DOCTORS[0])}
         />
         <SpecialtyGrid
           items={SPECIALTIES}
@@ -109,6 +192,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           title="Bác sĩ nổi bật"
           subtitle="Chuyên gia đầu ngành sẵn sàng tư vấn"
           actionText="Xem thêm"
+          onActionPress={() => onSelectDoctor(DOCTORS[0])}
         />
         <ScrollView
           horizontal
@@ -131,9 +215,31 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           badgeVariant="teal"
           badgeIcon="navigate"
           actionText="Xem bản đồ"
+          onActionPress={() =>
+            Alert.alert(
+              'Bản đồ cơ sở y tế',
+              'Đang hiển thị 3 bệnh viện liên kết BHYT gần vị trí của bạn tại TP. Hồ Chí Minh.'
+            )
+          }
         />
         {HOSPITALS.map((h) => (
-          <HospitalCard key={h.id} hospital={h} />
+          <HospitalCard
+            key={h.id}
+            hospital={h}
+            onMapPress={(hosp) =>
+              Alert.alert(
+                hosp.name,
+                `Khoảng cách: ${hosp.distance}\nTrạng thái: ${hosp.tag}`,
+                [
+                  { text: 'Đóng', style: 'cancel' },
+                  {
+                    text: 'Đặt khám tại đây',
+                    onPress: () => onBookDoctor(DOCTORS[0]),
+                  },
+                ]
+              )
+            }
+          />
         ))}
       </ScrollView>
     </View>
@@ -142,9 +248,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
 export interface EHRScreenProps {
   onAskAI: () => void;
+  onNavigate: (routeKey: string) => void;
 }
 
-export const EHRScreen: React.FC<EHRScreenProps> = ({ onAskAI }) => {
+export const EHRScreen: React.FC<EHRScreenProps> = ({
+  onAskAI,
+  onNavigate,
+}) => {
   const [filterKey, setFilterKey] = useState('all');
 
   return (
@@ -154,8 +264,14 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({ onAskAI }) => {
         subtitle="SmartClinic EHR • Dữ liệu mã hóa cấp y tế"
         leftIconBox="folder-open-outline"
         rightActions={[
-          { icon: 'document-text-outline' },
-          { icon: 'share-social-outline' },
+          {
+            icon: 'document-text-outline',
+            onPress: () => onNavigate('fullTaxDossier'),
+          },
+          {
+            icon: 'share-social-outline',
+            onPress: () => onNavigate('printShareHistory'),
+          },
         ]}
       />
 
@@ -163,7 +279,11 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({ onAskAI }) => {
         contentContainerStyle={styles.scrollPad}
         showsVerticalScrollIndicator={false}
       >
-        <PatientMasterIdentityCard style={{ marginBottom: 16 }} />
+        <PatientMasterIdentityCard
+          onQrPress={() => onNavigate('bookingSuccess')}
+          onBhytPress={() => onNavigate('refillBHYT')}
+          style={{ marginBottom: 16 }}
+        />
 
         <AIClinicalInsightCard
           onAskAIPress={onAskAI}
@@ -186,32 +306,57 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({ onAskAI }) => {
           style={{ marginBottom: 16 }}
         />
 
-        <SectionHeader
-          title="Đơn thuốc đang điều trị"
-          leftIcon="medkit-outline"
-          badgeText="Đang uống (Ngày 2/7)"
-          badgeVariant="teal"
-        />
-        <ActivePrescriptionCard
-          doctor={DOCTORS[0]}
-          prescriptionCode="#DT-241029-01"
-          date="29/10/2024"
-          drugs={PRESCRIPTION_DRUGS}
-        />
+        {(filterKey === 'all' || filterKey === 'rx') && (
+          <>
+            <SectionHeader
+              title="Đơn thuốc đang điều trị"
+              leftIcon="medkit-outline"
+              badgeText="Đang uống (Ngày 2/7)"
+              badgeVariant="teal"
+              actionText="Tủ thuốc gia đình"
+              onActionPress={() => onNavigate('medicineCabinet')}
+            />
+            <ActivePrescriptionCard
+              doctor={DOCTORS[0]}
+              prescriptionCode="#DT-241029-01"
+              date="29/10/2024"
+              drugs={PRESCRIPTION_DRUGS}
+              onViewOriginal={() => onNavigate('rxDetail')}
+              onBuyMedicine={() => onNavigate('homeDelivery')}
+              onReminderPress={() => onNavigate('medLog')}
+            />
+          </>
+        )}
 
-        <SectionHeader
-          title="Xét nghiệm & Chẩn đoán hình ảnh"
-          leftIcon="flask-outline"
-          actionText="Xem tất cả (8)"
-        />
-        <LabImagingCard />
+        {(filterKey === 'all' || filterKey === 'lab') && (
+          <>
+            <SectionHeader
+              title="Xét nghiệm & Chẩn đoán hình ảnh"
+              leftIcon="flask-outline"
+              actionText="Xem tất cả (8)"
+              onActionPress={() => onNavigate('labImagingResults')}
+            />
+            <LabImagingCard
+              onViewDicom={() => onNavigate('labImagingResults')}
+              onDownloadPdf={() => onNavigate('downloadA4Preview')}
+              onVerifySignature={() => onNavigate('digitalCertXML')}
+            />
+          </>
+        )}
 
-        <SectionHeader
-          title="Lịch sử khám bệnh"
-          leftIcon="calendar-outline"
-          actionText="Gần nhất: 29/10/2024"
-        />
-        <MedicalHistoryTimeline />
+        {filterKey === 'all' && (
+          <>
+            <SectionHeader
+              title="Lịch sử khám bệnh"
+              leftIcon="calendar-outline"
+              actionText="Gần nhất: 29/10/2024"
+              onActionPress={() => onNavigate('postConsultSummary')}
+            />
+            <MedicalHistoryTimeline
+              onItemPress={() => onNavigate('postConsultSummary')}
+            />
+          </>
+        )}
 
         {/* Upload External Record OCR Card */}
         <View style={[styles.ocrCard, SHADOWS.sm]}>
@@ -230,6 +375,7 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({ onAskAI }) => {
             size="sm"
             leftIcon="camera-outline"
             fullWidth={false}
+            onPress={() => onNavigate('fullTaxDossier')}
           />
         </View>
       </ScrollView>
@@ -240,11 +386,13 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({ onAskAI }) => {
 export interface AppointmentsScreenProps {
   onSelectDoctor: (doctor: DoctorItem) => void;
   onBookNew: () => void;
+  onNavigate: (routeKey: string) => void;
 }
 
 export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
   onSelectDoctor,
   onBookNew,
+  onNavigate,
 }) => {
   const [statusTab, setStatusTab] = useState('upcoming');
 
@@ -255,8 +403,15 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
         subtitle="Hệ thống phòng khám SmartClinic"
         leftIconBox="calendar-outline"
         rightActions={[
-          { icon: 'search-outline' },
-          { icon: 'options-outline', showBadgeDot: true },
+          {
+            icon: 'search-outline',
+            onPress: () => onNavigate('directory'),
+          },
+          {
+            icon: 'options-outline',
+            showBadgeDot: true,
+            onPress: () => onNavigate('bookingSuccess'),
+          },
         ]}
       />
 
@@ -276,15 +431,107 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
           style={{ marginBottom: 14 }}
         />
 
-        <AIReminderCard style={{ marginBottom: 14 }} />
+        {statusTab === 'upcoming' && (
+          <>
+            <AIReminderCard style={{ marginBottom: 14 }} />
 
-        {APPOINTMENTS.map((apt) => (
-          <AppointmentCard
-            key={apt.id}
-            appointment={apt}
-            onPrimaryPress={() => onSelectDoctor(apt.doctor)}
-          />
-        ))}
+            {APPOINTMENTS.map((apt) => (
+              <AppointmentCard
+                key={apt.id}
+                appointment={apt}
+                onPrimaryPress={(item) => {
+                  if (item.mode === 'video') {
+                    onNavigate('teleconsult');
+                  } else {
+                    onNavigate('bookingSuccess');
+                  }
+                }}
+                onSecondaryPress={(item) => {
+                  if (item.mode === 'clinic') {
+                    Alert.alert(
+                      'Chỉ đường đến phòng khám',
+                      `${item.doctor.hospital}\n${item.room}`,
+                      [
+                        { text: 'Đóng', style: 'cancel' },
+                        {
+                          text: 'Xem chi tiết Bác sĩ',
+                          onPress: () => onSelectDoctor(item.doctor),
+                        },
+                      ]
+                    );
+                  } else {
+                    Alert.alert(
+                      'Đổi / Hủy lịch hẹn',
+                      `Bạn muốn đổi lịch tư vấn Video với ${item.doctor.name}?`,
+                      [
+                        { text: 'Giữ lịch', style: 'cancel' },
+                        {
+                          text: 'Chọn khung giờ khác',
+                          onPress: () => onBookNew(),
+                        },
+                      ]
+                    );
+                  }
+                }}
+              />
+            ))}
+          </>
+        )}
+
+        {statusTab === 'completed' && (
+          <View style={[styles.sectionCard, SHADOWS.sm]}>
+            <View style={styles.statBoxTop}>
+              <Badge label="Hoàn thành • 28/10/2024" variant="teal" showDot />
+              <Badge label="Đã ký số PKI" variant="blue" />
+            </View>
+            <Text style={styles.sectionCardTitle}>
+              Khám Chuyên khoa Nội Thần Kinh — TS. BS. Lê Thu Trang
+            </Text>
+            <Text style={styles.sectionCardSub}>
+              Chẩn đoán: Đau nửa đầu Migraine (G43.0) • Mã ca: #KB-2024-9982
+            </Text>
+            <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
+              <AppButton
+                title="Tóm tắt & Toa ký số"
+                variant="primary"
+                size="sm"
+                leftIcon="document-text-outline"
+                fullWidth={false}
+                style={{ flex: 1 }}
+                onPress={() => onNavigate('postConsultSummary')}
+              />
+              <AppButton
+                title="Hóa đơn VAT"
+                variant="tonal"
+                size="sm"
+                leftIcon="receipt-outline"
+                fullWidth={false}
+                style={{ flex: 1 }}
+                onPress={() => onNavigate('vatInvoice')}
+              />
+            </View>
+          </View>
+        )}
+
+        {statusTab === 'cancelled' && (
+          <View style={[styles.sectionCard, SHADOWS.sm]}>
+            <Badge label="Đã hủy theo yêu cầu • 10/10/2024" variant="danger" />
+            <Text style={[styles.sectionCardTitle, { marginTop: 8 }]}>
+              Khám Da Liễu Thẩm Mỹ — BS. CKI. Đặng Thảo Vy
+            </Text>
+            <Text style={styles.sectionCardSub}>
+              Lý do: Bận công tác đột xuất • Đã hoàn 100% phí đặt cọc
+            </Text>
+            <AppButton
+              title="Đặt lại lịch khám này"
+              variant="outline"
+              size="sm"
+              leftIcon="refresh-outline"
+              onPress={onBookNew}
+              style={{ marginTop: 12 }}
+            />
+          </View>
+        )}
 
         {/* Need more consultation banner */}
         <View style={styles.moreConsultBanner}>
@@ -405,10 +652,14 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({
 
 export interface ProfileSettingsScreenProps {
   onLogout: () => void;
+  onNavigate: (routeKey: string) => void;
+  onSwitchTab: (tabKey: 'home' | 'records' | 'appointments' | 'ai' | 'profile') => void;
 }
 
 export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
   onLogout,
+  onNavigate,
+  onSwitchTab,
 }) => {
   const [pillReminder, setPillReminder] = useState(true);
   const [aptAlert, setAptAlert] = useState(true);
@@ -422,8 +673,14 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
       <AppHeader
         title="Cá Nhân"
         rightActions={[
-          { icon: 'help-circle-outline' },
-          { icon: 'settings-outline' },
+          {
+            icon: 'help-circle-outline',
+            onPress: () => onNavigate('directory'),
+          },
+          {
+            icon: 'settings-outline',
+            onPress: () => onNavigate('showcase'),
+          },
         ]}
         showProfileIcon
       />
@@ -432,17 +689,29 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
         contentContainerStyle={styles.scrollPad}
         showsVerticalScrollIndicator={false}
       >
-        <ProfileHeaderCard style={{ marginBottom: 16 }} />
+        <ProfileHeaderCard
+          onEditPress={() => onNavigate('addFamilyMember')}
+          onQrPress={() => onNavigate('bookingSuccess')}
+          style={{ marginBottom: 16 }}
+        />
 
-        <VssIDInsuranceCard style={{ marginBottom: 18 }} />
+        <VssIDInsuranceCard
+          onDetailPress={() => onNavigate('refillBHYT')}
+          style={{ marginBottom: 18 }}
+        />
 
         <SectionHeader
           title="Tổng quan điều trị"
           actionText="Cập nhật 15 phút trước"
+          onActionPress={() => onSwitchTab('records')}
         />
         {/* 2x2 Summary Stats Grid */}
         <View style={styles.statsGrid}>
-          <View style={[styles.statBox, SHADOWS.sm]}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => onSwitchTab('appointments')}
+            style={[styles.statBox, SHADOWS.sm]}
+          >
             <View style={styles.statBoxTop}>
               <View style={styles.statIconWrap}>
                 <Ionicons name="calendar-outline" size={16} color={COLORS.primary} />
@@ -454,9 +723,13 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
             <Text style={styles.statBoxSub}>
               10:30 Thứ Năm (Nội thần kinh)
             </Text>
-          </View>
+          </TouchableOpacity>
 
-          <View style={[styles.statBox, SHADOWS.sm]}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => onNavigate('medLog')}
+            style={[styles.statBox, SHADOWS.sm]}
+          >
             <View style={styles.statBoxTop}>
               <View
                 style={[
@@ -471,9 +744,13 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
             <Text style={[styles.statBigNum, { color: COLORS.secondary }]}>1</Text>
             <Text style={styles.statBoxTitle}>Toa thuốc đang uống</Text>
             <Text style={styles.statBoxSub}>3 cữ/ngày • Còn 5 ngày</Text>
-          </View>
+          </TouchableOpacity>
 
-          <View style={[styles.statBox, SHADOWS.sm]}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => onNavigate('labImagingResults')}
+            style={[styles.statBox, SHADOWS.sm]}
+          >
             <View style={styles.statBoxTop}>
               <View style={styles.statIconWrap}>
                 <Ionicons name="folder-outline" size={16} color={COLORS.primary} />
@@ -487,9 +764,13 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
             <Text style={styles.statBigNum}>12</Text>
             <Text style={styles.statBoxTitle}>Hồ sơ bệnh án</Text>
             <Text style={styles.statBoxSub}>MRI, X-Quang & Huyết học</Text>
-          </View>
+          </TouchableOpacity>
 
-          <View style={[styles.statBox, SHADOWS.sm]}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => onNavigate('doctorDetail')}
+            style={[styles.statBox, SHADOWS.sm]}
+          >
             <View style={styles.statBoxTop}>
               <View style={styles.statIconWrap}>
                 <Ionicons name="people-outline" size={16} color={COLORS.primary} />
@@ -503,7 +784,7 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
             <Text style={styles.statBigNum}>3</Text>
             <Text style={styles.statBoxTitle}>Bác sĩ phụ trách</Text>
             <Text style={styles.statBoxSub}>Chuyên khoa & Tư vấn AI</Text>
-          </View>
+          </TouchableOpacity>
         </View>
 
         {/* Notification Settings Card */}
@@ -535,6 +816,7 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
             onValueChange={setPillReminder}
             footerNote="Chuông y tế độc quyền: MedAlert Melodic"
             footerActionLabel="Tùy biến giờ"
+            onFooterAction={() => onNavigate('firstDoseAlert')}
           />
 
           <SettingToggleRow
@@ -574,7 +856,7 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
         {/* Privacy & Account Settings */}
         <View style={[styles.sectionCard, SHADOWS.sm]}>
           <SectionHeader
-            title="Bảo mật & Quản lý hồ sơ"
+            title="Bảo mật, Gia đình & Chứng từ Y tế"
             leftIcon="lock-closed-outline"
           />
           <SettingLinkRow
@@ -585,27 +867,45 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
             onRightToggleChange={setBiometric}
           />
           <SettingLinkRow
-            icon="key-outline"
-            title="Đổi mật khẩu & 2FA OTP"
-            subtitle="Đã bật xác thực qua tin nhắn"
-          />
-          <SettingLinkRow
-            icon="shield-checkmark-outline"
-            title="Mã hóa bệnh án EHR"
-            subtitle="Chuẩn mã hóa đầu cuối AES-256 Y Tế"
-            badgeLabel="Cực an toàn"
-          />
-          <SettingLinkRow
             icon="people-outline"
             title="Hồ sơ người thân trong gia đình"
             subtitle="Đang quản lý 3 hồ sơ phụ (Mẹ, Vợ, Con)"
-            badgeLabel="3"
+            badgeLabel="3 thành viên"
+            onPress={() => onNavigate('familyProfiles')}
+          />
+          <SettingLinkRow
+            icon="medkit-outline"
+            title="Tủ thuốc gia đình & Nhắc nạp thuốc"
+            subtitle="Theo dõi tồn kho thuốc tại nhà & đặt giao nhanh"
+            badgeLabel="Cần nạp 1"
+            onPress={() => onNavigate('medicineCabinet')}
+          />
+          <SettingLinkRow
+            icon="receipt-outline"
+            title="Hóa đơn điện tử VAT & Đối soát Thuế GDT"
+            subtitle="Tra cứu hóa đơn GTGT và quyền lợi BHYT"
+            badgeLabel="Hợp lệ"
+            onPress={() => onNavigate('vatInvoice')}
+          />
+          <SettingLinkRow
+            icon="shield-checkmark-outline"
+            title="Mã hóa bệnh án EHR & Thẩm định NEAC"
+            subtitle="Chuẩn chữ ký số PKI Quốc gia & AES-256"
+            badgeLabel="PKI Verified"
+            onPress={() => onNavigate('neacPublicLookup')}
+          />
+          <SettingLinkRow
+            icon="print-outline"
+            title="Lịch sử In ấn AirPrint & Email Kế toán"
+            subtitle="Quản lý lệnh in không dây và gửi chứng từ thuế"
+            onPress={() => onNavigate('printShareHistory')}
           />
           <SettingLinkRow
             icon="document-attach-outline"
             title="Tải toàn bộ hồ sơ điện tử (EHR)"
             subtitle="Xuất file PDF trọn bộ có chữ ký số bác sĩ"
             isDownload
+            onPress={() => onNavigate('fullTaxDossier')}
           />
         </View>
 
@@ -655,6 +955,32 @@ const styles = StyleSheet.create({
   scrollPad: {
     padding: 16,
     paddingBottom: 28,
+  },
+  quickServiceCard: {
+    width: 118,
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.lg,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#EEF2FF',
+  },
+  quickServiceIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  quickServiceTitle: {
+    fontSize: 12.5,
+    fontWeight: '800',
+    color: COLORS.textPrimary,
+  },
+  quickServiceSub: {
+    fontSize: 10.5,
+    color: COLORS.textSecondary,
+    marginTop: 2,
   },
   ocrCard: {
     flexDirection: 'row',

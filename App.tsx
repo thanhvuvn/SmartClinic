@@ -102,21 +102,42 @@ const QUICK_ROUTES: {
 
 export default function App() {
   const [route, setRoute] = useState<string>('login');
+  const [routeHistory, setRouteHistory] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<MainTabKey>('home');
   const [selectedDoctor, setSelectedDoctor] = useState<DoctorItem>(DOCTORS[0]);
   const [showDevBar, setShowDevBar] = useState(true);
 
+  const navigateTo = (nextRoute: string) => {
+    if (nextRoute === route) return;
+    setRouteHistory((prev) => [...prev, route]);
+    setRoute(nextRoute);
+  };
+
+  const goBack = (fallback = 'main') => {
+    setRouteHistory((prev) => {
+      if (prev.length === 0) {
+        setRoute(fallback);
+        return prev;
+      }
+      const next = [...prev];
+      const last = next.pop()!;
+      setRoute(last);
+      return next;
+    });
+  };
+
   const handleOpenDoctor = (doc: DoctorItem) => {
     setSelectedDoctor(doc);
-    setRoute('doctorDetail');
+    navigateTo('doctorDetail');
   };
 
   const handleOpenBooking = (doc: DoctorItem) => {
     setSelectedDoctor(doc);
-    setRoute('bookingSlot');
+    navigateTo('bookingSlot');
   };
 
   const handleRoleLoginSuccess = (role: UserRole) => {
+    setRouteHistory([]);
     if (role === 'admin') {
       setRoute('adminPortal');
     } else if (role === 'doctor') {
@@ -130,10 +151,10 @@ export default function App() {
   const handleSelectDirectoryRoute = (routeKey: string) => {
     if (routeKey.startsWith('tab_')) {
       const tabName = routeKey.replace('tab_', '') as MainTabKey;
-      setRoute('main');
+      navigateTo('main');
       setActiveTab(tabName);
     } else {
-      setRoute(routeKey);
+      navigateTo(routeKey);
     }
   };
 
@@ -143,40 +164,57 @@ export default function App() {
         return (
           <FigmaDirectoryScreen
             onSelectScreen={handleSelectDirectoryRoute}
-            onClose={() => setRoute('main')}
+            onClose={() => goBack('main')}
           />
         );
       case 'showcase':
-        return <ComponentShowcaseScreen onClose={() => setRoute('main')} />;
+        return <ComponentShowcaseScreen onClose={() => goBack('main')} />;
       case 'splash':
-        return <SplashScreen onContinue={() => setRoute('login')} />;
+        return <SplashScreen onContinue={() => navigateTo('login')} />;
       case 'login':
         return (
           <LoginScreen
             onLoginSuccess={(role) => handleRoleLoginSuccess(role)}
-            onGoRegister={() => setRoute('register')}
-            onBack={() => setRoute('splash')}
+            onGoRegister={() => navigateTo('register')}
+            onBack={() => navigateTo('splash')}
           />
         );
       case 'register':
         return (
           <RegisterScreen
             onRegisterSuccess={() => {
+              setRouteHistory([]);
               setRoute('main');
               setActiveTab('home');
             }}
-            onGoLogin={() => setRoute('login')}
+            onGoLogin={() => navigateTo('login')}
           />
         );
       case 'adminPortal':
-        return <AdminDashboardScreen onLogout={() => setRoute('login')} />;
+        return (
+          <AdminDashboardScreen
+            onLogout={() => {
+              setRouteHistory([]);
+              setRoute('login');
+            }}
+            onNavigate={navigateTo}
+          />
+        );
       case 'doctorPortal':
-        return <DoctorDashboardScreen onLogout={() => setRoute('login')} />;
+        return (
+          <DoctorDashboardScreen
+            onLogout={() => {
+              setRouteHistory([]);
+              setRoute('login');
+            }}
+            onNavigate={navigateTo}
+          />
+        );
       case 'doctorDetail':
         return (
           <DoctorDetailScreen
             doctor={selectedDoctor}
-            onBack={() => setRoute('main')}
+            onBack={() => goBack('main')}
             onBookSlot={handleOpenBooking}
           />
         );
@@ -184,8 +222,8 @@ export default function App() {
         return (
           <BookingSlotScreen
             doctor={selectedDoctor}
-            onBack={() => setRoute('doctorDetail')}
-            onConfirmBooking={() => setRoute('bookingSuccess')}
+            onBack={() => goBack('doctorDetail')}
+            onConfirmBooking={() => navigateTo('bookingSuccess')}
           />
         );
 
@@ -194,96 +232,110 @@ export default function App() {
         return (
           <BookingSuccessScreen
             onViewAppointments={() => {
+              setRouteHistory([]);
               setRoute('main');
               setActiveTab('appointments');
             }}
             onGoHome={() => {
+              setRouteHistory([]);
               setRoute('main');
               setActiveTab('home');
             }}
+            onNavigate={navigateTo}
           />
         );
       case 'familyProfiles':
         return (
           <FamilyProfilesScreen
-            onBack={() => setRoute('main')}
-            onSelectChild={() => setRoute('childEHR')}
-            onAddMember={() => setRoute('addFamilyMember')}
+            onBack={() => goBack('main')}
+            onSelectChild={() => navigateTo('childEHR')}
+            onAddMember={() => navigateTo('addFamilyMember')}
+            onNavigate={navigateTo}
           />
         );
       case 'childEHR':
         return (
-          <ChildEHRDetailScreen onBack={() => setRoute('familyProfiles')} />
+          <ChildEHRDetailScreen onBack={() => goBack('familyProfiles')} />
         );
       case 'addFamilyMember':
         return (
           <AddEditFamilyMemberScreen
-            onBack={() => setRoute('familyProfiles')}
+            onBack={() => goBack('familyProfiles')}
           />
         );
       case 'teleconsult':
         return (
           <TeleconsultationScreen
-            onBack={() => setRoute('postConsultSummary')}
+            onBack={() => navigateTo('postConsultSummary')}
+            onOpenLabResults={() => navigateTo('labImagingResults')}
           />
         );
       case 'labImagingResults':
-        return <LabAndImagingResultsScreen onBack={() => setRoute('main')} />;
+        return (
+          <LabAndImagingResultsScreen
+            onBack={() => goBack('main')}
+            onDownloadPDF={() => navigateTo('downloadA4Preview')}
+            onOpenTeleconsult={() => navigateTo('teleconsult')}
+          />
+        );
 
       // Pharmacy & Medication Adherence (8 screens)
       case 'medLog':
         return (
           <MedicationLogScreen
-            onBack={() => setRoute('main')}
-            onOpenPrescription={() => setRoute('rxDetail')}
+            onBack={() => goBack('main')}
+            onOpenPrescription={() => navigateTo('rxDetail')}
+            onOpenCabinet={() => navigateTo('medicineCabinet')}
+            onOpenLockAlert={() => navigateTo('firstDoseAlert')}
           />
         );
       case 'rxDetail':
         return (
           <PrescriptionDetailScreen
-            onBack={() => setRoute('medLog')}
-            onOrderDelivery={() => setRoute('homeDelivery')}
+            onBack={() => goBack('medLog')}
+            onOrderDelivery={() => navigateTo('homeDelivery')}
           />
         );
       case 'firstDoseAlert':
         return (
           <FirstDoseLockscreenAlertScreen
-            onConfirmTaken={() => setRoute('medLog')}
-            onBack={() => setRoute('directory')}
+            onConfirmTaken={() => navigateTo('medLog')}
+            onBack={() => goBack('main')}
           />
         );
       case 'medicineCabinet':
         return (
           <FamilyMedicineCabinetScreen
-            onBack={() => setRoute('directory')}
-            onRefillNow={() => setRoute('homeDelivery')}
+            onBack={() => goBack('main')}
+            onRefillNow={() => navigateTo('homeDelivery')}
           />
         );
       case 'homeDelivery':
         return (
           <HomeMedicineDeliveryScreen
-            onBack={() => setRoute('rxDetail')}
-            onTrackDelivery={() => setRoute('liveDelivery')}
+            onBack={() => goBack('rxDetail')}
+            onTrackDelivery={() => navigateTo('liveDelivery')}
           />
         );
       case 'liveDelivery':
         return (
           <LiveDeliveryTrackingScreen
-            onBack={() => setRoute('homeDelivery')}
-            onOpenHandover={() => setRoute('deliveryHandover')}
+            onBack={() => goBack('homeDelivery')}
+            onOpenHandover={() => navigateTo('deliveryHandover')}
           />
         );
       case 'deliveryHandover':
         return (
           <DeliveryHandoverUnsealScreen
-            onBack={() => setRoute('refillBHYT')}
+            onBack={() => goBack('liveDelivery')}
+            onConfirmHandover={() => navigateTo('refillBHYT')}
           />
         );
       case 'refillBHYT':
         return (
           <RefillHistoryAndBHYTScreen
-            onBack={() => setRoute('directory')}
-            onOpenVATInvoice={() => setRoute('vatInvoice')}
+            onBack={() => goBack('main')}
+            onOpenVATInvoice={() => navigateTo('vatInvoice')}
           />
         );
 
@@ -291,61 +343,69 @@ export default function App() {
       case 'postConsultSummary':
         return (
           <PostConsultSummarySignedRxScreen
-            onBack={() => setRoute('directory')}
-            onOpenXMLCert={() => setRoute('digitalCertXML')}
+            onBack={() => goBack('main')}
+            onOpenXMLCert={() => navigateTo('digitalCertXML')}
+            onOpenRxDetail={() => navigateTo('rxDetail')}
+            onOpenVATInvoice={() => navigateTo('vatInvoice')}
           />
         );
       case 'digitalCertXML':
         return (
           <DigitalCertAndXMLInspectorScreen
-            onBack={() => setRoute('postConsultSummary')}
-            onOpenNEACLookup={() => setRoute('neacPublicLookup')}
+            onBack={() => goBack('postConsultSummary')}
+            onOpenNEACLookup={() => navigateTo('neacPublicLookup')}
           />
         );
       case 'vatInvoice':
         return (
           <ElectronicVATInvoiceScreen
-            onBack={() => setRoute('directory')}
-            onOpenGDTTax={() => setRoute('gdtTaxPortal')}
+            onBack={() => goBack('main')}
+            onOpenGDTTax={() => navigateTo('gdtTaxPortal')}
+            onOpenFullDossier={() => navigateTo('fullTaxDossier')}
+            onOpenXMLCert={() => navigateTo('digitalCertXML')}
           />
         );
       case 'downloadA4Preview':
         return (
           <DownloadSuccessA4PreviewScreen
-            onBack={() => setRoute('fullTaxDossier')}
-            onOpenPrintOptions={() => setRoute('airPrintOptions')}
+            onBack={() => goBack('fullTaxDossier')}
+            onOpenPrintOptions={() => navigateTo('airPrintOptions')}
           />
         );
       case 'fullTaxDossier':
         return (
           <FullTaxDossierBundleScreen
-            onBack={() => setRoute('directory')}
-            onDownloadSuccess={() => setRoute('downloadA4Preview')}
+            onBack={() => goBack('main')}
+            onDownloadSuccess={() => navigateTo('downloadA4Preview')}
           />
         );
       case 'gdtTaxPortal':
         return (
-          <GDTTaxPortalReconcileScreen onBack={() => setRoute('vatInvoice')} />
+          <GDTTaxPortalReconcileScreen
+            onBack={() => goBack('vatInvoice')}
+            onOpenFullDossier={() => navigateTo('fullTaxDossier')}
+            onOpenNEACLookup={() => navigateTo('neacPublicLookup')}
+          />
         );
       case 'neacPublicLookup':
         return (
           <NEACPublicPKILookupScreen
-            onBack={() => setRoute('directory')}
-            onOpenReportPage1={() => setRoute('neacReportP1')}
+            onBack={() => goBack('main')}
+            onOpenReportPage1={() => navigateTo('neacReportP1')}
           />
         );
       case 'neacReportP1':
         return (
           <NEACAuditReportPage1Screen
-            onBack={() => setRoute('neacPublicLookup')}
-            onOpenPage2={() => setRoute('neacReportP2')}
+            onBack={() => goBack('neacPublicLookup')}
+            onOpenPage2={() => navigateTo('neacReportP2')}
           />
         );
       case 'neacReportP2':
         return (
           <NEACAuditReportPage2Screen
-            onBack={() => setRoute('neacReportP1')}
-            onOpenAirPrint={() => setRoute('airPrintOptions')}
+            onBack={() => goBack('neacReportP1')}
+            onOpenAirPrint={() => navigateTo('airPrintOptions')}
           />
         );
 
@@ -353,69 +413,78 @@ export default function App() {
       case 'printShareHistory':
         return (
           <PrintAndShareHistoryScreen
-            onBack={() => setRoute('directory')}
-            onOpenEmailReceipt={() => setRoute('accountingEmailReceipt')}
+            onBack={() => goBack('main')}
+            onOpenEmailReceipt={() => navigateTo('accountingEmailReceipt')}
+            onOpenAirPrint={() => navigateTo('airPrintOptions')}
+            onOpenSendEmail={() => navigateTo('sendTaxEmail')}
           />
         );
       case 'accountingEmailReceipt':
         return (
           <AccountingEmailReceiptDetailScreen
-            onBack={() => setRoute('printShareHistory')}
-            onOpenGatewayPDF={() => setRoute('gatewaySignedPDF')}
+            onBack={() => goBack('printShareHistory')}
+            onOpenGatewayPDF={() => navigateTo('gatewaySignedPDF')}
           />
         );
       case 'gatewaySignedPDF':
         return (
           <GatewaySignedReceiptPDFScreen
-            onBack={() => setRoute('accountingEmailReceipt')}
+            onBack={() => goBack('accountingEmailReceipt')}
+            onOpenAirPrint={() => navigateTo('airPrintOptions')}
+            onOpenSendEmail={() => navigateTo('sendTaxEmail')}
           />
         );
       case 'airPrintOptions':
         return (
           <AirPrintOptionsModalScreen
-            onBack={() => setRoute('directory')}
-            onSelectPrinter={() => setRoute('availablePrinters')}
-            onStartPrint={() => setRoute('printSpooling')}
+            onBack={() => goBack('main')}
+            onSelectPrinter={() => navigateTo('availablePrinters')}
+            onStartPrint={() => navigateTo('printSpooling')}
           />
         );
       case 'availablePrinters':
         return (
           <AvailablePrintersListScreen
-            onBack={() => setRoute('airPrintOptions')}
-            onConfirmPrinter={() => setRoute('airPrintOptions')}
+            onBack={() => goBack('airPrintOptions')}
+            onConfirmPrinter={() => goBack('airPrintOptions')}
           />
         );
       case 'printSpooling':
         return (
           <PrintSpoolingProgressScreen
-            onBack={() => setRoute('airPrintOptions')}
-            onFinishPrint={() => setRoute('printCompleted')}
+            onBack={() => goBack('airPrintOptions')}
+            onFinishPrint={() => navigateTo('printCompleted')}
           />
         );
       case 'sendTaxEmail':
         return (
           <SendTaxAccountingEmailScreen
-            onBack={() => setRoute('printPKILog')}
-            onSendSuccess={() => setRoute('emailSentSuccess')}
+            onBack={() => goBack('printPKILog')}
+            onSendSuccess={() => navigateTo('emailSentSuccess')}
           />
         );
       case 'printPKILog':
         return (
           <PrintReceiptAndPKILogScreen
-            onBack={() => setRoute('printCompleted')}
-            onSendEmail={() => setRoute('sendTaxEmail')}
+            onBack={() => goBack('printCompleted')}
+            onSendEmail={() => navigateTo('sendTaxEmail')}
           />
         );
       case 'printCompleted':
         return (
           <PrintCompletedReceiptScreen
-            onBack={() => setRoute('printSpooling')}
-            onOpenPKILog={() => setRoute('printPKILog')}
+            onBack={() => goBack('printSpooling')}
+            onOpenPKILog={() => navigateTo('printPKILog')}
           />
         );
       case 'emailSentSuccess':
         return (
-          <EmailSentAuditSuccessScreen onBack={() => setRoute('directory')} />
+          <EmailSentAuditSuccessScreen
+            onBack={() => {
+              setRouteHistory([]);
+              setRoute('main');
+            }}
+          />
         );
 
       case 'main':
@@ -429,22 +498,34 @@ export default function App() {
                   onBookDoctor={handleOpenBooking}
                   onAskAI={() => setActiveTab('ai')}
                   onOpenProfile={() => setActiveTab('profile')}
+                  onNavigate={navigateTo}
                 />
               )}
               {activeTab === 'records' && (
-                <EHRScreen onAskAI={() => setActiveTab('ai')} />
+                <EHRScreen
+                  onAskAI={() => setActiveTab('ai')}
+                  onNavigate={navigateTo}
+                />
               )}
               {activeTab === 'appointments' && (
                 <AppointmentsScreen
                   onSelectDoctor={handleOpenDoctor}
                   onBookNew={() => handleOpenBooking(DOCTORS[0])}
+                  onNavigate={navigateTo}
                 />
               )}
               {activeTab === 'ai' && (
                 <AIAssistantScreen onBookDoctor={handleOpenBooking} />
               )}
               {activeTab === 'profile' && (
-                <ProfileSettingsScreen onLogout={() => setRoute('login')} />
+                <ProfileSettingsScreen
+                  onLogout={() => {
+                    setRouteHistory([]);
+                    setRoute('login');
+                  }}
+                  onNavigate={navigateTo}
+                  onSwitchTab={(tab) => setActiveTab(tab)}
+                />
               )}
             </View>
             <BottomTabBar

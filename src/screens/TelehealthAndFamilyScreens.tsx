@@ -26,7 +26,8 @@ import {
 export const BookingSuccessScreen: React.FC<{
   onViewAppointments?: () => void;
   onGoHome?: () => void;
-}> = ({ onViewAppointments, onGoHome }) => {
+  onNavigate?: (routeKey: string) => void;
+}> = ({ onViewAppointments, onGoHome, onNavigate }) => {
   const doctor = DOCTORS[0];
   return (
     <View style={styles.screen}>
@@ -114,12 +115,25 @@ export const BookingSuccessScreen: React.FC<{
         {/* Section 4: Quick Action Floating Grid */}
         <View style={styles.quickGrid3}>
           {[
-            { icon: 'calendar-outline', label: 'Thêm vào Lịch' },
-            { icon: 'download-outline', label: 'Tải Phiếu PDF' },
-            { icon: 'navigate-outline', label: 'Chỉ Đường' },
+            {
+              icon: 'calendar-outline',
+              label: 'Thêm vào Lịch',
+              action: onViewAppointments,
+            },
+            {
+              icon: 'download-outline',
+              label: 'Tải Phiếu PDF',
+              action: () => onNavigate?.('downloadA4Preview'),
+            },
+            {
+              icon: 'navigate-outline',
+              label: 'Chỉ Đường',
+              action: () => onNavigate?.('doctorDetail'),
+            },
           ].map((act) => (
             <TouchableOpacity
               key={act.label}
+              onPress={act.action}
               style={[styles.quickBtnCard, SHADOWS.sm]}
             >
               <Ionicons name={act.icon as any} size={20} color={COLORS.primary} />
@@ -179,7 +193,8 @@ export const FamilyProfilesScreen: React.FC<{
   onBack?: () => void;
   onSelectChild?: () => void;
   onAddMember?: () => void;
-}> = ({ onBack, onSelectChild, onAddMember }) => {
+  onNavigate?: (routeKey: string) => void;
+}> = ({ onBack, onSelectChild, onAddMember, onNavigate }) => {
   return (
     <View style={styles.screen}>
       <AppHeader
@@ -231,6 +246,7 @@ export const FamilyProfilesScreen: React.FC<{
               size="sm"
               fullWidth={false}
               style={{ flex: 1 }}
+              onPress={() => onNavigate?.('medLog')}
             />
             <AppButton
               title="Đặt hẹn tiêm nhắc"
@@ -238,6 +254,7 @@ export const FamilyProfilesScreen: React.FC<{
               size="sm"
               fullWidth={false}
               style={{ flex: 1 }}
+              onPress={() => onNavigate?.('bookingSlot')}
             />
           </View>
         </LinearGradient>
@@ -266,6 +283,7 @@ export const FamilyProfilesScreen: React.FC<{
             blood: 'A+',
             note: 'Đang theo dõi Huyết áp & Tim mạch tại BV ĐHYD',
             badge: 'Cao tuổi',
+            onPress: onSelectChild,
           },
           {
             name: 'Nguyễn Thị Mai',
@@ -274,6 +292,7 @@ export const FamilyProfilesScreen: React.FC<{
             blood: 'B+',
             note: 'Khám sức khỏe định kỳ loại I (Tốt)',
             badge: 'BHYT 80%',
+            onPress: onSelectChild,
           },
         ].map((mem) => (
           <TouchableOpacity
@@ -531,9 +550,10 @@ export const AddEditFamilyMemberScreen: React.FC<{ onBack?: () => void }> = ({
 // ============================================================================
 // SCREEN 17: [1:4593] TƯ VẤN TRỰC TUYẾN - TS. BS. LÊ THU TRANG
 // ============================================================================
-export const TeleconsultationScreen: React.FC<{ onBack?: () => void }> = ({
-  onBack,
-}) => {
+export const TeleconsultationScreen: React.FC<{
+  onBack?: () => void;
+  onOpenLabResults?: () => void;
+}> = ({ onBack, onOpenLabResults }) => {
   const doctor = DOCTORS[0];
   const [mriMode, setMriMode] = useState('flair');
   const [muted, setMuted] = useState(false);
@@ -651,7 +671,10 @@ export const TeleconsultationScreen: React.FC<{ onBack?: () => void }> = ({
           <TouchableOpacity style={styles.callBtn}>
             <Ionicons name="videocam" size={20} color={COLORS.textPrimary} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.callBtn}>
+          <TouchableOpacity
+            style={styles.callBtn}
+            onPress={onOpenLabResults || onBack}
+          >
             <Ionicons name="document-text-outline" size={20} color={COLORS.primary} />
           </TouchableOpacity>
           <TouchableOpacity
@@ -661,6 +684,15 @@ export const TeleconsultationScreen: React.FC<{ onBack?: () => void }> = ({
             <Ionicons name="call" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
+
+        <AppButton
+          title="Kết thúc cuộc gọi & Xem Tóm tắt Sau Khám + Đơn Ký Số →"
+          variant="primary"
+          size="lg"
+          leftIcon="document-text-outline"
+          onPress={onBack}
+          style={{ marginTop: 12 }}
+        />
       </ScrollView>
     </View>
   );
@@ -669,9 +701,11 @@ export const TeleconsultationScreen: React.FC<{ onBack?: () => void }> = ({
 // ============================================================================
 // SCREEN 18: [1:4768] KẾT QUẢ CẬN LÂM SÀNG & CĐHA
 // ============================================================================
-export const LabAndImagingResultsScreen: React.FC<{ onBack?: () => void }> = ({
-  onBack,
-}) => {
+export const LabAndImagingResultsScreen: React.FC<{
+  onBack?: () => void;
+  onDownloadPDF?: () => void;
+  onOpenTeleconsult?: () => void;
+}> = ({ onBack, onDownloadPDF, onOpenTeleconsult }) => {
   const [tab, setTab] = useState('imaging');
   return (
     <View style={styles.screen}>
@@ -709,6 +743,7 @@ export const LabAndImagingResultsScreen: React.FC<{ onBack?: () => void }> = ({
               leftIcon="download-outline"
               fullWidth={false}
               style={{ flex: 1 }}
+              onPress={onDownloadPDF}
             />
             <AppButton
               title="Xem DICOM Gốc"
@@ -717,6 +752,7 @@ export const LabAndImagingResultsScreen: React.FC<{ onBack?: () => void }> = ({
               leftIcon="scan-outline"
               fullWidth={false}
               style={{ flex: 1 }}
+              onPress={onOpenTeleconsult}
             />
           </View>
         </View>

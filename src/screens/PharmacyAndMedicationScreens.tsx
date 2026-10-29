@@ -25,7 +25,9 @@ import {
 export const MedicationLogScreen: React.FC<{
   onBack?: () => void;
   onOpenPrescription?: () => void;
-}> = ({ onBack, onOpenPrescription }) => {
+  onOpenCabinet?: () => void;
+  onOpenLockAlert?: () => void;
+}> = ({ onBack, onOpenPrescription, onOpenCabinet, onOpenLockAlert }) => {
   const [takenMap, setTakenMap] = useState<Record<string, boolean>>({
     morning: true,
     afternoon: true,
@@ -162,6 +164,27 @@ export const MedicationLogScreen: React.FC<{
             </View>
           );
         })}
+
+        <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
+          <AppButton
+            title="Tủ thuốc gia đình"
+            variant="tonal"
+            size="md"
+            leftIcon="medkit-outline"
+            fullWidth={false}
+            style={{ flex: 1 }}
+            onPress={onOpenCabinet}
+          />
+          <AppButton
+            title="Chuông nhắc thuốc"
+            variant="outline"
+            size="md"
+            leftIcon="notifications-outline"
+            fullWidth={false}
+            style={{ flex: 1 }}
+            onPress={onOpenLockAlert}
+          />
+        </View>
       </ScrollView>
     </View>
   );
@@ -608,7 +631,8 @@ export const LiveDeliveryTrackingScreen: React.FC<{
 // ============================================================================
 export const DeliveryHandoverUnsealScreen: React.FC<{
   onBack?: () => void;
-}> = ({ onBack }) => {
+  onConfirmHandover?: () => void;
+}> = ({ onBack, onConfirmHandover }) => {
   return (
     <View style={styles.screen}>
       <AppHeader
@@ -653,7 +677,7 @@ export const DeliveryHandoverUnsealScreen: React.FC<{
           variant="gradient"
           size="lg"
           leftIcon="checkmark-done-circle-outline"
-          onPress={onBack}
+          onPress={onConfirmHandover || onBack}
         />
       </ScrollView>
     </View>

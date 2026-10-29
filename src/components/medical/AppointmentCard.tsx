@@ -109,7 +109,11 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
               <Text style={styles.codeLabel}>MÃ PHIẾU HẸN</Text>
               <Text style={styles.codeValue}>{appointment.code}</Text>
             </View>
-            <TouchableOpacity style={styles.qrBtn} activeOpacity={0.8}>
+            <TouchableOpacity
+              style={styles.qrBtn}
+              activeOpacity={0.8}
+              onPress={() => onPrimaryPress?.(appointment)}
+            >
               <Ionicons name="qr-code-outline" size={14} color={COLORS.primary} />
               <Text style={styles.qrBtnText}>Check-in QR</Text>
             </TouchableOpacity>

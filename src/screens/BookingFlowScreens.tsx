@@ -353,13 +353,7 @@ export const BookingSlotScreen: React.FC<BookingSlotScreenProps> = ({
         priceLabel="Tạm tính:"
         priceValue={doctor.fee}
         buttonTitle="Tiếp tục"
-        onButtonPress={() => {
-          Alert.alert(
-            'Đặt lịch khám thành công!',
-            `Bác sĩ: ${doctor.name}\nThời gian: ${selectedSlot.time} - ${currentDay.dayLabel} (${currentDay.fullDate})\nMã phiếu hẹn: #SC-241029-8892`,
-            [{ text: 'Xem lịch khám', onPress: onConfirmBooking }]
-          );
-        }}
+        onButtonPress={onConfirmBooking}
       />
     </View>
   );

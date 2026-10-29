@@ -22,7 +22,9 @@ import {
 export const PostConsultSummarySignedRxScreen: React.FC<{
   onBack?: () => void;
   onOpenXMLCert?: () => void;
-}> = ({ onBack, onOpenXMLCert }) => {
+  onOpenRxDetail?: () => void;
+  onOpenVATInvoice?: () => void;
+}> = ({ onBack, onOpenXMLCert, onOpenRxDetail, onOpenVATInvoice }) => {
   return (
     <View style={styles.screen}>
       <AppHeader
@@ -71,7 +73,28 @@ export const PostConsultSummarySignedRxScreen: React.FC<{
           size="lg"
           leftIcon="code-slash-outline"
           onPress={onOpenXMLCert}
+          style={{ marginBottom: 10 }}
         />
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <AppButton
+            title="Chi tiết Toa thuốc"
+            variant="tonal"
+            size="md"
+            leftIcon="medkit-outline"
+            fullWidth={false}
+            style={{ flex: 1 }}
+            onPress={onOpenRxDetail}
+          />
+          <AppButton
+            title="Hóa đơn VAT"
+            variant="secondary"
+            size="md"
+            leftIcon="receipt-outline"
+            fullWidth={false}
+            style={{ flex: 1 }}
+            onPress={onOpenVATInvoice}
+          />
+        </View>
       </ScrollView>
     </View>
   );
@@ -147,7 +170,9 @@ export const DigitalCertAndXMLInspectorScreen: React.FC<{
 export const ElectronicVATInvoiceScreen: React.FC<{
   onBack?: () => void;
   onOpenGDTTax?: () => void;
-}> = ({ onBack, onOpenGDTTax }) => {
+  onOpenFullDossier?: () => void;
+  onOpenXMLCert?: () => void;
+}> = ({ onBack, onOpenGDTTax, onOpenFullDossier, onOpenXMLCert }) => {
   return (
     <View style={styles.screen}>
       <AppHeader
@@ -201,7 +226,28 @@ export const ElectronicVATInvoiceScreen: React.FC<{
           size="lg"
           leftIcon="shield-checkmark-outline"
           onPress={onOpenGDTTax}
+          style={{ marginBottom: 10 }}
         />
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <AppButton
+            title="Trọn bộ Hồ sơ Thuế"
+            variant="tonal"
+            size="md"
+            leftIcon="folder-open-outline"
+            fullWidth={false}
+            style={{ flex: 1 }}
+            onPress={onOpenFullDossier}
+          />
+          <AppButton
+            title="Chứng thư & XML"
+            variant="outline"
+            size="md"
+            leftIcon="code-slash-outline"
+            fullWidth={false}
+            style={{ flex: 1 }}
+            onPress={onOpenXMLCert}
+          />
+        </View>
       </ScrollView>
     </View>
   );
@@ -320,9 +366,11 @@ export const FullTaxDossierBundleScreen: React.FC<{
 // ============================================================================
 // SCREEN 30: [1:8948] ĐỐI SOÁT CỔNG THUẾ GDT
 // ============================================================================
-export const GDTTaxPortalReconcileScreen: React.FC<{ onBack?: () => void }> = ({
-  onBack,
-}) => {
+export const GDTTaxPortalReconcileScreen: React.FC<{
+  onBack?: () => void;
+  onOpenFullDossier?: () => void;
+  onOpenNEACLookup?: () => void;
+}> = ({ onBack, onOpenFullDossier, onOpenNEACLookup }) => {
   return (
     <View style={styles.screen}>
       <AppHeader
@@ -342,7 +390,7 @@ export const GDTTaxPortalReconcileScreen: React.FC<{ onBack?: () => void }> = ({
             Hóa đơn điện tử có mã của Cơ quan Thuế
           </Text>
           <Text style={styles.subText}>
-            Đơn vị bán: CÔNG TY CP DƯỢC & TBYT BV ĐẠI HỌC Y DƯỢC TP.HCM
+            Đơn vị bán: CÔNG TY CP DƯỢC & TBYT BV ĐẠI HỌC Y Dược TP.HCM
           </Text>
           <Text style={styles.subText}>
             MST: 0302198421 • Ký hiệu: 1C24TSM • Số HĐ: 0048192
@@ -351,6 +399,22 @@ export const GDTTaxPortalReconcileScreen: React.FC<{ onBack?: () => void }> = ({
             Mã CQT cấp: 00389AF92B710048192 • Trạng thái: Đã cấp mã hợp lệ
           </Text>
         </View>
+
+        <AppButton
+          title="Tải Trọn Bộ Chứng Từ PDF Có Dấu Mộc Đỏ"
+          variant="primary"
+          size="lg"
+          leftIcon="download-outline"
+          onPress={onOpenFullDossier}
+          style={{ marginBottom: 10 }}
+        />
+        <AppButton
+          title="Tra cứu Chứng Thư Số trên Cổng NEAC"
+          variant="tonal"
+          size="md"
+          leftIcon="globe-outline"
+          onPress={onOpenNEACLookup}
+        />
       </ScrollView>
     </View>
   );

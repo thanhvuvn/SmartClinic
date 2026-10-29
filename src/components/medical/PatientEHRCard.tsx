@@ -16,11 +16,15 @@ import { AppButton } from '../common/AppButton';
 
 export interface PatientMasterIdentityCardProps {
   profile?: typeof PATIENT_PROFILE;
+  onQrPress?: () => void;
+  onBhytPress?: () => void;
   style?: ViewStyle;
 }
 
 export const PatientMasterIdentityCard: React.FC<PatientMasterIdentityCardProps> = ({
   profile = PATIENT_PROFILE,
+  onQrPress,
+  onBhytPress,
   style,
 }) => {
   return (
@@ -44,11 +48,17 @@ export const PatientMasterIdentityCard: React.FC<PatientMasterIdentityCardProps>
               variant="surface"
               icon="water-outline"
             />
-            <Badge label="BHYT: 80%" variant="blue" icon="card-outline" />
+            <TouchableOpacity activeOpacity={0.8} onPress={onBhytPress}>
+              <Badge label="BHYT: 80%" variant="blue" icon="card-outline" />
+            </TouchableOpacity>
           </View>
         </View>
 
-        <TouchableOpacity style={styles.qrBox} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={styles.qrBox}
+          activeOpacity={0.8}
+          onPress={onQrPress}
+        >
           <Ionicons name="qr-code-outline" size={20} color={COLORS.primary} />
           <Text style={styles.qrBoxText}>Mã y tế</Text>
         </TouchableOpacity>

@@ -23,7 +23,9 @@ import {
 export const PrintAndShareHistoryScreen: React.FC<{
   onBack?: () => void;
   onOpenEmailReceipt?: () => void;
-}> = ({ onBack, onOpenEmailReceipt }) => {
+  onOpenAirPrint?: () => void;
+  onOpenSendEmail?: () => void;
+}> = ({ onBack, onOpenEmailReceipt, onOpenAirPrint, onOpenSendEmail }) => {
   const [filter, setFilter] = useState('all');
   return (
     <View style={styles.screen}>
@@ -76,6 +78,27 @@ export const PrintAndShareHistoryScreen: React.FC<{
             />
           </View>
         ))}
+
+        <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
+          <AppButton
+            title="In Không Dây (AirPrint)"
+            variant="primary"
+            size="md"
+            leftIcon="print-outline"
+            fullWidth={false}
+            style={{ flex: 1 }}
+            onPress={onOpenAirPrint}
+          />
+          <AppButton
+            title="Gửi Email Kế Toán"
+            variant="secondary"
+            size="md"
+            leftIcon="mail-outline"
+            fullWidth={false}
+            style={{ flex: 1 }}
+            onPress={onOpenSendEmail}
+          />
+        </View>
       </ScrollView>
     </View>
   );
@@ -133,7 +156,9 @@ export const AccountingEmailReceiptDetailScreen: React.FC<{
 // ============================================================================
 export const GatewaySignedReceiptPDFScreen: React.FC<{
   onBack?: () => void;
-}> = ({ onBack }) => {
+  onOpenAirPrint?: () => void;
+  onOpenSendEmail?: () => void;
+}> = ({ onBack, onOpenAirPrint, onOpenSendEmail }) => {
   return (
     <View style={styles.screen}>
       <AppHeader
@@ -157,6 +182,22 @@ export const GatewaySignedReceiptPDFScreen: React.FC<{
             (28/10/2024)
           </Text>
         </View>
+
+        <AppButton
+          title="In Không Dây (AirPrint) Biên Nhận Này"
+          variant="gradient"
+          size="lg"
+          leftIcon="print-outline"
+          onPress={onOpenAirPrint}
+          style={{ marginBottom: 10 }}
+        />
+        <AppButton
+          title="Chuyển tiếp Email Kế Toán Thuế"
+          variant="tonal"
+          size="md"
+          leftIcon="mail-outline"
+          onPress={onOpenSendEmail}
+        />
       </ScrollView>
     </View>
   );

@@ -20,6 +20,7 @@ export interface ActivePrescriptionCardProps {
   drugs: PrescriptionDrug[];
   onViewOriginal?: () => void;
   onBuyMedicine?: () => void;
+  onReminderPress?: () => void;
   style?: ViewStyle;
 }
 
@@ -30,6 +31,7 @@ export const ActivePrescriptionCard: React.FC<ActivePrescriptionCardProps> = ({
   drugs,
   onViewOriginal,
   onBuyMedicine,
+  onReminderPress,
   style,
 }) => {
   return (
@@ -89,16 +91,20 @@ export const ActivePrescriptionCard: React.FC<ActivePrescriptionCardProps> = ({
       ))}
 
       {/* Pill Reminder Strip */}
-      <View style={styles.reminderBar}>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={onReminderPress}
+        style={styles.reminderBar}
+      >
         <View style={styles.reminderLeft}>
           <Ionicons name="alarm-outline" size={18} color={COLORS.secondary} />
           <View style={{ flex: 1, minWidth: 0, marginLeft: 8 }}>
             <Text style={styles.reminderTitle}>Nhắc uống thuốc</Text>
-            <Text style={styles.reminderSub}>Đã bật lịch 08:00 & 21:00</Text>
+            <Text style={styles.reminderSub}>Đã bật lịch 08:00 & 21:00 • Chạm xem nhật ký</Text>
           </View>
         </View>
         <Badge label="Bật" variant="teal" />
-      </View>
+      </TouchableOpacity>
 
       {/* Dual Action Buttons */}
       <View style={styles.actionRow}>
@@ -126,10 +132,18 @@ export const ActivePrescriptionCard: React.FC<ActivePrescriptionCardProps> = ({
 };
 
 export interface LabImagingCardProps {
+  onViewDicom?: () => void;
+  onDownloadPdf?: () => void;
+  onVerifySignature?: () => void;
   style?: ViewStyle;
 }
 
-export const LabImagingCard: React.FC<LabImagingCardProps> = ({ style }) => {
+export const LabImagingCard: React.FC<LabImagingCardProps> = ({
+  onViewDicom,
+  onDownloadPdf,
+  onVerifySignature,
+  style,
+}) => {
   return (
     <View style={[styles.card, SHADOWS.sm, style]}>
       <View style={styles.labTopRow}>
@@ -154,21 +168,25 @@ export const LabImagingCard: React.FC<LabImagingCardProps> = ({ style }) => {
       </View>
 
       <View style={styles.labFooterRow}>
-        <View style={styles.signatureRow}>
+        <TouchableOpacity
+          style={styles.signatureRow}
+          activeOpacity={0.75}
+          onPress={onVerifySignature}
+        >
           <Ionicons
             name="checkmark-done-circle-outline"
             size={16}
             color={COLORS.primary}
           />
           <Text style={styles.signatureText}>Có chữ ký số bác sĩ CĐHA</Text>
-        </View>
+        </TouchableOpacity>
 
         <View style={styles.labBtnsRow}>
-          <TouchableOpacity style={styles.dicomBtn}>
+          <TouchableOpacity style={styles.dicomBtn} onPress={onViewDicom}>
             <Ionicons name="document-outline" size={14} color={COLORS.primary} />
             <Text style={styles.dicomBtnText}>Xem DICOM</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.pdfBtn}>
+          <TouchableOpacity style={styles.pdfBtn} onPress={onDownloadPdf}>
             <Ionicons name="download-outline" size={14} color="#FFFFFF" />
             <Text style={styles.pdfBtnText}>Bản PDF</Text>
           </TouchableOpacity>
@@ -179,10 +197,12 @@ export const LabImagingCard: React.FC<LabImagingCardProps> = ({ style }) => {
 };
 
 export interface MedicalHistoryTimelineProps {
+  onItemPress?: () => void;
   style?: ViewStyle;
 }
 
 export const MedicalHistoryTimeline: React.FC<MedicalHistoryTimelineProps> = ({
+  onItemPress,
   style,
 }) => {
   const items = [
@@ -222,7 +242,11 @@ export const MedicalHistoryTimeline: React.FC<MedicalHistoryTimelineProps> = ({
             {idx < items.length - 1 && <View style={styles.timelineLine} />}
           </View>
 
-          <View style={[styles.timelineCard, SHADOWS.sm]}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={onItemPress}
+            style={[styles.timelineCard, SHADOWS.sm]}
+          >
             <View style={styles.timelineHeader}>
               <Text style={styles.timelineDate}>{item.date}</Text>
               <Badge label={item.tag} variant="surface" />
@@ -235,7 +259,7 @@ export const MedicalHistoryTimeline: React.FC<MedicalHistoryTimelineProps> = ({
               </Text>
               <Text style={styles.timelineSummaryVal}>{item.summaryValue}</Text>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
       ))}
     </View>
