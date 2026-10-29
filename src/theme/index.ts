@@ -133,3 +133,4 @@ export const SHADOWS: Record<'sm' | 'md' | 'lg', ViewStyle> = {
     },
   }) as ViewStyle,
 };
+
