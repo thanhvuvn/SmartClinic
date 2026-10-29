@@ -168,6 +168,12 @@ export const AppButton: React.FC<AppButtonProps> = ({
     </View>
   );
 
+  const styles_padHorizontal: Record<ButtonSize, number> = {
+    sm: 10,
+    md: 12,
+    lg: 16,
+  };
+
   if (variant === 'gradient') {
     return (
       <TouchableOpacity
@@ -187,7 +193,11 @@ export const AppButton: React.FC<AppButtonProps> = ({
           end={{ x: 1, y: 0 }}
           style={[
             styles.base,
-            { height: heightMap[size], borderRadius: size === 'sm' ? RADIUS.full : RADIUS.md },
+            {
+              height: heightMap[size],
+              paddingHorizontal: styles_padHorizontal[size],
+              borderRadius: size === 'sm' ? RADIUS.full : RADIUS.md,
+            },
           ]}
         >
           {content}
@@ -205,6 +215,7 @@ export const AppButton: React.FC<AppButtonProps> = ({
         styles.base,
         {
           height: heightMap[size],
+          paddingHorizontal: styles_padHorizontal[size],
           borderRadius: variant === 'white' ? RADIUS.full : RADIUS.md,
         },
         getContainerStyle(),
@@ -220,10 +231,11 @@ export const AppButton: React.FC<AppButtonProps> = ({
 
 const styles = StyleSheet.create({
   base: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+    minWidth: 0,
   },
   fullWidth: {
     width: '100%',
@@ -232,16 +244,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    maxWidth: '100%',
+    minWidth: 0,
   },
   text: {
     fontWeight: '700',
     letterSpacing: 0.2,
+    flexShrink: 1,
   },
   leftIcon: {
-    marginRight: 8,
+    marginRight: 6,
   },
   rightIcon: {
-    marginLeft: 8,
+    marginLeft: 6,
   },
   disabled: {
     opacity: 0.5,

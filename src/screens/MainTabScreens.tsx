@@ -218,7 +218,7 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({ onAskAI }) => {
           <View style={styles.ocrIconBox}>
             <Ionicons name="scan-outline" size={20} color="#FFFFFF" />
           </View>
-          <View style={{ flex: 1, marginHorizontal: 12 }}>
+          <View style={{ flex: 1, minWidth: 140, marginHorizontal: 10 }}>
             <Text style={styles.ocrTitle}>Tải lên hồ sơ / Toa thuốc ngoài</Text>
             <Text style={styles.ocrSub}>
               AI OCR tự động nhận diện dữ liệu chuẩn EHR
@@ -288,7 +288,7 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
 
         {/* Need more consultation banner */}
         <View style={styles.moreConsultBanner}>
-          <View style={{ flex: 1, paddingRight: 10 }}>
+          <View style={{ flex: 1, minWidth: 150, paddingRight: 10 }}>
             <Text style={styles.moreConsultTitle}>Cần tư vấn thêm bác sĩ?</Text>
             <Text style={styles.moreConsultSub}>
               Hơn 250+ chuyên gia đầu ngành sẵn sàng phục vụ
@@ -297,7 +297,7 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
           <AppButton
             title="+ Đặt lịch mới"
             variant="primary"
-            size="md"
+            size="sm"
             fullWidth={false}
             onPress={onBookNew}
           />
@@ -659,6 +659,8 @@ const styles = StyleSheet.create({
   ocrCard: {
     flexDirection: 'row',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 8,
     backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.lg,
     padding: 14,
@@ -673,6 +675,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
+    flexShrink: 0,
   },
   ocrTitle: {
     fontSize: 13,
@@ -687,6 +690,8 @@ const styles = StyleSheet.create({
   moreConsultBanner: {
     flexDirection: 'row',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 10,
     backgroundColor: COLORS.surfaceContainer,
     borderRadius: RADIUS.lg,
     padding: 16,
@@ -721,6 +726,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 4,
     marginBottom: 8,
   },
   statIconWrap: {

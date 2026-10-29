@@ -617,7 +617,7 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
         <Text style={styles.docSub}>
           Mã BHYT: {PATIENT_PROFILE.bhytCode} • Nhóm máu: {PATIENT_PROFILE.bloodType}
         </Text>
-        <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
           {PATIENT_PROFILE.vitals.map((v) => (
             <View key={v.label} style={styles.vitalMiniBox}>
               <Text style={styles.vitalMiniLabel}>{v.label}</Text>
@@ -663,7 +663,7 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
         <Text style={styles.rxSectionLabel}>Danh mục thuốc chỉ định:</Text>
         {PRESCRIPTION_DRUGS.map((d) => (
           <View key={d.id} style={styles.rxItemRow}>
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
               <Text style={styles.docName}>{d.name}</Text>
               <Text style={styles.docSub}>
                 {d.dosageTag} • {d.instructionTag}
@@ -1043,7 +1043,8 @@ const styles = StyleSheet.create({
     lineHeight: 17,
   },
   vitalMiniBox: {
-    flex: 1,
+    flexGrow: 1,
+    flexBasis: '46%',
     backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.sm,
     padding: 8,

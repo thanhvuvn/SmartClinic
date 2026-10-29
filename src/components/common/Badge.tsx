@@ -103,19 +103,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: RADIUS.full,
+    maxWidth: '100%',
   },
   dot: {
     width: 6,
     height: 6,
     borderRadius: 3,
     marginRight: 6,
+    flexShrink: 0,
   },
   icon: {
     marginRight: 4,
+    flexShrink: 0,
   },
   label: {
     fontSize: 11,
     fontWeight: '700',
+    flexShrink: 1,
   },
 });
 

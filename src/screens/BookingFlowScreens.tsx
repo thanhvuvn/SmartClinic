@@ -627,17 +627,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 6,
     marginBottom: 10,
   },
   shiftHeaderLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
+    flex: 1,
+    minWidth: 0,
   },
   shiftHeaderTitle: {
     fontSize: 12,
     fontWeight: '700',
     color: COLORS.textPrimary,
+    flexShrink: 1,
   },
   shiftHeaderRight: {
     fontSize: 11,

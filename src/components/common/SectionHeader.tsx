@@ -77,27 +77,32 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 6,
     marginBottom: 12,
   },
   leftCol: {
     flex: 1,
-    paddingRight: 8,
+    minWidth: 180,
+    paddingRight: 4,
   },
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
+    gap: 6,
   },
   leftIcon: {
-    marginRight: 6,
+    marginRight: 2,
   },
   title: {
-    fontSize: 16,
+    fontSize: 15.5,
     fontWeight: '700',
     color: COLORS.textPrimary,
+    flexShrink: 1,
   },
   inlineBadge: {
-    marginLeft: 8,
+    marginLeft: 0,
   },
   subtitle: {
     fontSize: 12,
@@ -107,6 +112,7 @@ const styles = StyleSheet.create({
   actionBtn: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 2,
   },
   actionText: {
     fontSize: 12,

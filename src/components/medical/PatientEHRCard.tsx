@@ -113,7 +113,7 @@ export const VssIDInsuranceCard: React.FC<VssIDInsuranceCardProps> = ({
           <View style={styles.vssidShield}>
             <Ionicons name="shield-checkmark-outline" size={18} color="#86F2E4" />
           </View>
-          <View>
+          <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={styles.vssidType}>BẢO HIỂM Y TẾ ĐIỆN TỬ</Text>
             <Text style={styles.vssidSync}>VssID Đồng bộ thời gian thực</Text>
           </View>
@@ -171,7 +171,7 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
             <Ionicons name="checkmark-circle" size={18} color={COLORS.secondary} />
           </View>
         </View>
-        <View style={{ flex: 1, marginLeft: 12 }}>
+        <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
           <View style={styles.nameRow}>
             <Text style={styles.nameLg}>{profile.name}</Text>
             <Badge label="eKYC" variant="teal" icon="shield-checkmark-outline" />
@@ -263,6 +263,7 @@ const styles = StyleSheet.create({
   },
   identityCol: {
     flex: 1,
+    minWidth: 0,
     marginLeft: 12,
     marginRight: 8,
   },
@@ -276,11 +277,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '800',
     color: COLORS.textPrimary,
+    flexShrink: 1,
   },
   nameLg: {
     fontSize: 16,
     fontWeight: '800',
     color: COLORS.textPrimary,
+    flexShrink: 1,
   },
   patientCode: {
     fontSize: 11.5,
@@ -290,6 +293,7 @@ const styles = StyleSheet.create({
   },
   pillsRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 6,
     marginTop: 6,
   },
@@ -300,6 +304,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     alignItems: 'center',
     justifyContent: 'center',
+    flexShrink: 0,
   },
   qrBoxText: {
     fontSize: 10,
@@ -317,22 +322,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 6,
     marginBottom: 10,
   },
   vitalsHeaderLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
+    flex: 1,
+    minWidth: 0,
   },
   vitalsTitle: {
     fontSize: 10.5,
     fontWeight: '800',
     color: COLORS.textSecondary,
+    flexShrink: 1,
   },
   stableRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+    flexShrink: 0,
   },
   stableDot: {
     width: 6,
@@ -347,29 +358,31 @@ const styles = StyleSheet.create({
   },
   vitalsGrid: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
-    gap: 6,
+    gap: 8,
   },
   vitalItem: {
-    flex: 1,
+    flexGrow: 1,
+    flexBasis: '46%',
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.sm,
     paddingVertical: 8,
-    paddingHorizontal: 4,
+    paddingHorizontal: 8,
     alignItems: 'center',
   },
   vitalLabel: {
-    fontSize: 10,
+    fontSize: 10.5,
     color: COLORS.textSecondary,
   },
   vitalValue: {
-    fontSize: 14,
+    fontSize: 14.5,
     fontWeight: '800',
     color: COLORS.textPrimary,
     marginVertical: 2,
   },
   vitalUnit: {
-    fontSize: 9.5,
+    fontSize: 10,
     fontWeight: '600',
     color: COLORS.secondary,
     textAlign: 'center',
@@ -382,12 +395,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
     marginBottom: 14,
   },
   vssidHeaderLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
+    flex: 1,
+    minWidth: 0,
   },
   vssidShield: {
     width: 36,
@@ -396,6 +413,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.14)',
     alignItems: 'center',
     justifyContent: 'center',
+    flexShrink: 0,
   },
   vssidType: {
     fontSize: 10,
@@ -412,10 +430,10 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.75)',
   },
   vssidCodeValue: {
-    fontSize: 19,
+    fontSize: 18,
     fontWeight: '800',
     color: '#FFFFFF',
-    letterSpacing: 1,
+    letterSpacing: 0.8,
     marginTop: 2,
     marginBottom: 12,
   },
@@ -428,6 +446,8 @@ const styles = StyleSheet.create({
   vssidMetaRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 4,
   },
   vssidMetaKey: {
     fontSize: 11,
@@ -437,6 +457,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '700',
     color: '#FFFFFF',
+    flexShrink: 1,
   },
   vssidBtn: {
     flexDirection: 'row',

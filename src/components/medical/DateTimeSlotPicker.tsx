@@ -305,7 +305,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   slotBtn: {
-    width: '23%',
+    flexGrow: 1,
+    flexBasis: '22%',
     height: 40,
     borderRadius: RADIUS.sm,
     backgroundColor: COLORS.surfaceContainerLow,
@@ -346,6 +347,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
+    flexWrap: 'wrap',
+    gap: 8,
     marginTop: 16,
     paddingTop: 12,
     borderTopWidth: 1,

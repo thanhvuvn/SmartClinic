@@ -138,7 +138,8 @@ const styles = StyleSheet.create({
   },
   leftCol: {
     flex: 1,
-    paddingRight: 12,
+    minWidth: 0,
+    paddingRight: 10,
   },
   topLabelRow: {
     flexDirection: 'row',
@@ -147,6 +148,7 @@ const styles = StyleSheet.create({
   topLabel: {
     fontSize: 11.5,
     color: COLORS.textSecondary,
+    flexShrink: 1,
   },
   priceRow: {
     flexDirection: 'row',
@@ -163,7 +165,7 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
   },
   ctaBtn: {
-    minWidth: 155,
+    minWidth: 135,
   },
   stepContainer: {
     flexDirection: 'row',

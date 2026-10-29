@@ -54,7 +54,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             <Ionicons name="checkmark-circle" size={16} color={COLORS.primary} />
           </View>
         </View>
-        <View style={{ flex: 1, marginLeft: 12 }}>
+        <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
           <Text style={styles.doctorName}>{doctor.name}</Text>
           <Text style={styles.specialty}>{doctor.degree}</Text>
           <Text style={styles.hospital}>{doctor.hospital}</Text>
@@ -69,7 +69,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             size={18}
             color={COLORS.primary}
           />
-          <View style={{ marginLeft: 8 }}>
+          <View style={{ flex: 1, minWidth: 0, marginLeft: 8 }}>
             <Text style={styles.timeBoxLabel}>
               {isClinic ? 'Thời gian khám' : 'Thời gian hẹn'}
             </Text>
@@ -105,7 +105,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
           </View>
 
           <View style={styles.qrCodeRow}>
-            <View>
+            <View style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
               <Text style={styles.codeLabel}>MÃ PHIẾU HẸN</Text>
               <Text style={styles.codeValue}>{appointment.code}</Text>
             </View>
@@ -175,6 +175,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 6,
     marginBottom: 12,
   },
   doctorRow: {
@@ -217,6 +219,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
     backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.md,
     paddingHorizontal: 12,
@@ -226,6 +230,8 @@ const styles = StyleSheet.create({
   timeLeft: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
+    minWidth: 150,
   },
   timeBoxLabel: {
     fontSize: 11,
@@ -240,6 +246,7 @@ const styles = StyleSheet.create({
   queueRight: {
     flexDirection: 'row',
     alignItems: 'center',
+    flexShrink: 0,
   },
   queueNumber: {
     fontSize: 15,
@@ -254,6 +261,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: RADIUS.full,
     gap: 5,
+    flexShrink: 0,
   },
   waitingRoomText: {
     fontSize: 11.5,
@@ -270,11 +278,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: COLORS.textPrimary,
     fontWeight: '600',
+    flex: 1,
   },
   qrCodeRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
     backgroundColor: COLORS.surfaceContainer,
     borderRadius: RADIUS.md,
     paddingHorizontal: 12,
@@ -300,6 +311,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: RADIUS.full,
     gap: 5,
+    flexShrink: 0,
   },
   qrBtnText: {
     fontSize: 11.5,
@@ -308,12 +320,14 @@ const styles = StyleSheet.create({
   },
   actionRow: {
     flexDirection: 'row',
-    gap: 10,
+    gap: 8,
   },
   videoFooterRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
     paddingTop: 4,
   },
   cancelLink: {

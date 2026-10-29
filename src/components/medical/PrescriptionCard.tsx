@@ -37,13 +37,13 @@ export const ActivePrescriptionCard: React.FC<ActivePrescriptionCardProps> = ({
       {/* Doctor & Prescription Code */}
       <View style={styles.headerRow}>
         <Image source={{ uri: doctor.avatar }} style={styles.docAvatar} />
-        <View style={{ flex: 1, marginHorizontal: 10 }}>
+        <View style={{ flex: 1, minWidth: 0, marginHorizontal: 10 }}>
           <Text style={styles.docName}>{doctor.name}</Text>
           <Text style={styles.docSub}>
             Chuyên khoa {doctor.specialty} • BV ĐHYD
           </Text>
         </View>
-        <View style={{ alignItems: 'flex-end' }}>
+        <View style={{ alignItems: 'flex-end', flexShrink: 0 }}>
           <Text style={styles.rxCode}>{prescriptionCode}</Text>
           <Text style={styles.rxDate}>{date}</Text>
         </View>
@@ -56,7 +56,7 @@ export const ActivePrescriptionCard: React.FC<ActivePrescriptionCardProps> = ({
             <View style={styles.drugIconWrap}>
               <Ionicons name="medkit-outline" size={15} color={COLORS.primary} />
             </View>
-            <View style={{ flex: 1, marginRight: 8 }}>
+            <View style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
               <Text style={styles.drugName}>{drug.name}</Text>
               <Text style={styles.drugIndication}>{drug.indication}</Text>
             </View>
@@ -92,7 +92,7 @@ export const ActivePrescriptionCard: React.FC<ActivePrescriptionCardProps> = ({
       <View style={styles.reminderBar}>
         <View style={styles.reminderLeft}>
           <Ionicons name="alarm-outline" size={18} color={COLORS.secondary} />
-          <View style={{ marginLeft: 8 }}>
+          <View style={{ flex: 1, minWidth: 0, marginLeft: 8 }}>
             <Text style={styles.reminderTitle}>Nhắc uống thuốc</Text>
             <Text style={styles.reminderSub}>Đã bật lịch 08:00 & 21:00</Text>
           </View>
@@ -117,7 +117,7 @@ export const ActivePrescriptionCard: React.FC<ActivePrescriptionCardProps> = ({
           size="md"
           leftIcon="bicycle-outline"
           fullWidth={false}
-          style={{ flex: 1.25 }}
+          style={{ flex: 1.3 }}
           onPress={onBuyMedicine}
         />
       </View>
@@ -136,11 +136,13 @@ export const LabImagingCard: React.FC<LabImagingCardProps> = ({ style }) => {
         <View style={styles.labIconCircle}>
           <Ionicons name="scan-outline" size={18} color={COLORS.primary} />
         </View>
-        <View style={{ flex: 1, marginHorizontal: 10 }}>
-          <Badge label="Chẩn đoán hình ảnh" variant="surface" />
+        <View style={{ flex: 1, minWidth: 0, marginLeft: 10 }}>
+          <View style={styles.labBadgesRow}>
+            <Badge label="Chẩn đoán hình ảnh" variant="surface" />
+            <Badge label="Bình thường" variant="teal" />
+          </View>
           <Text style={styles.labTitle}>Chụp MRI Sọ não (Không cản từ)</Text>
         </View>
-        <Badge label="Bình thường" variant="teal" />
       </View>
 
       <View style={styles.conclusionBox}>
@@ -313,16 +315,17 @@ const styles = StyleSheet.create({
     fontSize: 11.5,
     fontWeight: '700',
     color: COLORS.textSecondary,
+    flexShrink: 0,
   },
   drugTagsRow: {
     flexDirection: 'row',
-    gap: 8,
-    marginLeft: 36,
+    flexWrap: 'wrap',
+    gap: 6,
   },
   dosageChip: {
     backgroundColor: COLORS.surface,
     paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingVertical: 5,
     borderRadius: RADIUS.xs,
   },
   dosageChipText: {
@@ -333,9 +336,10 @@ const styles = StyleSheet.create({
   instructionChip: {
     backgroundColor: COLORS.surface,
     paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingVertical: 5,
     borderRadius: RADIUS.xs,
-    flex: 1,
+    flexShrink: 1,
+    maxWidth: '100%',
   },
   instructionChipText: {
     fontSize: 11,
@@ -346,6 +350,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
     backgroundColor: '#F0FDF4',
     borderRadius: RADIUS.md,
     paddingHorizontal: 12,
@@ -355,6 +361,8 @@ const styles = StyleSheet.create({
   reminderLeft: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
+    minWidth: 0,
   },
   reminderTitle: {
     fontSize: 12.5,
@@ -367,12 +375,18 @@ const styles = StyleSheet.create({
   },
   actionRow: {
     flexDirection: 'row',
-    gap: 10,
+    gap: 8,
   },
   labTopRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: 12,
+  },
+  labBadgesRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 6,
   },
   labIconCircle: {
     width: 38,
@@ -381,12 +395,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surfaceContainerLow,
     alignItems: 'center',
     justifyContent: 'center',
+    flexShrink: 0,
   },
   labTitle: {
     fontSize: 14,
     fontWeight: '800',
     color: COLORS.textPrimary,
-    marginTop: 4,
+    marginTop: 6,
   },
   conclusionBox: {
     backgroundColor: COLORS.surfaceContainerLow,
@@ -409,12 +424,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 10,
   },
   signatureRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    flex: 1,
+    flexShrink: 1,
   },
   signatureText: {
     fontSize: 11,
@@ -423,6 +440,7 @@ const styles = StyleSheet.create({
   },
   labBtnsRow: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
   },
   dicomBtn: {
@@ -483,6 +501,7 @@ const styles = StyleSheet.create({
   },
   timelineCard: {
     flex: 1,
+    minWidth: 0,
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.lg,
     padding: 14,
@@ -495,6 +514,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 6,
     marginBottom: 6,
   },
   timelineDate: {

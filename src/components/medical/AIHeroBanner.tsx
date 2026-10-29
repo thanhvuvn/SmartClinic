@@ -184,6 +184,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 6,
     marginBottom: 12,
   },
   readyText: {
@@ -207,6 +209,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 10,
   },
   askBtn: {
     paddingHorizontal: 18,
@@ -238,23 +242,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
+    flexShrink: 0,
   },
   promoContent: {
     flex: 1,
+    minWidth: 0,
     paddingRight: 8,
   },
   promoHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 6,
     marginBottom: 4,
   },
   promoTitle: {
     fontSize: 14,
     fontWeight: '700',
     color: COLORS.textPrimary,
-    flex: 1,
-    marginRight: 6,
+    flexShrink: 1,
   },
   promoSub: {
     fontSize: 11.5,
@@ -268,6 +275,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surfaceContainer,
     alignItems: 'center',
     justifyContent: 'center',
+    flexShrink: 0,
   },
   reminderCard: {
     flexDirection: 'row',
@@ -285,13 +293,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
+    flexShrink: 0,
   },
   reminderContent: {
     flex: 1,
+    minWidth: 0,
   },
   reminderTopRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    flexWrap: 'wrap',
     marginBottom: 4,
   },
   reminderBadgeText: {
@@ -331,13 +342,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
     marginBottom: 10,
   },
   insightLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-    marginRight: 8,
+    minWidth: 170,
   },
   insightIconBox: {
     width: 34,
@@ -347,6 +360,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
+    flexShrink: 0,
   },
   insightTitle: {
     fontSize: 14,

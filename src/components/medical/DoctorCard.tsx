@@ -143,7 +143,7 @@ export const DoctorProfileHeaderCard: React.FC<DoctorProfileHeaderCardProps> = (
       <View style={styles.feeBanner}>
         <View style={styles.feeBannerLeft}>
           <Ionicons name="shield-checkmark-outline" size={18} color={COLORS.primary} />
-          <View style={{ marginLeft: 8 }}>
+          <View style={{ flex: 1, minWidth: 0, marginLeft: 8 }}>
             <Text style={styles.feeTitle}>Phí tư vấn chuyên sâu</Text>
             <Text style={styles.feeSub}>{doctor.bhytSupport}</Text>
           </View>
@@ -172,7 +172,7 @@ export const BookingDoctorSummaryCard: React.FC<BookingDoctorSummaryCardProps> =
             <Ionicons name="checkmark-circle" size={15} color={COLORS.secondary} />
           </View>
         </View>
-        <View style={{ flex: 1, marginLeft: 12 }}>
+        <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
           <Text style={styles.doctorNameLg}>{doctor.name}</Text>
           <Text style={styles.degreeText}>{doctor.degree}</Text>
           <Text style={styles.degreeHospitalText}>{doctor.hospital}</Text>
@@ -196,7 +196,7 @@ export const BookingDoctorSummaryCard: React.FC<BookingDoctorSummaryCardProps> =
           <Ionicons name="location-outline" size={15} color={COLORS.primary} />
           <Text style={styles.summaryLocationText}>Cơ sở 1 - ĐHYD TP.HCM</Text>
         </View>
-        <View style={{ alignItems: 'flex-end' }}>
+        <View style={{ alignItems: 'flex-end', flexShrink: 0 }}>
           <Text style={styles.feePrice}>{doctor.fee}</Text>
           <Text style={styles.feeSub}>Hỗ trợ BHYT</Text>
         </View>
@@ -226,7 +226,7 @@ export const PatientReviewCard: React.FC<PatientReviewCardProps> = ({
         <View style={[styles.initialsCircle, { backgroundColor: initialsBg }]}>
           <Text style={styles.initialsText}>{initials}</Text>
         </View>
-        <View style={{ flex: 1, marginHorizontal: 10 }}>
+        <View style={{ flex: 1, minWidth: 0, marginHorizontal: 10 }}>
           <Text style={styles.reviewAuthor}>{authorName}</Text>
           <Text style={styles.reviewMeta}>{metaText}</Text>
         </View>
@@ -243,17 +243,18 @@ export const PatientReviewCard: React.FC<PatientReviewCardProps> = ({
 
 const styles = StyleSheet.create({
   featuredCard: {
-    width: 245,
+    width: 260,
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.lg,
     padding: 14,
     marginRight: 12,
     borderWidth: 1,
     borderColor: '#F1F5F9',
+    justifyContent: 'space-between',
   },
   featuredTopRow: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: 10,
   },
   avatarContainer: {
@@ -274,6 +275,7 @@ const styles = StyleSheet.create({
   },
   featuredInfo: {
     flex: 1,
+    minWidth: 0,
     marginLeft: 10,
   },
   specialtyMeta: {
@@ -296,6 +298,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 4,
     backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.sm,
     paddingHorizontal: 10,
@@ -353,6 +357,7 @@ const styles = StyleSheet.create({
   },
   profileInfoCol: {
     flex: 1,
+    minWidth: 0,
   },
   badgesWrap: {
     flexDirection: 'row',
@@ -390,11 +395,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.md,
     paddingVertical: 10,
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     marginBottom: 12,
   },
   statCol: {
     flex: 1,
+    minWidth: 0,
+    paddingHorizontal: 2,
     alignItems: 'center',
   },
   statDivider: {
@@ -408,19 +415,22 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   statVal: {
-    fontSize: 14,
+    fontSize: 13.5,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   statLabel: {
-    fontSize: 10.5,
+    fontSize: 10,
     color: COLORS.textSecondary,
     marginTop: 2,
+    textAlign: 'center',
   },
   feeBanner: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
     backgroundColor: '#E8F3FF',
     borderRadius: RADIUS.md,
     paddingHorizontal: 12,
@@ -429,6 +439,8 @@ const styles = StyleSheet.create({
   feeBannerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
+    minWidth: 160,
   },
   feeTitle: {
     fontSize: 11.5,
@@ -444,6 +456,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '800',
     color: COLORS.primary,
+    flexShrink: 0,
   },
   summaryCard: {
     backgroundColor: COLORS.surface,
@@ -465,6 +478,7 @@ const styles = StyleSheet.create({
   },
   summaryPillsRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 6,
     marginTop: 8,
   },
@@ -472,17 +486,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
     paddingTop: 10,
   },
   summaryLocationRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+    flex: 1,
+    minWidth: 0,
   },
   summaryLocationText: {
     fontSize: 12,
     color: COLORS.textSecondary,
     fontWeight: '600',
+    flexShrink: 1,
   },
   reviewCard: {
     backgroundColor: COLORS.surfaceContainerLow,
@@ -501,6 +520,7 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     alignItems: 'center',
     justifyContent: 'center',
+    flexShrink: 0,
   },
   initialsText: {
     fontSize: 12,
@@ -520,6 +540,7 @@ const styles = StyleSheet.create({
   starsRow: {
     flexDirection: 'row',
     gap: 2,
+    flexShrink: 0,
   },
   reviewComment: {
     fontSize: 12,
