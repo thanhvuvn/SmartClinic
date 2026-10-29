@@ -35,41 +35,73 @@ import {
   AdminDashboardScreen,
   DoctorDashboardScreen,
 } from './src/screens/RoleDashboards';
-
-type ScreenRoute =
-  | 'showcase'
-  | 'splash'
-  | 'login'
-  | 'register'
-  | 'main'
-  | 'doctorPortal'
-  | 'adminPortal'
-  | 'doctorDetail'
-  | 'bookingSlot';
+import {
+  BookingSuccessScreen,
+  FamilyProfilesScreen,
+  ChildEHRDetailScreen,
+  AddEditFamilyMemberScreen,
+  TeleconsultationScreen,
+  LabAndImagingResultsScreen,
+} from './src/screens/TelehealthAndFamilyScreens';
+import {
+  MedicationLogScreen,
+  PrescriptionDetailScreen,
+  FirstDoseLockscreenAlertScreen,
+  FamilyMedicineCabinetScreen,
+  HomeMedicineDeliveryScreen,
+  LiveDeliveryTrackingScreen,
+  DeliveryHandoverUnsealScreen,
+  RefillHistoryAndBHYTScreen,
+} from './src/screens/PharmacyAndMedicationScreens';
+import {
+  PostConsultSummarySignedRxScreen,
+  DigitalCertAndXMLInspectorScreen,
+  ElectronicVATInvoiceScreen,
+  DownloadSuccessA4PreviewScreen,
+  FullTaxDossierBundleScreen,
+  GDTTaxPortalReconcileScreen,
+  NEACPublicPKILookupScreen,
+  NEACAuditReportPage1Screen,
+  NEACAuditReportPage2Screen,
+} from './src/screens/PKIAndTaxInvoiceScreens';
+import {
+  PrintAndShareHistoryScreen,
+  AccountingEmailReceiptDetailScreen,
+  GatewaySignedReceiptPDFScreen,
+  AirPrintOptionsModalScreen,
+  AvailablePrintersListScreen,
+  PrintSpoolingProgressScreen,
+  SendTaxAccountingEmailScreen,
+  PrintReceiptAndPKILogScreen,
+  PrintCompletedReceiptScreen,
+  EmailSentAuditSuccessScreen,
+} from './src/screens/PrintAndAccountingEmailScreens';
+import { FigmaDirectoryScreen } from './src/screens/FigmaDirectoryScreen';
 
 const QUICK_ROUTES: {
   key: string;
   label: string;
-  route: ScreenRoute;
+  route: string;
   tab?: MainTabKey;
 }[] = [
+  { key: 'dir', label: '🗂️ Tất cả 43 Màn Figma', route: 'directory' },
   { key: 'login', label: '🔐 Đăng nhập (3 Quyền)', route: 'login' },
   { key: 'admin', label: '🛡️ Admin Portal', route: 'adminPortal' },
   { key: 'doctor', label: '👨‍⚕️ Bác sĩ Portal', route: 'doctorPortal' },
-  { key: 'home', label: '🏠 Bệnh nhân (Trang chủ)', route: 'main', tab: 'home' },
+  { key: 'home', label: '🏠 Trang chủ', route: 'main', tab: 'home' },
   { key: 'uikit', label: '🧩 UI Kit Components', route: 'showcase' },
-  { key: 'doc', label: '🩺 Chi tiết BS', route: 'doctorDetail' },
-  { key: 'slot', label: '📅 Chọn lịch', route: 'bookingSlot' },
-  { key: 'apts', label: '📋 Lịch khám', route: 'main', tab: 'appointments' },
-  { key: 'ehr', label: '📁 Bệnh án EHR', route: 'main', tab: 'records' },
-  { key: 'ai', label: '✨ AI Assistant', route: 'main', tab: 'ai' },
-  { key: 'profile', label: '👤 Cá nhân', route: 'main', tab: 'profile' },
-  { key: 'register', label: '📝 Đăng ký', route: 'register' },
-  { key: 'splash', label: '🚀 Splash', route: 'splash' },
+  { key: 'bookSuccess', label: '✅ Đặt lịch thành công', route: 'bookingSuccess' },
+  { key: 'tele', label: '📹 Video Call BS. Trang', route: 'teleconsult' },
+  { key: 'family', label: '👨‍👩‍👧 Hồ sơ Người thân', route: 'familyProfiles' },
+  { key: 'medLog', label: '💊 Nhật ký uống thuốc', route: 'medLog' },
+  { key: 'delivery', label: '🛵 Giao thuốc tận nhà', route: 'homeDelivery' },
+  { key: 'vat', label: '🧾 Hóa đơn VAT & PKI', route: 'vatInvoice' },
+  { key: 'neac', label: '🏛️ Thẩm định NEAC', route: 'neacPublicLookup' },
+  { key: 'airprint', label: '🖨️ AirPrint & Kế toán', route: 'airPrintOptions' },
 ];
 
 export default function App() {
-  const [route, setRoute] = useState<ScreenRoute>('login');
+  const [route, setRoute] = useState<string>('login');
   const [activeTab, setActiveTab] = useState<MainTabKey>('home');
   const [selectedDoctor, setSelectedDoctor] = useState<DoctorItem>(DOCTORS[0]);
   const [showDevBar, setShowDevBar] = useState(true);
@@ -95,8 +127,25 @@ export default function App() {
     }
   };
 
+  const handleSelectDirectoryRoute = (routeKey: string) => {
+    if (routeKey.startsWith('tab_')) {
+      const tabName = routeKey.replace('tab_', '') as MainTabKey;
+      setRoute('main');
+      setActiveTab(tabName);
+    } else {
+      setRoute(routeKey);
+    }
+  };
+
   const renderCurrentScreen = () => {
     switch (route) {
+      case 'directory':
+        return (
+          <FigmaDirectoryScreen
+            onSelectScreen={handleSelectDirectoryRoute}
+            onClose={() => setRoute('main')}
+          />
+        );
       case 'showcase':
         return <ComponentShowcaseScreen onClose={() => setRoute('main')} />;
       case 'splash':
@@ -136,12 +185,239 @@ export default function App() {
           <BookingSlotScreen
             doctor={selectedDoctor}
             onBack={() => setRoute('doctorDetail')}
-            onConfirmBooking={() => {
+            onConfirmBooking={() => setRoute('bookingSuccess')}
+          />
+        );
+
+      // Telehealth, Booking Success & Family Profiles (6 screens)
+      case 'bookingSuccess':
+        return (
+          <BookingSuccessScreen
+            onViewAppointments={() => {
               setRoute('main');
               setActiveTab('appointments');
             }}
+            onGoHome={() => {
+              setRoute('main');
+              setActiveTab('home');
+            }}
           />
         );
+      case 'familyProfiles':
+        return (
+          <FamilyProfilesScreen
+            onBack={() => setRoute('main')}
+            onSelectChild={() => setRoute('childEHR')}
+            onAddMember={() => setRoute('addFamilyMember')}
+          />
+        );
+      case 'childEHR':
+        return (
+          <ChildEHRDetailScreen onBack={() => setRoute('familyProfiles')} />
+        );
+      case 'addFamilyMember':
+        return (
+          <AddEditFamilyMemberScreen
+            onBack={() => setRoute('familyProfiles')}
+          />
+        );
+      case 'teleconsult':
+        return (
+          <TeleconsultationScreen
+            onBack={() => setRoute('postConsultSummary')}
+          />
+        );
+      case 'labImagingResults':
+        return <LabAndImagingResultsScreen onBack={() => setRoute('main')} />;
+
+      // Pharmacy & Medication Adherence (8 screens)
+      case 'medLog':
+        return (
+          <MedicationLogScreen
+            onBack={() => setRoute('main')}
+            onOpenPrescription={() => setRoute('rxDetail')}
+          />
+        );
+      case 'rxDetail':
+        return (
+          <PrescriptionDetailScreen
+            onBack={() => setRoute('medLog')}
+            onOrderDelivery={() => setRoute('homeDelivery')}
+          />
+        );
+      case 'firstDoseAlert':
+        return (
+          <FirstDoseLockscreenAlertScreen
+            onConfirmTaken={() => setRoute('medLog')}
+            onBack={() => setRoute('directory')}
+          />
+        );
+      case 'medicineCabinet':
+        return (
+          <FamilyMedicineCabinetScreen
+            onBack={() => setRoute('directory')}
+            onRefillNow={() => setRoute('homeDelivery')}
+          />
+        );
+      case 'homeDelivery':
+        return (
+          <HomeMedicineDeliveryScreen
+            onBack={() => setRoute('rxDetail')}
+            onTrackDelivery={() => setRoute('liveDelivery')}
+          />
+        );
+      case 'liveDelivery':
+        return (
+          <LiveDeliveryTrackingScreen
+            onBack={() => setRoute('homeDelivery')}
+            onOpenHandover={() => setRoute('deliveryHandover')}
+          />
+        );
+      case 'deliveryHandover':
+        return (
+          <DeliveryHandoverUnsealScreen
+            onBack={() => setRoute('refillBHYT')}
+          />
+        );
+      case 'refillBHYT':
+        return (
+          <RefillHistoryAndBHYTScreen
+            onBack={() => setRoute('directory')}
+            onOpenVATInvoice={() => setRoute('vatInvoice')}
+          />
+        );
+
+      // PKI, NEAC & Tax Invoices (9 screens)
+      case 'postConsultSummary':
+        return (
+          <PostConsultSummarySignedRxScreen
+            onBack={() => setRoute('directory')}
+            onOpenXMLCert={() => setRoute('digitalCertXML')}
+          />
+        );
+      case 'digitalCertXML':
+        return (
+          <DigitalCertAndXMLInspectorScreen
+            onBack={() => setRoute('postConsultSummary')}
+            onOpenNEACLookup={() => setRoute('neacPublicLookup')}
+          />
+        );
+      case 'vatInvoice':
+        return (
+          <ElectronicVATInvoiceScreen
+            onBack={() => setRoute('directory')}
+            onOpenGDTTax={() => setRoute('gdtTaxPortal')}
+          />
+        );
+      case 'downloadA4Preview':
+        return (
+          <DownloadSuccessA4PreviewScreen
+            onBack={() => setRoute('fullTaxDossier')}
+            onOpenPrintOptions={() => setRoute('airPrintOptions')}
+          />
+        );
+      case 'fullTaxDossier':
+        return (
+          <FullTaxDossierBundleScreen
+            onBack={() => setRoute('directory')}
+            onDownloadSuccess={() => setRoute('downloadA4Preview')}
+          />
+        );
+      case 'gdtTaxPortal':
+        return (
+          <GDTTaxPortalReconcileScreen onBack={() => setRoute('vatInvoice')} />
+        );
+      case 'neacPublicLookup':
+        return (
+          <NEACPublicPKILookupScreen
+            onBack={() => setRoute('directory')}
+            onOpenReportPage1={() => setRoute('neacReportP1')}
+          />
+        );
+      case 'neacReportP1':
+        return (
+          <NEACAuditReportPage1Screen
+            onBack={() => setRoute('neacPublicLookup')}
+            onOpenPage2={() => setRoute('neacReportP2')}
+          />
+        );
+      case 'neacReportP2':
+        return (
+          <NEACAuditReportPage2Screen
+            onBack={() => setRoute('neacReportP1')}
+            onOpenAirPrint={() => setRoute('airPrintOptions')}
+          />
+        );
+
+      // AirPrint & Accounting Email (10 screens)
+      case 'printShareHistory':
+        return (
+          <PrintAndShareHistoryScreen
+            onBack={() => setRoute('directory')}
+            onOpenEmailReceipt={() => setRoute('accountingEmailReceipt')}
+          />
+        );
+      case 'accountingEmailReceipt':
+        return (
+          <AccountingEmailReceiptDetailScreen
+            onBack={() => setRoute('printShareHistory')}
+            onOpenGatewayPDF={() => setRoute('gatewaySignedPDF')}
+          />
+        );
+      case 'gatewaySignedPDF':
+        return (
+          <GatewaySignedReceiptPDFScreen
+            onBack={() => setRoute('accountingEmailReceipt')}
+          />
+        );
+      case 'airPrintOptions':
+        return (
+          <AirPrintOptionsModalScreen
+            onBack={() => setRoute('directory')}
+            onSelectPrinter={() => setRoute('availablePrinters')}
+            onStartPrint={() => setRoute('printSpooling')}
+          />
+        );
+      case 'availablePrinters':
+        return (
+          <AvailablePrintersListScreen
+            onBack={() => setRoute('airPrintOptions')}
+            onConfirmPrinter={() => setRoute('airPrintOptions')}
+          />
+        );
+      case 'printSpooling':
+        return (
+          <PrintSpoolingProgressScreen
+            onBack={() => setRoute('airPrintOptions')}
+            onFinishPrint={() => setRoute('printCompleted')}
+          />
+        );
+      case 'sendTaxEmail':
+        return (
+          <SendTaxAccountingEmailScreen
+            onBack={() => setRoute('printPKILog')}
+            onSendSuccess={() => setRoute('emailSentSuccess')}
+          />
+        );
+      case 'printPKILog':
+        return (
+          <PrintReceiptAndPKILogScreen
+            onBack={() => setRoute('printCompleted')}
+            onSendEmail={() => setRoute('sendTaxEmail')}
+          />
+        );
+      case 'printCompleted':
+        return (
+          <PrintCompletedReceiptScreen
+            onBack={() => setRoute('printSpooling')}
+            onOpenPKILog={() => setRoute('printPKILog')}
+          />
+        );
+      case 'emailSentSuccess':
+        return (
+          <EmailSentAuditSuccessScreen onBack={() => setRoute('directory')} />
+        );
+
       case 'main':
       default:
         return (
@@ -186,7 +462,6 @@ export default function App() {
         <StatusBar barStyle="dark-content" />
 
         <View style={styles.responsiveShell}>
-          {/* Quick Figma Screen / Component Switcher Bar for Demo */}
           {showDevBar ? (
             <View style={styles.devBar}>
               <ScrollView
@@ -235,7 +510,7 @@ export default function App() {
               onPress={() => setShowDevBar(true)}
             >
               <Ionicons name="layers-outline" size={14} color="#FFFFFF" />
-              <Text style={styles.floatingShowDevText}>Figma Menu</Text>
+              <Text style={styles.floatingShowDevText}>43 Màn Figma</Text>
             </TouchableOpacity>
           )}
 
