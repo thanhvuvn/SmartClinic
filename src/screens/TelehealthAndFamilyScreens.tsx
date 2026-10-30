@@ -335,8 +335,8 @@ export const FamilyProfilesScreen: React.FC<{
               </Text>
               <Badge label={mem.badge} variant="blue" />
             </View>
-            <Text style={styles.docSub} numberOfLines={1}>
-              {mem.relation} • Mã EHR: {mem.code} • Nhóm máu {mem.blood}
+            <Text style={styles.docSub}>
+              {mem.relation} • {mem.code} • Nhóm máu {mem.blood}
             </Text>
             <View style={styles.memberNoteBox}>
               <Ionicons
@@ -386,8 +386,8 @@ export const ChildEHRDetailScreen: React.FC<{ onBack?: () => void }> = ({
               <Text style={styles.docName} numberOfLines={1}>
                 Nguyễn Bảo Nam
               </Text>
-              <Text style={styles.docSub} numberOfLines={1}>
-                Nam (18/09/2020) • Nhóm máu O+ • Chủ hộ: Vũ
+              <Text style={styles.docSub}>
+                Nam (18/09/2020) • Nhóm máu O+
               </Text>
             </View>
             <Badge label="Chuẩn WHO" variant="teal" />
@@ -447,7 +447,7 @@ export const ChildEHRDetailScreen: React.FC<{ onBack?: () => void }> = ({
           <SectionHeader
             title="Lịch Tiêm Chủng Mở Rộng & Dịch Vụ"
             leftIcon="shield-checkmark-outline"
-            badgeText="Sắp tới (5 ngày)"
+            badgeText="Sắp tới"
             badgeVariant="warning"
           />
           <View style={styles.memberNoteBox}>
@@ -504,7 +504,17 @@ export const AddEditFamilyMemberScreen: React.FC<{ onBack?: () => void }> = ({
   const [name, setName] = useState('NGUYỄN BẢO ANH');
   const [dob, setDob] = useState('18/06/2019');
   const [relation, setRelation] = useState('Con cái');
+  const [showRelationDropdown, setShowRelationDropdown] = useState(false);
   const [bhyt, setBhyt] = useState('TE1 79 234 99102');
+
+  const RELATION_OPTIONS = [
+    'Bố ruột',
+    'Mẹ ruột',
+    'Vợ / Chồng',
+    'Con cái',
+    'Ông / Bà',
+    'Khác',
+  ];
 
   return (
     <View style={styles.screen}>
@@ -539,29 +549,75 @@ export const AddEditFamilyMemberScreen: React.FC<{ onBack?: () => void }> = ({
           />
         </LinearGradient>
 
-        {/* Relationship Selector */}
+        {/* Relationship 1-Row Dropdown Selector */}
         <SectionHeader title="Mối quan hệ với bạn *" />
-        <View style={styles.chipsWrap}>
-          {['Bố ruột', 'Mẹ ruột', 'Vợ / Chồng', 'Con cái', 'Ông / Bà', 'Khác'].map(
-            (rel) => {
-              const active = relation === rel;
-              return (
-                <TouchableOpacity
-                  key={rel}
-                  onPress={() => setRelation(rel)}
-                  style={[styles.relChip, active && styles.relChipActive]}
-                >
-                  <Text
+        <View style={styles.dropdownWrap}>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => setShowRelationDropdown((prev) => !prev)}
+            style={[
+              styles.dropdownTrigger,
+              SHADOWS.sm,
+              showRelationDropdown && styles.dropdownTriggerActive,
+            ]}
+          >
+            <View style={styles.dropdownTriggerLeft}>
+              <Ionicons
+                name="people-outline"
+                size={18}
+                color={COLORS.primary}
+              />
+              <Text style={styles.dropdownValueText} numberOfLines={1}>
+                {relation}
+              </Text>
+            </View>
+            <Ionicons
+              name={showRelationDropdown ? 'chevron-up' : 'chevron-down'}
+              size={18}
+              color={COLORS.textSecondary}
+            />
+          </TouchableOpacity>
+
+          {showRelationDropdown && (
+            <View style={[styles.dropdownMenu, SHADOWS.sm]}>
+              {RELATION_OPTIONS.map((rel, idx) => {
+                const active = relation === rel;
+                return (
+                  <TouchableOpacity
+                    key={rel}
+                    activeOpacity={0.8}
+                    onPress={() => {
+                      setRelation(rel);
+                      setShowRelationDropdown(false);
+                    }}
                     style={[
-                      styles.relChipText,
-                      active && styles.relChipTextActive,
+                      styles.dropdownOptionRow,
+                      idx === RELATION_OPTIONS.length - 1 && {
+                        borderBottomWidth: 0,
+                      },
+                      active && styles.dropdownOptionRowActive,
                     ]}
                   >
-                    {rel}
-                  </Text>
-                </TouchableOpacity>
-              );
-            }
+                    <Text
+                      style={[
+                        styles.dropdownOptionText,
+                        active && styles.dropdownOptionTextActive,
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {rel}
+                    </Text>
+                    {active && (
+                      <Ionicons
+                        name="checkmark-circle"
+                        size={18}
+                        color={COLORS.primary}
+                      />
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
           )}
         </View>
 
@@ -588,7 +644,7 @@ export const AddEditFamilyMemberScreen: React.FC<{ onBack?: () => void }> = ({
         </View>
 
         <AppButton
-          title="Lưu & Đồng bộ Hồ sơ Người thân"
+          title="Lưu hồ sơ người thân"
           variant="primary"
           size="lg"
           leftIcon="checkmark-circle-outline"
@@ -922,7 +978,7 @@ export const PostConsultSummaryScreen: React.FC<{
 
         {/* Next Actions */}
         <AppButton
-          title="Xem Chi Tiết Đơn Thuốc & Cách Dùng"
+          title="Xem chi tiết đơn thuốc"
           variant="primary"
           size="lg"
           leftIcon="document-text-outline"
@@ -930,7 +986,7 @@ export const PostConsultSummaryScreen: React.FC<{
           style={{ marginBottom: 10 }}
         />
         <AppButton
-          title="Mở Lịch Nhắc Uống Thuốc Hàng Ngày"
+          title="Mở lịch nhắc uống thuốc"
           variant="secondary"
           size="lg"
           leftIcon="alarm-outline"
@@ -1284,25 +1340,64 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 14,
   },
-  relChip: {
+  dropdownWrap: {
+    marginBottom: 14,
+  },
+  dropdownTrigger: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: 48,
     paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: RADIUS.full,
     backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.md,
     borderWidth: 1,
     borderColor: '#E2E8F0',
   },
-  relChipActive: {
-    backgroundColor: COLORS.primary,
+  dropdownTriggerActive: {
     borderColor: COLORS.primary,
   },
-  relChipText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: COLORS.textSecondary,
+  dropdownTriggerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    flex: 1,
+    minWidth: 0,
   },
-  relChipTextActive: {
-    color: '#FFFFFF',
+  dropdownValueText: {
+    fontSize: 13.5,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+    flexShrink: 1,
+  },
+  dropdownMenu: {
+    marginTop: 6,
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.md,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    overflow: 'hidden',
+  },
+  dropdownOptionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+  },
+  dropdownOptionRowActive: {
+    backgroundColor: COLORS.surfaceContainerLow,
+  },
+  dropdownOptionText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
+  },
+  dropdownOptionTextActive: {
+    fontWeight: '800',
+    color: COLORS.primary,
   },
   chatRow: {
     flexDirection: 'row',

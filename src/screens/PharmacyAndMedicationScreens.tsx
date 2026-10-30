@@ -282,7 +282,7 @@ export const PrescriptionDetailScreen: React.FC<{
         ))}
 
         <AppButton
-          title="Mở Lịch Nhắc Uống Thuốc Hàng Ngày"
+          title="Mở lịch nhắc uống thuốc"
           variant="primary"
           size="lg"
           leftIcon="alarm-outline"
@@ -328,7 +328,7 @@ export const FamilyMedicineCabinetScreen: React.FC<{
             TS. BS. Lê Thu Trang trước khi mua thêm.
           </Text>
           <AppButton
-            title="Nhắn tin hỏi Bác sĩ / Đặt tái khám"
+            title="Nhắn tin hỏi Bác sĩ"
             variant="primary"
             size="md"
             leftIcon="chatbubbles-outline"

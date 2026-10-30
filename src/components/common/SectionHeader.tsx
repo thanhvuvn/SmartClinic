@@ -45,7 +45,9 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
               style={styles.leftIcon}
             />
           )}
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.title} numberOfLines={1}>
+            {title}
+          </Text>
           {badgeText && (
             <Badge
               label={badgeText}
@@ -55,7 +57,11 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
             />
           )}
         </View>
-        {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+        {subtitle ? (
+          <Text style={styles.subtitle} numberOfLines={1}>
+            {subtitle}
+          </Text>
+        ) : null}
       </View>
 
       {actionText ? (
@@ -64,7 +70,9 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
           onPress={onActionPress}
           activeOpacity={0.75}
         >
-          <Text style={styles.actionText}>{actionText}</Text>
+          <Text style={styles.actionText} numberOfLines={1}>
+            {actionText}
+          </Text>
           <Ionicons name="chevron-forward" size={14} color={COLORS.primary} />
         </TouchableOpacity>
       ) : null}
@@ -77,32 +85,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    gap: 6,
+    gap: 8,
     marginBottom: 12,
   },
   leftCol: {
     flex: 1,
-    minWidth: 180,
-    paddingRight: 4,
+    minWidth: 0,
   },
   titleRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    flexWrap: 'wrap',
     gap: 6,
   },
   leftIcon: {
     marginRight: 2,
+    flexShrink: 0,
   },
   title: {
-    fontSize: 15.5,
+    fontSize: 14,
     fontWeight: '700',
     color: COLORS.textPrimary,
     flexShrink: 1,
   },
   inlineBadge: {
     marginLeft: 0,
+    flexShrink: 0,
   },
   subtitle: {
     fontSize: 12,
@@ -113,6 +120,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 2,
+    flexShrink: 0,
   },
   actionText: {
     fontSize: 12,

@@ -223,7 +223,7 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
 
       <View style={styles.actionRow}>
         <AppButton
-          title="Chỉnh sửa hồ sơ"
+          title="Sửa hồ sơ"
           variant="tonal"
           size="md"
           leftIcon="create-outline"
@@ -243,11 +243,12 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
       </View>
 
       <View style={styles.emergencyStrip}>
-        <Ionicons name="medical" size={14} color={COLORS.error} />
-        <Text style={styles.emergencyText} numberOfLines={1}>
-          Khẩn cấp: <Text style={{ fontWeight: '700' }}>{profile.emergencyContact}</Text>
-        </Text>
-        <Ionicons name="call-outline" size={16} color={COLORS.primary} />
+        <Ionicons name="medical" size={15} color={COLORS.error} />
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <Text style={styles.emergencyLabel}>Liên hệ khẩn cấp</Text>
+          <Text style={styles.emergencyText}>{profile.emergencyContact}</Text>
+        </View>
+        <Ionicons name="call-outline" size={17} color={COLORS.primary} />
       </View>
     </View>
   );
@@ -549,13 +550,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF5F5',
     borderRadius: RADIUS.md,
     paddingHorizontal: 12,
-    paddingVertical: 8,
-    gap: 8,
+    paddingVertical: 9,
+    gap: 10,
+  },
+  emergencyLabel: {
+    fontSize: 10.5,
+    fontWeight: '700',
+    color: COLORS.error,
   },
   emergencyText: {
-    flex: 1,
-    fontSize: 11.5,
+    fontSize: 12,
+    fontWeight: '700',
     color: COLORS.textPrimary,
+    marginTop: 1,
   },
 });
 

@@ -41,9 +41,7 @@ export const SettingToggleRow: React.FC<SettingToggleRowProps> = ({
       <View style={styles.topRow}>
         <View style={styles.titleGroup}>
           <Ionicons name={icon} size={18} color={iconColor} style={styles.icon} />
-          <Text style={styles.title} numberOfLines={1}>
-            {title}
-          </Text>
+          <Text style={styles.title}>{title}</Text>
         </View>
         <Switch
           value={value}
@@ -107,13 +105,9 @@ export const SettingLinkRow: React.FC<SettingLinkRowProps> = ({
         <Ionicons name={icon} size={18} color={COLORS.primary} />
       </View>
       <View style={styles.linkTextCol}>
-        <Text style={styles.linkTitle} numberOfLines={1}>
-          {title}
-        </Text>
+        <Text style={styles.linkTitle}>{title}</Text>
         {subtitle ? (
-          <Text style={styles.linkSubtitle} numberOfLines={1}>
-            {subtitle}
-          </Text>
+          <Text style={styles.linkSubtitle}>{subtitle}</Text>
         ) : null}
       </View>
       {badgeLabel ? <Badge label={badgeLabel} variant="blue" style={{ marginRight: 6 }} /> : null}

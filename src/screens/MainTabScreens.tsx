@@ -301,9 +301,9 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
             <SectionHeader
               title="Đơn thuốc đang điều trị"
               leftIcon="medkit-outline"
-              badgeText="Đang uống (Ngày 2/7)"
+              badgeText="Ngày 2/7"
               badgeVariant="teal"
-              actionText="Tủ thuốc gia đình"
+              actionText="Tủ thuốc"
               onActionPress={() => onNavigate('medicineCabinet')}
             />
             <ActivePrescriptionCard

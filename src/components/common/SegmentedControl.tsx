@@ -115,7 +115,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
                     : styles.boxLabelActive
                   : styles.boxLabelInactive,
               ]}
-              numberOfLines={2}
+              numberOfLines={1}
             >
               {opt.label}
             </Text>
@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
   boxLabel: {
     fontSize: 12,
     textAlign: 'center',
+    flexShrink: 1,
   },
   boxLabelActive: {
     fontWeight: '700',

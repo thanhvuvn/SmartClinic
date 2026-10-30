@@ -369,7 +369,7 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
         />
         <SettingToggleRow
           icon="shield-checkmark-outline"
-          title="Đồng bộ mã thẻ BHYT VssID tự động"
+          title="Đồng bộ BHYT VssID"
           description="Tự động kiểm tra thẻ BHYT và mức hưởng 80-100% khi bệnh nhân đặt lịch."
           value={autoSyncVssID}
           onValueChange={setAutoSyncVssID}
@@ -377,7 +377,7 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
         <SettingToggleRow
           icon="notifications-outline"
           iconColor={COLORS.secondary}
-          title="Tự động gửi thông báo nhắc lịch khám"
+          title="Nhắc lịch khám tự động"
           description="Gửi thông báo nhắc nhở trước 24h và 2h cho bệnh nhân và bác sĩ trực."
           value={autoGdtTax}
           onValueChange={setAutoGdtTax}
@@ -385,7 +385,7 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
       </View>
 
       <AppButton
-        title="Đăng xuất khỏi Admin Portal"
+        title="Đăng xuất Admin"
         variant="danger"
         size="lg"
         leftIcon="log-out-outline"
@@ -398,7 +398,7 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
     <View style={styles.screen}>
       <AppHeader
         title="SmartClinic Admin"
-        subtitle="Quản trị hệ thống • admin@smartclinic.vn"
+        subtitle="admin@smartclinic.vn"
         badgeText="ADMIN"
         leftIconBox="shield-checkmark-outline"
         rightActions={[
@@ -635,8 +635,6 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
         <SectionHeader
           title="Kết quả Cận lâm sàng & CĐHA"
           leftIcon="scan-outline"
-          badgeText="Đã duyệt"
-          badgeVariant="teal"
           actionText="Xem chi tiết"
           onActionPress={() => onNavigate?.('labImagingResults')}
         />
@@ -645,7 +643,7 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
           Nhu mô não không thấy tổn thương khu trú, hệ thống não thất cân đối, không có dấu hiệu nhồi máu não hay xuất huyết.
         </Text>
         <AppButton
-          title="Mở bảng kết quả CĐHA & Xét nghiệm (14 chỉ số)"
+          title="Xem kết quả CĐHA & Xét nghiệm"
           variant="tonal"
           size="sm"
           leftIcon="flask-outline"
@@ -663,7 +661,7 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
     >
       <SectionHeader
         title="Kê đơn thuốc điện tử"
-        subtitle="Bệnh nhân: Nguyễn Văn Vũ (#BN-882910) • Mã toa: #DT-241029-01"
+        subtitle="BN: Nguyễn Văn Vũ (#BN-882910) • Toa #DT-241029-01"
       />
 
       <View style={[styles.card, SHADOWS.sm]}>
@@ -690,7 +688,7 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
         ))}
 
         <AppButton
-          title="Lưu chẩn đoán & Phát hành đơn thuốc"
+          title="Lưu & Phát hành đơn thuốc"
           variant="gradient"
           size="lg"
           leftIcon="checkmark-circle-outline"
@@ -723,7 +721,7 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
       </View>
 
       <AppButton
-        title="Đăng xuất tài khoản Bác sĩ"
+        title="Đăng xuất tài khoản"
         variant="danger"
         size="lg"
         leftIcon="log-out-outline"
@@ -735,8 +733,8 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
   return (
     <View style={styles.screen}>
       <AppHeader
-        title="Cổng Bác Sĩ Điều Trị"
-        subtitle={`${doctor.name} • bs.trang@smartclinic.vn`}
+        title="Cổng Bác Sĩ"
+        subtitle={doctor.name}
         badgeText="BÁC SĨ"
         leftIconBox="medkit-outline"
         rightActions={[{ icon: 'log-out-outline', onPress: onLogout }]}
