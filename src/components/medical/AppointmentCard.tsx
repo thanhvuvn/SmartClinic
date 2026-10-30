@@ -42,7 +42,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
         <Badge
           label={appointment.statusBadge}
           variant="blue"
-          icon={!isClinic ? 'videocam-outline' : undefined}
+          icon={!isClinic ? 'chatbubbles-outline' : undefined}
         />
       </View>
 
@@ -90,8 +90,8 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             style={styles.waitingRoomPill}
             onPress={() => onPrimaryPress?.(appointment)}
           >
-            <Ionicons name="radio-outline" size={14} color="#FFFFFF" />
-            <Text style={styles.waitingRoomText}>Phòng chờ</Text>
+            <Ionicons name="chatbubbles-outline" size={14} color="#FFFFFF" />
+            <Text style={styles.waitingRoomText}>Chat với Bác sĩ</Text>
           </TouchableOpacity>
         )}
       </View>

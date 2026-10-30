@@ -6,11 +6,12 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, GRADIENTS, RADIUS, SHADOWS } from '../theme';
-import { DOCTORS, PATIENT_PROFILE } from '../data/mockData';
+import { DOCTORS, PATIENT_PROFILE, PRESCRIPTION_DRUGS } from '../data/mockData';
 import {
   AppHeader,
   AppButton,
@@ -18,6 +19,8 @@ import {
   Badge,
   SectionHeader,
   SegmentedControl,
+  ChatBottomInputBar,
+  ActivePrescriptionCard,
 } from '../components';
 
 // ============================================================================
@@ -123,7 +126,11 @@ export const BookingSuccessScreen: React.FC<{
             {
               icon: 'download-outline',
               label: 'Tải Phiếu PDF',
-              action: () => onNavigate?.('downloadA4Preview'),
+              action: () =>
+                Alert.alert(
+                  'Tải Phiếu Hẹn PDF',
+                  'Đã lưu phiếu khám #SC-241029-8892 vào thiết bị.'
+                ),
             },
             {
               icon: 'navigate-outline',
@@ -548,150 +555,345 @@ export const AddEditFamilyMemberScreen: React.FC<{ onBack?: () => void }> = ({
 };
 
 // ============================================================================
-// SCREEN 17: [1:4593] TƯ VẤN TRỰC TUYẾN - TS. BS. LÊ THU TRANG
+// SCREEN 17: CHAT TRỰC TUYẾN VỚI BÁC SĨ (REAL-TIME DOCTOR-PATIENT CHAT)
 // ============================================================================
+interface DoctorChatMessage {
+  id: string;
+  sender: 'doctor' | 'patient';
+  text: string;
+  time: string;
+  attachmentTitle?: string;
+  attachmentSubtitle?: string;
+}
+
+const INITIAL_DOCTOR_CHAT: DoctorChatMessage[] = [
+  {
+    id: 'dc-1',
+    sender: 'doctor',
+    text: 'Chào anh Vũ, bác sĩ đã xem hồ sơ khám và kết quả chụp MRI sọ não sáng nay của anh. Hiện tại triệu chứng đau nửa đầu của anh thế nào rồi?',
+    time: '14:02',
+  },
+  {
+    id: 'dc-2',
+    sender: 'patient',
+    text: 'Dạ chào bác sĩ Trang, em vẫn còn đau âm ỉ vùng thái dương phải, nhất là khi ngồi máy tính lâu và thiếu ngủ ạ.',
+    time: '14:03',
+  },
+  {
+    id: 'dc-3',
+    sender: 'doctor',
+    text: 'Kết quả MRI 1.5 Tesla cho thấy nhu mô não và hệ mạch máu hoàn toàn bình thường, không có tổn thương thực thể. Tình trạng của anh là Đau nửa đầu Migraine cơ năng (mã ICD-10: G43.0) kèm căng thẳng thần kinh.',
+    time: '14:05',
+    attachmentTitle: 'Kết quả MRI Sọ Não & Mạch Máu (#CLS-2024-9042)',
+    attachmentSubtitle: 'Bình thường • Không dị dạng mạch máu não',
+  },
+  {
+    id: 'dc-4',
+    sender: 'doctor',
+    text: 'Bác sĩ đã kê đơn thuốc điều trị cắt cơn và dự phòng uống buổi tối trong 14 ngày. Anh xem có thắc mắc gì về liều dùng không nhé?',
+    time: '14:06',
+  },
+];
+
 export const TeleconsultationScreen: React.FC<{
   onBack?: () => void;
+  onFinishChat?: () => void;
   onOpenLabResults?: () => void;
-}> = ({ onBack, onOpenLabResults }) => {
+}> = ({ onBack, onFinishChat, onOpenLabResults }) => {
   const doctor = DOCTORS[0];
-  const [mriMode, setMriMode] = useState('flair');
-  const [muted, setMuted] = useState(false);
+  const [messages, setMessages] =
+    useState<DoctorChatMessage[]>(INITIAL_DOCTOR_CHAT);
+  const [inputText, setInputText] = useState('');
+
+  const handleSendMessage = (customText?: string) => {
+    const content = (customText ?? inputText).trim();
+    if (!content) return;
+
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(
+      now.getMinutes()
+    ).padStart(2, '0')}`;
+
+    const patientMsg: DoctorChatMessage = {
+      id: `pt-${Date.now()}`,
+      sender: 'patient',
+      text: content,
+      time: timeStr,
+    };
+
+    let doctorReply =
+      'Bác sĩ đã ghi nhận. Anh nhớ uống thuốc đúng cử, hạn chế nhìn màn hình sau 21:00 và tái khám sau 2 tuần nhé!';
+    if (content.toLowerCase().includes('buồn ngủ')) {
+      doctorReply =
+        'Thuốc Flunarizine 5mg có thể gây buồn ngủ nhẹ để hỗ trợ giấc ngủ sâu, vì vậy bác sĩ chỉ định anh uống 1 viên sau ăn tối lúc 21:00 nhé.';
+    } else if (content.toLowerCase().includes('tái khám')) {
+      doctorReply =
+        'Anh uống hết đơn 14 ngày rồi đặt lịch tái khám trên ứng dụng. Nếu cơn đau giảm trên 80% thì chỉ cần duy trì chế độ sinh hoạt điều độ.';
+    }
+
+    const docMsg: DoctorChatMessage = {
+      id: `dr-${Date.now() + 1}`,
+      sender: 'doctor',
+      text: doctorReply,
+      time: timeStr,
+    };
+
+    setMessages((prev) => [...prev, patientMsg, docMsg]);
+    if (!customText) {
+      setInputText('');
+    }
+  };
 
   return (
     <View style={styles.screen}>
       <AppHeader
-        title="Tư Vấn Video Trực Tuyến"
-        subtitle="Bệnh viện ĐHYD TP.HCM • Phòng Telehealth 04"
-        badgeText="FHD 1080p"
+        title="Chat Trực Tuyến Với Bác Sĩ"
+        subtitle="TS. BS. Lê Thu Trang • Nội Thần Kinh"
+        badgeText="TRỰC TUYẾN"
+        onBack={onBack}
+      />
+
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.scrollPad}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Top Doctor & Session Info Banner */}
+        <View style={[styles.card, SHADOWS.sm]}>
+          <View style={styles.docRow}>
+            <Image source={{ uri: doctor.avatar }} style={styles.avatarMd} />
+            <View style={{ flex: 1, marginLeft: 12 }}>
+              <View style={styles.rowBetween}>
+                <Text style={styles.docName}>{doctor.name}</Text>
+                <Badge label="Đang hoạt động" variant="teal" showDot />
+              </View>
+              <Text style={styles.docSub}>
+                Ca tư vấn #SC-241029-8892 • BN: Nguyễn Văn Vũ
+              </Text>
+              <Text style={styles.docHospital}>{doctor.hospital}</Text>
+            </View>
+          </View>
+
+          <View style={styles.divider} />
+
+          <View style={{ flexDirection: 'row', gap: 8 }}>
+            <AppButton
+              title="Xem Kết quả CĐHA"
+              variant="tonal"
+              size="sm"
+              leftIcon="document-text-outline"
+              fullWidth={false}
+              style={{ flex: 1 }}
+              onPress={onOpenLabResults}
+            />
+            <AppButton
+              title="Xem Kết luận & Đơn thuốc"
+              variant="primary"
+              size="sm"
+              leftIcon="medkit-outline"
+              fullWidth={false}
+              style={{ flex: 1 }}
+              onPress={onFinishChat || onBack}
+            />
+          </View>
+        </View>
+
+        {/* Chat Messages Thread */}
+        <View style={{ marginVertical: 4 }}>
+          {messages.map((msg) => {
+            const isPatient = msg.sender === 'patient';
+            return (
+              <View
+                key={msg.id}
+                style={[
+                  styles.chatRow,
+                  isPatient ? styles.chatRowRight : styles.chatRowLeft,
+                ]}
+              >
+                {!isPatient && (
+                  <Image
+                    source={{ uri: doctor.avatar }}
+                    style={styles.chatAvatar}
+                  />
+                )}
+                <View
+                  style={[
+                    styles.chatBubble,
+                    isPatient
+                      ? styles.chatBubblePatient
+                      : styles.chatBubbleDoctor,
+                  ]}
+                >
+                  {!isPatient && (
+                    <Text style={styles.chatSenderName}>{doctor.name}</Text>
+                  )}
+                  <Text
+                    style={[
+                      styles.chatMsgText,
+                      isPatient && { color: '#FFFFFF' },
+                    ]}
+                  >
+                    {msg.text}
+                  </Text>
+
+                  {msg.attachmentTitle && (
+                    <TouchableOpacity
+                      style={styles.chatAttachmentCard}
+                      onPress={onOpenLabResults}
+                    >
+                      <Ionicons
+                        name="document-attach-outline"
+                        size={20}
+                        color={COLORS.primary}
+                      />
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.chatAttachmentTitle}>
+                          {msg.attachmentTitle}
+                        </Text>
+                        <Text style={styles.chatAttachmentSub}>
+                          {msg.attachmentSubtitle}
+                        </Text>
+                      </View>
+                      <Ionicons
+                        name="chevron-forward"
+                        size={16}
+                        color={COLORS.primary}
+                      />
+                    </TouchableOpacity>
+                  )}
+
+                  <Text
+                    style={[
+                      styles.chatTimeText,
+                      isPatient && { color: 'rgba(255,255,255,0.8)' },
+                    ]}
+                  >
+                    {msg.time} {isPatient ? '• Đã xem' : ''}
+                  </Text>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+
+        {/* Quick Question Chips */}
+        <Text style={[styles.capLabel, { marginBottom: 8, marginTop: 4 }]}>
+          CÂU HỎI NHANH CHO BÁC SĨ
+        </Text>
+        <View style={styles.chipsWrap}>
+          {[
+            'Thuốc uống có gây buồn ngủ không BS?',
+            'Khi nào em cần tái khám?',
+            'Em cảm ơn bác sĩ nhiều ạ!',
+          ].map((quickText) => (
+            <TouchableOpacity
+              key={quickText}
+              style={styles.quickReplyChip}
+              onPress={() => handleSendMessage(quickText)}
+            >
+              <Text style={styles.quickReplyText}>{quickText}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+
+      {/* Bottom Real-time Message Input */}
+      <ChatBottomInputBar
+        value={inputText}
+        onChangeText={setInputText}
+        onSend={() => handleSendMessage()}
+      />
+    </View>
+  );
+};
+
+// ============================================================================
+// SCREEN 17B: TÓM TẮT KẾT QUẢ KHÁM & ĐƠN THUỐC SAU TƯ VẤN
+// ============================================================================
+export const PostConsultSummaryScreen: React.FC<{
+  onBack?: () => void;
+  onNavigate?: (routeKey: string) => void;
+}> = ({ onBack, onNavigate }) => {
+  const doctor = DOCTORS[0];
+
+  return (
+    <View style={styles.screen}>
+      <AppHeader
+        title="Kết Quả Khám & Đơn Thuốc"
+        subtitle="Hoàn tất tư vấn • Mã hồ sơ #SC-241029-8892"
+        badgeText="ĐÃ HOÀN TẤT"
         onBack={onBack}
       />
       <ScrollView contentContainerStyle={styles.scrollPad}>
-        {/* Doctor Video Feed Frame */}
-        <View style={[styles.videoFrame, SHADOWS.md]}>
-          <Image source={{ uri: doctor.avatar }} style={styles.videoBgImage} />
-          <View style={styles.videoOverlayTop}>
-            <Badge
-              label="BS. Thu Trang đang nói"
-              variant="teal"
-              showDot
-            />
-            <Badge label="14:22" variant="danger" showDot />
-          </View>
-          <View style={styles.pipBox}>
-            <Image
-              source={{ uri: PATIENT_PROFILE.avatar }}
-              style={styles.pipImg}
-            />
-            <Text style={styles.pipLabel}>Bạn (Vũ)</Text>
-          </View>
-          <View style={styles.videoCaptionBar}>
-            <Text style={styles.videoCaptionText}>
-              “BS. Thu Trang: Nhu mô não trán đỉnh đều đặn, không có tổn thương
-              khu trú.”
-            </Text>
-          </View>
-        </View>
-
-        {/* Interactive PACS Screen Sharing Module: Brain MRI T2-FLAIR */}
+        {/* Clinical Diagnosis Card */}
         <View style={[styles.card, SHADOWS.sm]}>
           <View style={styles.rowBetween}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <Ionicons name="scan-circle" size={20} color={COLORS.primary} />
-              <Text style={styles.docName}>
-                Xem MRI Đồng Thời (Axial T2-FLAIR)
-              </Text>
-            </View>
-            <Badge label="3.0 Tesla" variant="blue" />
+            <Badge label="CHẨN ĐOÁN XÁC ĐỊNH" variant="teal" showDot />
+            <Text style={styles.capLabel}>29/10/2024 • 14:15</Text>
           </View>
-          <Text style={styles.docSub}>
-            Lát cắt: 18 / 36 • TR: 9000 TE: 120 • BN: Nguyễn Văn Vũ (#BN-882910)
+          <Text style={[styles.docName, { marginTop: 8, fontSize: 16 }]}>
+            G43.0 - Đau nửa đầu Migraine không có tiền triệu / Rối loạn giấc ngủ
+          </Text>
+          <Text style={[styles.docSub, { marginTop: 4 }]}>
+            Bác sĩ điều trị: {doctor.name} ({doctor.specialty})
           </Text>
 
-          <SegmentedControl
-            variant="chips"
-            selectedKey={mriMode}
-            onSelect={setMriMode}
-            options={[
-              { key: 't1', label: 'Chuỗi T1-WI' },
-              { key: 'flair', label: 'T2-FLAIR (Đang xem)' },
-              { key: 'mra', label: 'MRA Mạch Máu' },
-            ]}
-            style={{ marginVertical: 10 }}
-          />
+          <View style={styles.divider} />
 
-          <View style={styles.memberNoteBox}>
-            <Ionicons
-              name="checkmark-done-circle"
-              size={16}
-              color={COLORS.secondary}
-            />
-            <Text style={styles.memberNoteText}>
-              Kết luận cận lâm sàng: Không phát hiện tổn thương nhu mô não,
-              không có ổ nhồi máu hay dị dạng mạch máu. Đau đầu phù hợp hội
-              chứng Migraine cơ năng.
-            </Text>
-          </View>
-        </View>
-
-        {/* Real-time AI Medical Scribe */}
-        <View style={[styles.card, SHADOWS.sm]}>
-          <View style={styles.rowBetween}>
-            <Text style={styles.docName}>SmartScribe AI • Ghi nhận trực tiếp</Text>
-            <Badge label="Đang lắng nghe" variant="teal" showDot />
-          </View>
+          <Text style={styles.capLabel}>LỜI DẶN CỦA BÁC SĨ</Text>
           <Text style={styles.checkItemText}>
-            • <Text style={{ fontWeight: '700' }}>Chẩn đoán sơ bộ:</Text> G43.0
-            - Đau nửa đầu Migraine không có tiền triệu / Rối loạn giấc ngủ do
-            căng thẳng.
+            • Uống thuốc đúng giờ theo đơn trong 14 ngày, không tự ý ngưng thuốc
+            đột ngột.
           </Text>
           <Text style={styles.checkItemText}>
-            • <Text style={{ fontWeight: '700' }}>Kế hoạch điều trị:</Text> Kê
-            đơn cắt cơn + thuốc dự phòng Flunarizine 5mg uống tối.
+            • Giảm thời gian sử dụng máy tính/điện thoại sau 21:00, ngủ đủ 7-8
+            giờ mỗi đêm.
           </Text>
           <Text style={styles.checkItemText}>
-            • <Text style={{ fontWeight: '700' }}>Dặn dò:</Text> Giảm thời gian
-            nhìn màn hình sau 21:00, duy trì giấc ngủ 7-8 tiếng, tái khám sau 4
-            tuần.
+            • Tái khám sau 2 tuần hoặc nhắn tin trực tiếp cho bác sĩ nếu cơn đau
+            tăng nặng.
           </Text>
         </View>
 
-        {/* Call Controls */}
-        <View style={styles.callDock}>
-          <TouchableOpacity
-            style={styles.callBtn}
-            onPress={() => setMuted(!muted)}
-          >
-            <Ionicons
-              name={muted ? 'mic-off' : 'mic'}
-              size={20}
-              color={COLORS.textPrimary}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.callBtn}>
-            <Ionicons name="videocam" size={20} color={COLORS.textPrimary} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.callBtn}
-            onPress={onOpenLabResults || onBack}
-          >
-            <Ionicons name="document-text-outline" size={20} color={COLORS.primary} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.callBtn, { backgroundColor: COLORS.error }]}
-            onPress={onBack}
-          >
-            <Ionicons name="call" size={20} color="#FFFFFF" />
-          </TouchableOpacity>
-        </View>
+        {/* E-Prescription Card */}
+        <SectionHeader
+          title="Đơn Thuốc Điện Tử Đã Kê"
+          badgeText="3 thuốc"
+          badgeVariant="blue"
+        />
+        <ActivePrescriptionCard
+          doctor={doctor}
+          prescriptionCode="#DT-241029-01"
+          date="29/10/2024"
+          drugs={PRESCRIPTION_DRUGS}
+          onViewOriginal={() => onNavigate?.('rxDetail')}
+          onBuyMedicine={() => onNavigate?.('medicineCabinet')}
+          onReminderPress={() => onNavigate?.('medLog')}
+        />
 
+        {/* Next Actions */}
         <AppButton
-          title="Kết thúc cuộc gọi & Xem Tóm tắt Sau Khám + Đơn Ký Số →"
+          title="Xem Chi Tiết Đơn Thuốc & Cách Dùng"
           variant="primary"
           size="lg"
           leftIcon="document-text-outline"
-          onPress={onBack}
-          style={{ marginTop: 12 }}
+          onPress={() => onNavigate?.('rxDetail')}
+          style={{ marginBottom: 10 }}
+        />
+        <AppButton
+          title="Mở Lịch Nhắc Uống Thuốc Hàng Ngày"
+          variant="secondary"
+          size="lg"
+          leftIcon="alarm-outline"
+          onPress={() => onNavigate?.('medLog')}
+          style={{ marginBottom: 10 }}
+        />
+        <AppButton
+          title="Quay lại Chat với Bác sĩ"
+          variant="outline"
+          size="md"
+          leftIcon="chatbubbles-outline"
+          onPress={() => onNavigate?.('teleconsult')}
         />
       </ScrollView>
     </View>
@@ -711,14 +913,14 @@ export const LabAndImagingResultsScreen: React.FC<{
     <View style={styles.screen}>
       <AppHeader
         title="Kết Quả Cận Lâm Sàng & CĐHA"
-        subtitle="Mã phiếu: #CLS-2024-9042 • Đã ký số bảo mật"
+        subtitle="Mã phiếu: #CLS-2024-9042 • Đã trả kết quả"
         onBack={onBack}
       />
       <ScrollView contentContainerStyle={styles.scrollPad}>
         {/* Meta Header Card */}
         <View style={[styles.card, SHADOWS.sm]}>
           <Badge
-            label="ĐÃ CÓ KẾT QUẢ CHÍNH THỨC • KÝ SỐ BẢO MẬT"
+            label="ĐÃ CÓ KẾT QUẢ CHÍNH THỨC"
             variant="teal"
             showDot
           />
@@ -737,19 +939,26 @@ export const LabAndImagingResultsScreen: React.FC<{
 
           <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
             <AppButton
-              title="Tải PDF Ký Số"
+              title="Lưu Kết Quả PDF"
               variant="primary"
               size="sm"
               leftIcon="download-outline"
               fullWidth={false}
               style={{ flex: 1 }}
-              onPress={onDownloadPDF}
+              onPress={
+                onDownloadPDF ||
+                (() =>
+                  Alert.alert(
+                    'Lưu PDF Thành Công',
+                    'Đã tải phiếu kết quả cận lâm sàng #CLS-2024-9042 về máy.'
+                  ))
+              }
             />
             <AppButton
-              title="Xem DICOM Gốc"
+              title="Gửi hỏi Bác sĩ"
               variant="tonal"
               size="sm"
-              leftIcon="scan-outline"
+              leftIcon="chatbubbles-outline"
               fullWidth={false}
               style={{ flex: 1 }}
               onPress={onOpenTeleconsult}
@@ -1042,75 +1251,90 @@ const styles = StyleSheet.create({
   relChipTextActive: {
     color: '#FFFFFF',
   },
-  videoFrame: {
-    height: 230,
+  chatRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginBottom: 12,
+    gap: 8,
+  },
+  chatRowLeft: {
+    justifyContent: 'flex-start',
+  },
+  chatRowRight: {
+    justifyContent: 'flex-end',
+  },
+  chatAvatar: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+  },
+  chatBubble: {
+    maxWidth: '82%',
     borderRadius: RADIUS.lg,
-    overflow: 'hidden',
-    backgroundColor: '#0F172A',
-    marginBottom: 14,
-    position: 'relative',
-    justifyContent: 'space-between',
-  },
-  videoBgImage: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    opacity: 0.85,
-  },
-  videoOverlayTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 12,
-  },
-  pipBox: {
-    position: 'absolute',
-    right: 12,
-    top: 48,
-    width: 76,
-    height: 98,
-    borderRadius: RADIUS.md,
-    overflow: 'hidden',
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-    backgroundColor: '#1E293B',
-  },
-  pipImg: {
-    width: '100%',
-    height: '100%',
-  },
-  pipLabel: {
-    position: 'absolute',
-    bottom: 4,
-    left: 6,
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  videoCaptionBar: {
-    backgroundColor: 'rgba(15, 23, 42, 0.78)',
-    padding: 10,
-  },
-  videoCaptionText: {
-    fontSize: 12,
-    color: '#FFFFFF',
-    fontStyle: 'italic',
-  },
-  callDock: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 16,
+    paddingHorizontal: 14,
     paddingVertical: 10,
-  },
-  callBtn: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: COLORS.surface,
-    alignItems: 'center',
-    justifyContent: 'center',
     ...SHADOWS.sm,
+  },
+  chatBubbleDoctor: {
+    backgroundColor: COLORS.surface,
+    borderBottomLeftRadius: 4,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  chatBubblePatient: {
+    backgroundColor: COLORS.primary,
+    borderBottomRightRadius: 4,
+  },
+  chatSenderName: {
+    fontSize: 11.5,
+    fontWeight: '800',
+    color: COLORS.primary,
+    marginBottom: 4,
+  },
+  chatMsgText: {
+    fontSize: 13.5,
+    lineHeight: 19,
+    color: COLORS.textPrimary,
+  },
+  chatAttachmentCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: COLORS.surfaceContainerLow,
+    borderRadius: RADIUS.md,
+    padding: 10,
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: '#DCE6FF',
+  },
+  chatAttachmentTitle: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: COLORS.primary,
+  },
+  chatAttachmentSub: {
+    fontSize: 11,
+    color: COLORS.textSecondary,
+    marginTop: 2,
+  },
+  chatTimeText: {
+    fontSize: 10.5,
+    color: COLORS.textSecondary,
+    marginTop: 6,
+    textAlign: 'right',
+  },
+  quickReplyChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: RADIUS.full,
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+  },
+  quickReplyText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.primary,
   },
   labRow: {
     flexDirection: 'row',

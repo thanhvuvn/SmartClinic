@@ -73,7 +73,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         userName="Vũ"
         avatarUrl={PATIENT_PROFILE.avatar}
         onChatPress={onAskAI}
-        onNotificationPress={() => onNavigate('firstDoseAlert')}
+        onNotificationPress={() => onNavigate('medLog')}
         onAvatarPress={onOpenProfile}
       />
 
@@ -84,7 +84,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <SearchBar
           value={search}
           onChangeText={setSearch}
-          onFilterPress={() => onNavigate('directory')}
+          onFilterPress={() => onSelectDoctor(DOCTORS[0])}
           style={{ marginBottom: 16 }}
         />
 
@@ -96,9 +96,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {/* Quick Smart Healthcare Services Strip */}
         <SectionHeader
           title="Tiện ích Y tế thông minh"
-          subtitle="Truy cập nhanh các phân hệ khám từ xa, dược phẩm & BHYT"
-          actionText="Tất cả (43)"
-          onActionPress={() => onNavigate('directory')}
+          subtitle="Truy cập nhanh tư vấn bác sĩ, nhắc thuốc & hồ sơ gia đình"
         />
         <ScrollView
           horizontal
@@ -107,9 +105,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         >
           {[
             {
-              icon: 'videocam-outline',
-              title: 'Khám Video',
-              sub: 'Telehealth 24/7',
+              icon: 'chatbubbles-outline',
+              title: 'Chat Bác sĩ',
+              sub: 'Tư vấn trực tuyến',
               route: 'teleconsult',
               color: COLORS.primary,
               bg: COLORS.primaryContainer,
@@ -123,10 +121,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               bg: COLORS.tintTeal,
             },
             {
-              icon: 'bicycle-outline',
-              title: 'Giao thuốc tận nhà',
-              sub: 'Cold Chain 2H',
-              route: 'homeDelivery',
+              icon: 'medkit-outline',
+              title: 'Tủ thuốc nhà',
+              sub: 'Theo dõi số lượng',
+              route: 'medicineCabinet',
               color: COLORS.primary,
               bg: COLORS.primaryContainer,
             },
@@ -145,14 +143,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               route: 'labImagingResults',
               color: COLORS.primary,
               bg: COLORS.primaryContainer,
-            },
-            {
-              icon: 'receipt-outline',
-              title: 'Hóa đơn VAT',
-              sub: 'Chứng thư PKI',
-              route: 'vatInvoice',
-              color: COLORS.secondary,
-              bg: COLORS.tintTeal,
             },
           ].map((srv) => (
             <TouchableOpacity
@@ -261,16 +251,12 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
     <View style={styles.screen}>
       <AppHeader
         title="Hồ sơ bệnh án điện tử"
-        subtitle="SmartClinic EHR • Dữ liệu mã hóa cấp y tế"
+        subtitle="SmartClinic EHR • Hồ sơ sức khỏe cá nhân"
         leftIconBox="folder-open-outline"
         rightActions={[
           {
-            icon: 'document-text-outline',
-            onPress: () => onNavigate('fullTaxDossier'),
-          },
-          {
-            icon: 'share-social-outline',
-            onPress: () => onNavigate('printShareHistory'),
+            icon: 'people-outline',
+            onPress: () => onNavigate('familyProfiles'),
           },
         ]}
       />
@@ -281,7 +267,7 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
       >
         <PatientMasterIdentityCard
           onQrPress={() => onNavigate('bookingSuccess')}
-          onBhytPress={() => onNavigate('refillBHYT')}
+          onBhytPress={() => onNavigate('familyProfiles')}
           style={{ marginBottom: 16 }}
         />
 
@@ -322,7 +308,7 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
               date="29/10/2024"
               drugs={PRESCRIPTION_DRUGS}
               onViewOriginal={() => onNavigate('rxDetail')}
-              onBuyMedicine={() => onNavigate('homeDelivery')}
+              onBuyMedicine={() => onNavigate('medicineCabinet')}
               onReminderPress={() => onNavigate('medLog')}
             />
           </>
@@ -338,8 +324,13 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
             />
             <LabImagingCard
               onViewDicom={() => onNavigate('labImagingResults')}
-              onDownloadPdf={() => onNavigate('downloadA4Preview')}
-              onVerifySignature={() => onNavigate('digitalCertXML')}
+              onDownloadPdf={() =>
+                Alert.alert(
+                  'Tải PDF Kết Quả',
+                  'Đã lưu kết quả chụp MRI & xét nghiệm máu về máy.'
+                )
+              }
+              onVerifySignature={() => onNavigate('teleconsult')}
             />
           </>
         )}
@@ -358,15 +349,15 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
           </>
         )}
 
-        {/* Upload External Record OCR Card */}
+        {/* Upload External Record Card */}
         <View style={[styles.ocrCard, SHADOWS.sm]}>
           <View style={styles.ocrIconBox}>
             <Ionicons name="scan-outline" size={20} color="#FFFFFF" />
           </View>
           <View style={{ flex: 1, minWidth: 140, marginHorizontal: 10 }}>
-            <Text style={styles.ocrTitle}>Tải lên hồ sơ / Toa thuốc ngoài</Text>
+            <Text style={styles.ocrTitle}>Tải lên hồ sơ / Toa thuốc cũ</Text>
             <Text style={styles.ocrSub}>
-              AI OCR tự động nhận diện dữ liệu chuẩn EHR
+              Lưu trữ hình ảnh kết quả xét nghiệm và đơn thuốc cá nhân
             </Text>
           </View>
           <AppButton
@@ -375,7 +366,12 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
             size="sm"
             leftIcon="camera-outline"
             fullWidth={false}
-            onPress={() => onNavigate('fullTaxDossier')}
+            onPress={() =>
+              Alert.alert(
+                'Tải lên hồ sơ',
+                'Chọn ảnh chụp toa thuốc hoặc kết quả xét nghiệm từ thư viện ảnh để lưu vào hồ sơ.'
+              )
+            }
           />
         </View>
       </ScrollView>
@@ -404,11 +400,7 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
         leftIconBox="calendar-outline"
         rightActions={[
           {
-            icon: 'search-outline',
-            onPress: () => onNavigate('directory'),
-          },
-          {
-            icon: 'options-outline',
+            icon: 'qr-code-outline',
             showBadgeDot: true,
             onPress: () => onNavigate('bookingSuccess'),
           },
@@ -482,7 +474,7 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
           <View style={[styles.sectionCard, SHADOWS.sm]}>
             <View style={styles.statBoxTop}>
               <Badge label="Hoàn thành • 28/10/2024" variant="teal" showDot />
-              <Badge label="Đã ký số PKI" variant="blue" />
+              <Badge label="Đã có kết quả" variant="blue" />
             </View>
             <Text style={styles.sectionCardTitle}>
               Khám Chuyên khoa Nội Thần Kinh — TS. BS. Lê Thu Trang
@@ -492,7 +484,7 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
             </Text>
             <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
               <AppButton
-                title="Tóm tắt & Toa ký số"
+                title="Kết quả & Đơn thuốc"
                 variant="primary"
                 size="sm"
                 leftIcon="document-text-outline"
@@ -501,13 +493,13 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
                 onPress={() => onNavigate('postConsultSummary')}
               />
               <AppButton
-                title="Hóa đơn VAT"
+                title="Chat với Bác sĩ"
                 variant="tonal"
                 size="sm"
-                leftIcon="receipt-outline"
+                leftIcon="chatbubbles-outline"
                 fullWidth={false}
                 style={{ flex: 1 }}
-                onPress={() => onNavigate('vatInvoice')}
+                onPress={() => onNavigate('teleconsult')}
               />
             </View>
           </View>
@@ -674,12 +666,8 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
         title="Cá Nhân"
         rightActions={[
           {
-            icon: 'help-circle-outline',
-            onPress: () => onNavigate('directory'),
-          },
-          {
-            icon: 'settings-outline',
-            onPress: () => onNavigate('showcase'),
+            icon: 'people-outline',
+            onPress: () => onNavigate('familyProfiles'),
           },
         ]}
         showProfileIcon
@@ -696,7 +684,7 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
         />
 
         <VssIDInsuranceCard
-          onDetailPress={() => onNavigate('refillBHYT')}
+          onDetailPress={() => onNavigate('familyProfiles')}
           style={{ marginBottom: 18 }}
         />
 
@@ -815,8 +803,8 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
             value={pillReminder}
             onValueChange={setPillReminder}
             footerNote="Chuông y tế độc quyền: MedAlert Melodic"
-            footerActionLabel="Tùy biến giờ"
-            onFooterAction={() => onNavigate('firstDoseAlert')}
+            footerActionLabel="Xem lịch thuốc"
+            onFooterAction={() => onNavigate('medLog')}
           />
 
           <SettingToggleRow
@@ -830,7 +818,7 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
           <SettingToggleRow
             icon="document-text-outline"
             title="Kết quả xét nghiệm & Toa thuốc mới"
-            description="Thông báo tức thì khi bác sĩ ký số kết quả MRI, xét nghiệm máu hoặc xuất toa dược lâm sàng điện tử."
+            description="Thông báo tức thì khi bác sĩ cập nhật kết quả MRI, xét nghiệm máu hoặc xuất đơn thuốc điện tử."
             value={labAlert}
             onValueChange={setLabAlert}
           />
@@ -856,7 +844,7 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
         {/* Privacy & Account Settings */}
         <View style={[styles.sectionCard, SHADOWS.sm]}>
           <SectionHeader
-            title="Bảo mật, Gia đình & Chứng từ Y tế"
+            title="Gia đình, Tủ thuốc & Bảo mật"
             leftIcon="lock-closed-outline"
           />
           <SettingLinkRow
@@ -875,37 +863,17 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
           />
           <SettingLinkRow
             icon="medkit-outline"
-            title="Tủ thuốc gia đình & Nhắc nạp thuốc"
-            subtitle="Theo dõi tồn kho thuốc tại nhà & đặt giao nhanh"
-            badgeLabel="Cần nạp 1"
+            title="Tủ thuốc gia đình & Nhắc uống thuốc"
+            subtitle="Theo dõi số lượng thuốc còn lại tại nhà"
+            badgeLabel="Sắp hết 1"
             onPress={() => onNavigate('medicineCabinet')}
           />
           <SettingLinkRow
-            icon="receipt-outline"
-            title="Hóa đơn điện tử VAT & Đối soát Thuế GDT"
-            subtitle="Tra cứu hóa đơn GTGT và quyền lợi BHYT"
-            badgeLabel="Hợp lệ"
-            onPress={() => onNavigate('vatInvoice')}
-          />
-          <SettingLinkRow
-            icon="shield-checkmark-outline"
-            title="Mã hóa bệnh án EHR & Thẩm định NEAC"
-            subtitle="Chuẩn chữ ký số PKI Quốc gia & AES-256"
-            badgeLabel="PKI Verified"
-            onPress={() => onNavigate('neacPublicLookup')}
-          />
-          <SettingLinkRow
-            icon="print-outline"
-            title="Lịch sử In ấn AirPrint & Email Kế toán"
-            subtitle="Quản lý lệnh in không dây và gửi chứng từ thuế"
-            onPress={() => onNavigate('printShareHistory')}
-          />
-          <SettingLinkRow
             icon="document-attach-outline"
-            title="Tải toàn bộ hồ sơ điện tử (EHR)"
-            subtitle="Xuất file PDF trọn bộ có chữ ký số bác sĩ"
+            title="Tải tóm tắt hồ sơ khám bệnh (PDF)"
+            subtitle="Xuất file PDF kết quả khám & đơn thuốc gần nhất"
             isDownload
-            onPress={() => onNavigate('fullTaxDossier')}
+            onPress={() => onNavigate('postConsultSummary')}
           />
         </View>
 

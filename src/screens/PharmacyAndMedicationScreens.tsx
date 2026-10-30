@@ -3,8 +3,8 @@ import {
   View,
   Text,
   ScrollView,
-  TouchableOpacity,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,19 +15,16 @@ import {
   AppButton,
   Badge,
   SectionHeader,
-  SegmentedControl,
-  StickyBottomBar,
 } from '../components';
 
 // ============================================================================
-// SCREEN 8: [1:1817] NHẬT KÝ & THÔNG BÁO UỐNG THUỐC
+// SCREEN 8: NHẬT KÝ & NHẮC UỐNG THUỐC
 // ============================================================================
 export const MedicationLogScreen: React.FC<{
   onBack?: () => void;
   onOpenPrescription?: () => void;
   onOpenCabinet?: () => void;
-  onOpenLockAlert?: () => void;
-}> = ({ onBack, onOpenPrescription, onOpenCabinet, onOpenLockAlert }) => {
+}> = ({ onBack, onOpenPrescription, onOpenCabinet }) => {
   const [takenMap, setTakenMap] = useState<Record<string, boolean>>({
     morning: true,
     afternoon: true,
@@ -176,13 +173,18 @@ export const MedicationLogScreen: React.FC<{
             onPress={onOpenCabinet}
           />
           <AppButton
-            title="Chuông nhắc thuốc"
+            title="Cài chuông báo 21:00"
             variant="outline"
             size="md"
             leftIcon="notifications-outline"
             fullWidth={false}
             style={{ flex: 1 }}
-            onPress={onOpenLockAlert}
+            onPress={() =>
+              Alert.alert(
+                'Đã bật thông báo nhắc thuốc',
+                'Ứng dụng sẽ gửi thông báo nhắc uống thuốc lúc 08:00, 14:00 và 21:00 hàng ngày.'
+              )
+            }
           />
         </View>
       </ScrollView>
@@ -191,17 +193,17 @@ export const MedicationLogScreen: React.FC<{
 };
 
 // ============================================================================
-// SCREEN 13: [1:3212] CHI TIẾT TOA THUỐC & LỊCH NHẮC UỐNG THUỐC
+// SCREEN 13: CHI TIẾT TOA THUỐC ĐIỆN TỬ
 // ============================================================================
 export const PrescriptionDetailScreen: React.FC<{
   onBack?: () => void;
-  onOrderDelivery?: () => void;
-}> = ({ onBack, onOrderDelivery }) => {
+  onOpenMedLog?: () => void;
+}> = ({ onBack, onOpenMedLog }) => {
   return (
     <View style={styles.screen}>
       <AppHeader
         title="Chi Tiết Toa Thuốc Điện Tử"
-        subtitle="#DT-241029-01 • Ký số: BV ĐHYD TP.HCM"
+        subtitle="#DT-241029-01 • BV ĐHYD TP.HCM"
         badgeText="Hợp lệ"
         onBack={onBack}
       />
@@ -229,8 +231,8 @@ export const PrescriptionDetailScreen: React.FC<{
         {/* AI Safety Audit & Dietary Advice */}
         <View style={[styles.card, SHADOWS.sm]}>
           <View style={styles.rowBetween}>
-            <Text style={styles.cardTitle}>AI SmartAudit™ Tương Tác Thuốc</Text>
-            <Badge label="An toàn tuyệt đối" variant="teal" icon="shield-checkmark" />
+            <Text style={styles.cardTitle}>Kiểm Tra Tương Tác Thuốc</Text>
+            <Badge label="An toàn" variant="teal" icon="shield-checkmark" />
           </View>
           <Text style={styles.subText}>
             Không phát hiện tương khắc giữa 3 loại thuốc. Tương thích hoàn toàn
@@ -247,7 +249,7 @@ export const PrescriptionDetailScreen: React.FC<{
 
         <SectionHeader
           title="Danh Mục Thuốc Kê Đơn"
-          subtitle="3 loại dược phẩm đạt chuẩn GPP"
+          subtitle="3 loại thuốc trong phác đồ điều trị"
         />
         {PRESCRIPTION_DRUGS.map((d) => (
           <View key={d.id} style={[styles.card, SHADOWS.sm]}>
@@ -256,7 +258,7 @@ export const PrescriptionDetailScreen: React.FC<{
               <Badge label={d.quantity} variant="blue" />
             </View>
             <Text style={styles.subText}>{d.indication}</Text>
-            <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
               <Badge label={d.dosageTag} variant={d.isWarning ? 'danger' : 'teal'} />
               <Badge label={d.instructionTag} variant="surface" />
             </View>
@@ -264,11 +266,11 @@ export const PrescriptionDetailScreen: React.FC<{
         ))}
 
         <AppButton
-          title="Đặt giao thuốc tận nhà (Cold Chain GPP)"
-          variant="gradient"
+          title="Mở Lịch Nhắc Uống Thuốc Hàng Ngày"
+          variant="primary"
           size="lg"
-          leftIcon="bicycle-outline"
-          onPress={onOrderDelivery}
+          leftIcon="alarm-outline"
+          onPress={onOpenMedLog || onBack}
         />
       </ScrollView>
     </View>
@@ -276,89 +278,7 @@ export const PrescriptionDetailScreen: React.FC<{
 };
 
 // ============================================================================
-// SCREEN 24: [1:6927] THÔNG BÁO NHẮC UỐNG THUỐC LIỀU ĐẦU TIÊN
-// ============================================================================
-export const FirstDoseLockscreenAlertScreen: React.FC<{
-  onConfirmTaken?: () => void;
-  onBack?: () => void;
-}> = ({ onConfirmTaken, onBack }) => {
-  return (
-    <LinearGradient
-      colors={['#0F172A', '#1E3A5F', '#004B73']}
-      style={styles.lockScreen}
-    >
-      <View style={styles.lockTop}>
-        <View style={styles.dynamicIsland}>
-          <Ionicons name="lock-open-outline" size={14} color="#86F2E4" />
-          <Text style={styles.islandText}>Face ID đã xác thực • SmartClinic</Text>
-        </View>
-        <Text style={styles.lockDate}>Thứ Hai, 28 tháng 10</Text>
-        <Text style={styles.lockClock}>21:00</Text>
-      </View>
-
-      {/* Main Notification Card */}
-      <View style={[styles.card, SHADOWS.lg]}>
-        <View style={styles.rowBetween}>
-          <Badge
-            label="SMARTCLINIC • ƯU TIÊN Y KHOA"
-            variant="primarySolid"
-            icon="medkit"
-          />
-          <Text style={styles.subText}>Vừa xong (21:00)</Text>
-        </View>
-
-        <Text style={[styles.cardTitle, { fontSize: 16, marginTop: 10 }]}>
-          Đã đến giờ uống thuốc liều đầu tiên tối nay
-        </Text>
-        <Text style={styles.subText}>
-          Toa điện tử #DT-HCM-2024-884122 • Chỉ định: TS. BS. Lê Thu Trang
-        </Text>
-
-        <View style={styles.pillHighlightBox}>
-          <View style={styles.rowBetween}>
-            <Text style={styles.cardTitle}>Sibelium 5mg (Flunarizine)</Text>
-            <Badge label="Liều 1/30 viên" variant="teal" />
-          </View>
-          <Text style={styles.subText}>
-            Liều dùng: 1 viên trước khi ngủ • Sau bữa ăn nhẹ
-          </Text>
-          <Text style={[styles.subText, { color: COLORS.primary, marginTop: 4 }]}>
-            💧 Uống với 200ml nước ấm. Tránh nhìn màn hình vi tính sau khi uống.
-          </Text>
-        </View>
-
-        <AppButton
-          title="Đã uống thuốc (Ghi nhận vào Hồ sơ)"
-          variant="gradient"
-          size="lg"
-          leftIcon="checkmark-circle-outline"
-          onPress={onConfirmTaken || onBack}
-          style={{ marginBottom: 8 }}
-        />
-        <View style={{ flexDirection: 'row', gap: 8 }}>
-          <AppButton
-            title="Nhắc sau 15p"
-            variant="tonal"
-            size="sm"
-            fullWidth={false}
-            style={{ flex: 1 }}
-            onPress={onBack}
-          />
-          <AppButton
-            title="Hỏi Dược sĩ trực"
-            variant="outline"
-            size="sm"
-            fullWidth={false}
-            style={{ flex: 1 }}
-          />
-        </View>
-      </View>
-    </LinearGradient>
-  );
-};
-
-// ============================================================================
-// SCREEN 27: [1:7864] TỦ THUỐC GIA ĐÌNH & LỊCH NHẮC NẠP THUỐC
+// SCREEN 27: TỦ THUỐC GIA ĐÌNH & THEO DÕI SỐ LƯỢNG THUỐC
 // ============================================================================
 export const FamilyMedicineCabinetScreen: React.FC<{
   onBack?: () => void;
@@ -367,8 +287,8 @@ export const FamilyMedicineCabinetScreen: React.FC<{
   return (
     <View style={styles.screen}>
       <AppHeader
-        title="Tủ Thuốc Gia Đình & Nhắc Nạp"
-        subtitle="Quản lý tồn kho thuốc tại nhà & cảnh báo hết thuốc"
+        title="Tủ Thuốc Gia Đình"
+        subtitle="Quản lý số lượng thuốc tại nhà & cảnh báo sắp hết"
         onBack={onBack}
       />
       <ScrollView contentContainerStyle={styles.scrollPad}>
@@ -376,26 +296,26 @@ export const FamilyMedicineCabinetScreen: React.FC<{
         <View style={[styles.alertCard, SHADOWS.sm]}>
           <View style={styles.rowBetween}>
             <Badge
-              label="CẢNH BÁO NẠP THUỐC ĐỊNH KỲ"
+              label="CẢNH BÁO SẮP HẾT THUỐC"
               variant="danger"
               icon="alert-circle"
             />
             <Text style={[styles.slotTime, { color: COLORS.error }]}>
-              Cần nạp trong 3 ngày
+              Còn dùng được 3 ngày
             </Text>
           </View>
           <Text style={[styles.cardTitle, { marginTop: 8 }]}>
             Sibelium 5mg (Flunarizine) chỉ còn 4 viên
           </Text>
           <Text style={styles.subText}>
-            Đủ dùng đến 31/10/2024. Toa #DT-HCM-2024-884122 của TS. BS. Lê Thu
-            Trang hỗ trợ tái nạp nhanh có BHYT.
+            Đủ dùng đến 31/10/2024. Bạn nên đặt lịch tái khám hoặc hỏi ý kiến
+            TS. BS. Lê Thu Trang trước khi mua thêm.
           </Text>
           <AppButton
-            title="Đặt nạp thuốc giao tận nhà ngay"
+            title="Nhắn tin hỏi Bác sĩ / Đặt tái khám"
             variant="primary"
             size="md"
-            leftIcon="cart-outline"
+            leftIcon="chatbubbles-outline"
             onPress={onRefillNow}
             style={{ marginTop: 10 }}
           />
@@ -439,320 +359,6 @@ export const FamilyMedicineCabinetScreen: React.FC<{
             <Text style={styles.subText}>
               Người dùng: {med.owner} • {med.exp}
             </Text>
-          </View>
-        ))}
-      </ScrollView>
-    </View>
-  );
-};
-
-// ============================================================================
-// SCREEN 21: [1:5904] GIAO THUỐC TẬN NHÀ
-// ============================================================================
-export const HomeMedicineDeliveryScreen: React.FC<{
-  onBack?: () => void;
-  onTrackDelivery?: () => void;
-}> = ({ onBack, onTrackDelivery }) => {
-  const [shipOption, setShipOption] = useState('express');
-  return (
-    <View style={styles.screen}>
-      <AppHeader
-        title="Giao Thuốc Tận Nhà (GPP)"
-        subtitle="Toa đã ký số #DT-HCM-2024-884122"
-        onBack={onBack}
-      />
-      <ScrollView contentContainerStyle={styles.scrollPad}>
-        {/* Prescription Verification Card */}
-        <View style={[styles.card, SHADOWS.sm]}>
-          <View style={styles.rowBetween}>
-            <Badge label="Toa Thuốc Điện Tử Đã Ký Số" variant="teal" showDot />
-            <Text style={styles.slotTime}>#DT-HCM-2024-884122</Text>
-          </View>
-          <Text style={[styles.cardTitle, { marginTop: 6 }]}>
-            TS. BS. Lê Thu Trang • BV Đại học Y Dược TP.HCM
-          </Text>
-          <Text style={styles.subText}>
-            Dược sĩ SmartClinic đang trực tuyến đối soát mã BHYT & liều dùng
-            trước khi xuất kho chuẩn GPP.
-          </Text>
-        </View>
-
-        {/* Delivery Address */}
-        <View style={[styles.card, SHADOWS.sm]}>
-          <SectionHeader
-            title="Địa Chỉ Nhận Thuốc"
-            leftIcon="location-outline"
-            actionText="Thay đổi"
-          />
-          <Text style={styles.cardTitle}>Nguyễn Văn Vũ • 0918 234 892</Text>
-          <Text style={styles.subText}>
-            Căn hộ 12B.04, Chung cư Sunrise Riverside, Nguyễn Hữu Thọ, Phước
-            Kiển, Nhà Bè, TP. Hồ Chí Minh
-          </Text>
-        </View>
-
-        {/* Shipping Method */}
-        <SectionHeader title="Phương thức vận chuyển Y tế" />
-        <SegmentedControl
-          variant="box"
-          selectedKey={shipOption}
-          onSelect={setShipOption}
-          options={[
-            { key: 'express', label: 'Hỏa Tốc 2H (Cold Chain 30k)' },
-            { key: 'standard', label: 'Tiêu Chuẩn GPP (15k)' },
-          ]}
-          style={{ marginBottom: 14 }}
-        />
-
-        {/* Drug Basket */}
-        <View style={[styles.card, SHADOWS.sm]}>
-          <SectionHeader
-            title="Danh Mục Thuốc Kê Đơn (3 loại)"
-            badgeText="BHYT -80%"
-            badgeVariant="teal"
-          />
-          {[
-            { name: 'Sibelium 5mg (Flunarizine) - Hộp 30v', price: '185.000đ' },
-            { name: 'Ginkgo Biloba 80mg - Hộp 30v', price: '140.000đ' },
-            { name: 'Paracetamol 500mg - Vỉ 10v', price: '25.000đ' },
-          ].map((item) => (
-            <View key={item.name} style={styles.priceRow}>
-              <Text style={styles.subText}>{item.name}</Text>
-              <Text style={styles.cardTitle}>{item.price}</Text>
-            </View>
-          ))}
-          <View style={styles.divider} />
-          <View style={styles.priceRow}>
-            <Text style={styles.subText}>Quỹ BHYT thanh toán:</Text>
-            <Text style={[styles.cardTitle, { color: COLORS.secondary }]}>
-              -210.000đ
-            </Text>
-          </View>
-        </View>
-      </ScrollView>
-
-      <StickyBottomBar
-        topLabel="Đã áp dụng BHYT & Thùng lạnh Cold Chain"
-        priceLabel="Thanh toán:"
-        priceValue="170.000 đ"
-        buttonTitle="Xác nhận & Giao thuốc"
-        onButtonPress={onTrackDelivery}
-      />
-    </View>
-  );
-};
-
-// ============================================================================
-// SCREEN 20: [1:5577] THEO DÕI GIAO THUỐC THỜI GIAN THỰC
-// ============================================================================
-export const LiveDeliveryTrackingScreen: React.FC<{
-  onBack?: () => void;
-  onOpenHandover?: () => void;
-}> = ({ onBack, onOpenHandover }) => {
-  return (
-    <View style={styles.screen}>
-      <AppHeader
-        title="Theo Dõi Giao Thuốc 5G"
-        subtitle="Đơn #MED-2024-9982 • Bảo mật GPP"
-        badgeText="Còn 18 phút"
-        onBack={onBack}
-      />
-      <ScrollView contentContainerStyle={styles.scrollPad}>
-        {/* Simulated Route Banner */}
-        <LinearGradient
-          colors={GRADIENTS.heroCard}
-          style={[styles.heroCard, SHADOWS.md]}
-        >
-          <View style={styles.rowBetween}>
-            <Badge label="ĐANG GIAO HÀNG HỎA TỐC" variant="teal" showDot />
-            <Text style={styles.whiteSub}>2.4 km • Dự kiến 16:45</Text>
-          </View>
-          <Text style={[styles.whiteTitle, { marginTop: 8 }]}>
-            Kho Dược BV ĐHYD (Q.5) ➔ Sunrise Riverside (Nhà Bè)
-          </Text>
-          <Text style={styles.whiteSub}>
-            Vị trí hiện tại: Cầu Kênh Tẻ hướng về Quận 7 / Nhà Bè
-          </Text>
-        </LinearGradient>
-
-        {/* Medical IoT Cold Chain Telemetry Card */}
-        <View style={[styles.card, SHADOWS.sm]}>
-          <View style={styles.rowBetween}>
-            <Text style={styles.cardTitle}>
-              Cảm biến IoT SmartMed Box (Cold Chain)
-            </Text>
-            <Badge label="Chuẩn 2-8°C" variant="teal" />
-          </View>
-          <View style={{ flexDirection: 'row', gap: 10, marginTop: 10 }}>
-            <View style={styles.telemetryBox}>
-              <Text style={styles.subText}>Nhiệt độ thùng</Text>
-              <Text style={styles.telemetryVal}>5.1 °C</Text>
-            </View>
-            <View style={styles.telemetryBox}>
-              <Text style={styles.subText}>Độ ẩm khoang</Text>
-              <Text style={styles.telemetryVal}>44 %</Text>
-            </View>
-            <View style={styles.telemetryBox}>
-              <Text style={styles.subText}>Niêm phong</Text>
-              <Text style={styles.telemetryVal}>An toàn</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Courier Profile */}
-        <View style={[styles.card, SHADOWS.sm]}>
-          <SectionHeader
-            title="Nhân viên giao dược phẩm GPP"
-            badgeText="Đã xác thực"
-            badgeVariant="blue"
-          />
-          <Text style={styles.cardTitle}>
-            Nguyễn Tuấn Kiệt • Biển số 59-X3 892.41
-          </Text>
-          <Text style={styles.subText}>
-            Mã OTP nhận thuốc của bạn: <Text style={{ fontWeight: '800', color: COLORS.primary }}>8841</Text>
-          </Text>
-          <AppButton
-            title="Mở Biên Bản Giao Nhận & Mở Niêm Phong"
-            variant="primary"
-            size="md"
-            leftIcon="shield-checkmark-outline"
-            onPress={onOpenHandover}
-            style={{ marginTop: 12 }}
-          />
-        </View>
-      </ScrollView>
-    </View>
-  );
-};
-
-// ============================================================================
-// SCREEN 19: [1:5227] BIÊN BẢN GIAO NHẬN & MỞ NIÊM PHONG THUỐC
-// ============================================================================
-export const DeliveryHandoverUnsealScreen: React.FC<{
-  onBack?: () => void;
-  onConfirmHandover?: () => void;
-}> = ({ onBack, onConfirmHandover }) => {
-  return (
-    <View style={styles.screen}>
-      <AppHeader
-        title="Biên Bản Giao Nhận & Mở Niêm Phong"
-        subtitle="#BBGN-2024-9982 • 16:42 • 28/10/2024"
-        badgeText="GPP"
-        onBack={onBack}
-      />
-      <ScrollView contentContainerStyle={styles.scrollPad}>
-        <View style={[styles.card, SHADOWS.sm]}>
-          <Badge label="Đã giao đến nơi • Đối soát tại chỗ" variant="teal" showDot />
-          <View style={{ flexDirection: 'row', gap: 10, marginTop: 10 }}>
-            <View style={styles.telemetryBox}>
-              <Text style={styles.subText}>Bên giao (SmartMed)</Text>
-              <Text style={styles.cardTitle}>Nguyễn Tuấn Kiệt</Text>
-              <Text style={styles.subText}>Xe 59-X3 892.41</Text>
-            </View>
-            <View style={styles.telemetryBox}>
-              <Text style={styles.subText}>Bên nhận (Bệnh nhân)</Text>
-              <Text style={styles.cardTitle}>Nguyễn Văn Vũ</Text>
-              <Text style={styles.subText}>0918 234 892</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={[styles.card, SHADOWS.sm]}>
-          <SectionHeader
-            title="Bằng chứng Chuỗi Lạnh lúc mở nắp"
-            badgeText="5.1°C • 44% RH"
-            badgeVariant="teal"
-          />
-          <Text style={styles.subText}>
-            ✓ Tem niêm phong Hologram #SM-99821 nguyên vẹn trước khi mở.
-          </Text>
-          <Text style={styles.subText}>
-            ✓ Đủ 03 hộp thuốc theo đúng toa #DT-HCM-884122.
-          </Text>
-        </View>
-
-        <AppButton
-          title="Ký xác nhận đã nhận đủ thuốc an toàn"
-          variant="gradient"
-          size="lg"
-          leftIcon="checkmark-done-circle-outline"
-          onPress={onConfirmHandover || onBack}
-        />
-      </ScrollView>
-    </View>
-  );
-};
-
-// ============================================================================
-// SCREEN 26: [1:7462] LỊCH SỬ TÁI NẠP & HÓA ĐƠN THUỐC BHYT
-// ============================================================================
-export const RefillHistoryAndBHYTScreen: React.FC<{
-  onBack?: () => void;
-  onOpenVATInvoice?: () => void;
-}> = ({ onBack, onOpenVATInvoice }) => {
-  return (
-    <View style={styles.screen}>
-      <AppHeader
-        title="Lịch Sử Tái Nạp & Hóa Đơn BHYT"
-        subtitle="Mã BHYT: GD-4-79-11-20948 • BV ĐHYD TP.HCM"
-        onBack={onBack}
-      />
-      <ScrollView contentContainerStyle={styles.scrollPad}>
-        {/* Financial & Insurance Benefits Summary */}
-        <LinearGradient
-          colors={GRADIENTS.insuranceCard}
-          style={[styles.heroCard, SHADOWS.md]}
-        >
-          <Text style={styles.whiteSub}>
-            Quyền lợi Dược phẩm & BHYT Năm 2024 (4 đợt nạp)
-          </Text>
-          <View style={[styles.rowBetween, { marginTop: 8 }]}>
-            <View>
-              <Text style={styles.whiteSub}>Tổng tiền thuốc nạp</Text>
-              <Text style={styles.whiteTitle}>2.450.000 đ</Text>
-            </View>
-            <View style={{ alignItems: 'flex-end' }}>
-              <Text style={styles.whiteSub}>BHYT đã chi trả (-36%)</Text>
-              <Text style={[styles.whiteTitle, { color: '#86F2E4' }]}>
-                Tiết kiệm 890.000 đ
-              </Text>
-            </View>
-          </View>
-        </LinearGradient>
-
-        <SectionHeader
-          title="Danh sách đợt nạp & Hóa đơn VAT"
-          badgeText="04/04 Hợp lệ"
-          badgeVariant="teal"
-        />
-        {[
-          {
-            code: 'HĐ VAT #0048192 (1C24TSM)',
-            date: '28/10/2024 • Đợt nạp Quý 4',
-            amount: '350.000 đ (BHYT trả 210.000 đ)',
-          },
-          {
-            code: 'HĐ VAT #0039104 (1C24TSM)',
-            date: '15/09/2024 • Đợt nạp Quý 3',
-            amount: '680.000 đ (BHYT trả 420.000 đ)',
-          },
-        ].map((inv) => (
-          <View key={inv.code} style={[styles.card, SHADOWS.sm]}>
-            <View style={styles.rowBetween}>
-              <Text style={styles.cardTitle}>{inv.code}</Text>
-              <Badge label="Đã cấp mã CQT" variant="teal" />
-            </View>
-            <Text style={styles.subText}>{inv.date}</Text>
-            <Text style={[styles.slotTime, { marginTop: 4 }]}>{inv.amount}</Text>
-            <AppButton
-              title="Xem Hóa Đơn Điện Tử VAT & XML"
-              variant="tonal"
-              size="sm"
-              leftIcon="document-text-outline"
-              onPress={onOpenVATInvoice}
-              style={{ marginTop: 10 }}
-            />
           </View>
         ))}
       </ScrollView>
@@ -833,11 +439,6 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 16,
   },
-  whiteTitle: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#FFFFFF',
-  },
   whiteSub: {
     fontSize: 11.5,
     color: 'rgba(255,255,255,0.85)',
@@ -862,68 +463,4 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     color: COLORS.textPrimary,
   },
-  lockScreen: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'space-between',
-  },
-  lockTop: {
-    alignItems: 'center',
-    marginTop: 12,
-  },
-  dynamicIsland: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.45)',
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: RADIUS.full,
-    gap: 6,
-    marginBottom: 18,
-  },
-  islandText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  lockDate: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.85)',
-    fontWeight: '600',
-  },
-  lockClock: {
-    fontSize: 54,
-    fontWeight: '800',
-    color: '#FFFFFF',
-  },
-  pillHighlightBox: {
-    backgroundColor: COLORS.surfaceContainerLow,
-    borderRadius: RADIUS.md,
-    padding: 12,
-    marginVertical: 12,
-  },
-  priceRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 6,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#E2E8F0',
-    marginVertical: 8,
-  },
-  telemetryBox: {
-    flex: 1,
-    backgroundColor: COLORS.surfaceContainerLow,
-    borderRadius: RADIUS.md,
-    padding: 10,
-  },
-  telemetryVal: {
-    fontSize: 15,
-    fontWeight: '800',
-    color: COLORS.secondary,
-    marginTop: 2,
-  },
 });
-

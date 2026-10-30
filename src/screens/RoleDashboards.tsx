@@ -86,8 +86,8 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
           </View>
           <View style={styles.heroDivider} />
           <View style={styles.heroMetricItem}>
-            <Text style={styles.heroMetricVal}>NEAC PKI</Text>
-            <Text style={styles.heroMetricLabel}>Chữ ký số Y tế</Text>
+            <Text style={styles.heroMetricVal}>Realtime</Text>
+            <Text style={styles.heroMetricLabel}>Đồng bộ lịch khám</Text>
           </View>
         </View>
       </LinearGradient>
@@ -107,7 +107,7 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
           </View>
           <Text style={styles.kpiValue}>142</Text>
           <Text style={styles.kpiTitle}>Lịch khám hôm nay</Text>
-          <Text style={styles.kpiSub}>118 tại viện • 24 Video</Text>
+          <Text style={styles.kpiSub}>118 tại viện • 24 Chat</Text>
         </View>
 
         <View style={[styles.kpiCard, SHADOWS.sm]}>
@@ -121,7 +121,7 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
             48.5M đ
           </Text>
           <Text style={styles.kpiTitle}>Doanh thu viện phí</Text>
-          <Text style={styles.kpiSub}>Đã xuất 96 hóa đơn VAT</Text>
+          <Text style={styles.kpiSub}>96 lượt thanh toán</Text>
         </View>
 
         <View style={[styles.kpiCard, SHADOWS.sm]}>
@@ -176,58 +176,6 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
             </View>
           </View>
         ))}
-      </View>
-
-      {/* Tax GDT & PKI Digital Signature Status */}
-      <View style={[styles.card, SHADOWS.sm]}>
-        <SectionHeader
-          title="Cổng Thuế GDT & Chữ ký số PKI (NEAC)"
-          leftIcon="document-lock-outline"
-          badgeText="Online"
-          badgeVariant="teal"
-        />
-        <View style={styles.auditRow}>
-          <Ionicons name="checkmark-circle" size={18} color={COLORS.secondary} />
-          <View style={{ flex: 1, marginLeft: 10 }}>
-            <Text style={styles.auditTitle}>
-              Đối soát Hóa đơn Điện tử VAT & BHYT
-            </Text>
-            <Text style={styles.auditSub}>
-              96/96 hóa đơn đã cấp mã CQT thành công • Không có lỗi tồn đọng
-            </Text>
-          </View>
-        </View>
-        <View style={[styles.auditRow, { marginTop: 10 }]}>
-          <Ionicons name="key-outline" size={18} color={COLORS.primary} />
-          <View style={{ flex: 1, marginLeft: 10 }}>
-            <Text style={styles.auditTitle}>
-              Chứng thư số Gateway PKI Bệnh viện
-            </Text>
-            <Text style={styles.auditSub}>
-              Serial: 5402-9981-NEAC-VN • Hạn dùng: 31/12/2026
-            </Text>
-          </View>
-        </View>
-        <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
-          <AppButton
-            title="Thẩm định NEAC"
-            variant="tonal"
-            size="sm"
-            leftIcon="shield-checkmark-outline"
-            fullWidth={false}
-            style={{ flex: 1 }}
-            onPress={() => onNavigate?.('neacPublicLookup')}
-          />
-          <AppButton
-            title="Đối soát Thuế GDT"
-            variant="outline"
-            size="sm"
-            leftIcon="receipt-outline"
-            fullWidth={false}
-            style={{ flex: 1 }}
-            onPress={() => onNavigate?.('gdtTaxPortal')}
-          />
-        </View>
       </View>
     </ScrollView>
   );
@@ -363,7 +311,7 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
           code: '#SC-241104-5120',
           patient: 'Nguyễn Văn Vũ (32T • Nam)',
           doctor: 'ThS. BS. Nguyễn Minh Đức',
-          time: '14:00 (04/11) - Video Call',
+          time: '14:00 (04/11) - Chat trực tuyến',
           status: 'Tư vấn từ xa',
           variant: 'blue' as const,
         },
@@ -388,21 +336,21 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
     >
       <View style={[styles.card, SHADOWS.sm]}>
         <SectionHeader
-          title="Cấu hình cổng tích hợp Y tế Quốc gia"
+          title="Cấu hình hệ thống & BHYT"
           leftIcon="server-outline"
         />
         <SettingToggleRow
           icon="shield-checkmark-outline"
-          title="Đồng bộ cổng BHYT VssID tự động"
-          description="Tự động tra cứu thẻ BHYT và mức hưởng 80-100% khi bệnh nhân đặt lịch."
+          title="Đồng bộ mã thẻ BHYT VssID tự động"
+          description="Tự động kiểm tra thẻ BHYT và mức hưởng 80-100% khi bệnh nhân đặt lịch."
           value={autoSyncVssID}
           onValueChange={setAutoSyncVssID}
         />
         <SettingToggleRow
-          icon="receipt-outline"
+          icon="notifications-outline"
           iconColor={COLORS.secondary}
-          title="Phát hành Hóa đơn điện tử GDT tức thì"
-          description="Tự động ký số HSM và gửi XML hóa đơn thuốc/viện phí lên Tổng cục Thuế."
+          title="Tự động gửi thông báo nhắc lịch khám"
+          description="Gửi thông báo nhắc nhở trước 24h và 2h cho bệnh nhân và bác sĩ trực."
           value={autoGdtTax}
           onValueChange={setAutoGdtTax}
         />
@@ -495,7 +443,7 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
   const [queueStatuses, setQueueStatuses] = useState<Record<string, string>>({
     '1': 'Đã check-in QR • Đang chờ',
     '2': 'Chờ tới lượt',
-    '3': 'Tư vấn Video (14:00)',
+    '3': 'Chat trực tuyến (14:00)',
   });
 
   const renderSchedule = () => (
@@ -564,9 +512,9 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
         },
         {
           id: '3',
-          stt: 'VIDEO #04',
+          stt: 'CHAT #04',
           name: 'Lê Minh Khang',
-          meta: '29 tuổi • Nam • Tư vấn từ xa',
+          meta: '29 tuổi • Nam • Tư vấn Chat trực tuyến',
           time: '14:00 - 14:30',
           symptom: 'Mất ngủ kéo dài, căng cơ cổ vai gáy.',
         },
@@ -596,10 +544,10 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
 
           <View style={styles.docActionRow}>
             <AppButton
-              title={pt.id === '3' ? 'Mở Video Call' : 'Gọi vào khám'}
+              title={pt.id === '3' ? 'Mở phòng Chat' : 'Gọi vào khám'}
               variant="primary"
               size="sm"
-              leftIcon={pt.id === '3' ? 'videocam-outline' : 'megaphone-outline'}
+              leftIcon={pt.id === '3' ? 'chatbubbles-outline' : 'megaphone-outline'}
               fullWidth={false}
               style={{ flex: 1 }}
               onPress={() => {
@@ -615,7 +563,7 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
               }}
             />
             <AppButton
-              title="Kê toa ký số"
+              title="Kê đơn thuốc"
               variant="secondary"
               size="sm"
               leftIcon="create-outline"
@@ -661,7 +609,7 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
           leftIcon="scan-outline"
           badgeText="Đã duyệt"
           badgeVariant="teal"
-          actionText="Xem chi tiết DICOM"
+          actionText="Xem chi tiết"
           onActionPress={() => onNavigate?.('labImagingResults')}
         />
         <Text style={styles.docName}>Chụp MRI Sọ não (Không cản từ)</Text>
@@ -686,7 +634,7 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
       showsVerticalScrollIndicator={false}
     >
       <SectionHeader
-        title="Kê đơn thuốc điện tử & Ký số PKI"
+        title="Kê đơn thuốc điện tử"
         subtitle="Bệnh nhân: Nguyễn Văn Vũ (#BN-882910) • Mã toa: #DT-241029-01"
       />
 
@@ -712,18 +660,18 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
         ))}
 
         <AppButton
-          title="Ký số chứng thư PKI & Phát hành toa"
+          title="Lưu chẩn đoán & Phát hành đơn thuốc"
           variant="gradient"
           size="lg"
-          leftIcon="finger-print-outline"
+          leftIcon="checkmark-circle-outline"
           style={{ marginTop: 14 }}
           onPress={() => {
             if (onNavigate) {
               onNavigate('postConsultSummary');
             } else {
               Alert.alert(
-                'Ký số PKI thành công!',
-                'Đơn thuốc #DT-241029-01 đã được ký số bởi TS. BS. Lê Thu Trang và đồng bộ sang ứng dụng của bệnh nhân Nguyễn Văn Vũ.'
+                'Đã phát hành đơn thuốc!',
+                'Đơn thuốc #DT-241029-01 đã được lưu và đồng bộ sang ứng dụng của bệnh nhân Nguyễn Văn Vũ.'
               );
             }
           }}
@@ -776,7 +724,7 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
         {[
           { key: 'schedule', label: 'Ca trực', icon: 'calendar' },
           { key: 'patients', label: 'Bệnh án EHR', icon: 'folder-open' },
-          { key: 'prescribe', label: 'Kê toa PKI', icon: 'document-text' },
+          { key: 'prescribe', label: 'Kê đơn thuốc', icon: 'document-text' },
           { key: 'profile', label: 'Hồ sơ BS', icon: 'person' },
         ].map((t) => {
           const active = activeTab === t.key;

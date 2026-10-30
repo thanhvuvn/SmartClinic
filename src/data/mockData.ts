@@ -257,7 +257,7 @@ export const APPOINTMENTS: AppointmentItem[] = [
     timeRange: '14:00, Thứ Hai 04/11/2024',
     status: 'upcoming',
     mode: 'video',
-    statusBadge: 'Tư vấn Video',
+    statusBadge: 'Chat trực tuyến',
   },
 ];
 
