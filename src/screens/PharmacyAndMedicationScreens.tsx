@@ -43,8 +43,10 @@ export const MedicationLogScreen: React.FC<{
         {/* Weekly Adherence Strip (Habit Tracker) */}
         <View style={[styles.card, SHADOWS.sm]}>
           <View style={styles.rowBetween}>
-            <Text style={styles.cardTitle}>Tuần 44 • Tháng 10/2024</Text>
-            <Badge label="Tiến độ hôm nay: 2/3 cữ" variant="teal" />
+            <Text style={[styles.cardTitle, { flex: 1 }]} numberOfLines={1}>
+              Tuần 44 • Tháng 10/2024
+            </Text>
+            <Badge label="2/3 cữ hôm nay" variant="teal" />
           </View>
           <View style={styles.weekRow}>
             {[
@@ -68,6 +70,7 @@ export const MedicationLogScreen: React.FC<{
                     styles.dayPillText,
                     day.active && { color: '#FFFFFF' },
                   ]}
+                  numberOfLines={1}
                 >
                   {day.d}
                 </Text>
@@ -76,6 +79,7 @@ export const MedicationLogScreen: React.FC<{
                     styles.dayPillNum,
                     day.active && { color: '#FFFFFF' },
                   ]}
+                  numberOfLines={1}
                 >
                   {day.n}
                 </Text>
@@ -102,7 +106,9 @@ export const MedicationLogScreen: React.FC<{
         >
           <View style={styles.rowBetween}>
             <Badge label="Trợ lý AI SmartClinic" variant="glass" icon="sparkles" />
-            <Text style={styles.whiteSub}>Toa: TS. BS. Lê Thu Trang</Text>
+            <Text style={styles.whiteSub} numberOfLines={1}>
+              Toa: TS. BS. Lê Thu Trang
+            </Text>
           </View>
           <Text style={styles.whiteBody}>
             Bạn đã duy trì uống đúng giờ 6 ngày liên tiếp! Cữ tối nay (21:00 -
@@ -140,14 +146,20 @@ export const MedicationLogScreen: React.FC<{
           return (
             <View key={slot.key} style={[styles.card, SHADOWS.sm]}>
               <View style={styles.rowBetween}>
-                <Text style={styles.slotTime}>{slot.time}</Text>
+                <Text style={[styles.slotTime, { flex: 1 }]} numberOfLines={1}>
+                  {slot.time}
+                </Text>
                 <Badge
                   label={isTaken ? 'Đã uống ✓' : 'Sắp tới (21:00)'}
                   variant={isTaken ? 'teal' : 'warning'}
                 />
               </View>
-              <Text style={styles.cardTitle}>{slot.drug}</Text>
-              <Text style={styles.subText}>{slot.desc}</Text>
+              <Text style={styles.cardTitle} numberOfLines={1}>
+                {slot.drug}
+              </Text>
+              <Text style={styles.subText} numberOfLines={1}>
+                {slot.desc}
+              </Text>
               <AppButton
                 title={isTaken ? 'Đã ghi nhận uống thuốc' : 'Xác nhận đã uống cữ này'}
                 variant={isTaken ? 'tonal' : 'primary'}
@@ -164,7 +176,7 @@ export const MedicationLogScreen: React.FC<{
 
         <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
           <AppButton
-            title="Tủ thuốc gia đình"
+            title="Tủ thuốc"
             variant="tonal"
             size="md"
             leftIcon="medkit-outline"
@@ -173,7 +185,7 @@ export const MedicationLogScreen: React.FC<{
             onPress={onOpenCabinet}
           />
           <AppButton
-            title="Cài chuông báo 21:00"
+            title="Cài chuông nhắc"
             variant="outline"
             size="md"
             leftIcon="notifications-outline"
@@ -254,10 +266,14 @@ export const PrescriptionDetailScreen: React.FC<{
         {PRESCRIPTION_DRUGS.map((d) => (
           <View key={d.id} style={[styles.card, SHADOWS.sm]}>
             <View style={styles.rowBetween}>
-              <Text style={styles.cardTitle}>{d.name}</Text>
+              <Text style={[styles.cardTitle, { flex: 1 }]} numberOfLines={1}>
+                {d.name}
+              </Text>
               <Badge label={d.quantity} variant="blue" />
             </View>
-            <Text style={styles.subText}>{d.indication}</Text>
+            <Text style={styles.subText} numberOfLines={1}>
+              {d.indication}
+            </Text>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
               <Badge label={d.dosageTag} variant={d.isWarning ? 'danger' : 'teal'} />
               <Badge label={d.instructionTag} variant="surface" />
@@ -350,13 +366,15 @@ export const FamilyMedicineCabinetScreen: React.FC<{
         ].map((med) => (
           <View key={med.name} style={[styles.card, SHADOWS.sm]}>
             <View style={styles.rowBetween}>
-              <Text style={styles.cardTitle}>{med.name}</Text>
+              <Text style={[styles.cardTitle, { flex: 1 }]} numberOfLines={1}>
+                {med.name}
+              </Text>
               <Badge
                 label={med.stock}
                 variant={med.urgent ? 'danger' : 'teal'}
               />
             </View>
-            <Text style={styles.subText}>
+            <Text style={styles.subText} numberOfLines={1}>
               Người dùng: {med.owner} • {med.exp}
             </Text>
           </View>
@@ -411,10 +429,11 @@ const styles = StyleSheet.create({
   weekRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    gap: 4,
     marginTop: 12,
   },
   dayPill: {
-    width: 42,
+    flex: 1,
     borderRadius: RADIUS.md,
     backgroundColor: COLORS.surfaceContainerLow,
     paddingVertical: 8,

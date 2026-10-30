@@ -41,7 +41,9 @@ export const SettingToggleRow: React.FC<SettingToggleRowProps> = ({
       <View style={styles.topRow}>
         <View style={styles.titleGroup}>
           <Ionicons name={icon} size={18} color={iconColor} style={styles.icon} />
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.title} numberOfLines={1}>
+            {title}
+          </Text>
         </View>
         <Switch
           value={value}
@@ -56,11 +58,15 @@ export const SettingToggleRow: React.FC<SettingToggleRowProps> = ({
         <View style={styles.footerRow}>
           <View style={styles.footerLeft}>
             <Ionicons name="volume-high-outline" size={14} color={COLORS.secondary} />
-            <Text style={styles.footerNoteText}>{footerNote}</Text>
+            <Text style={[styles.footerNoteText, { flex: 1 }]} numberOfLines={1}>
+              {footerNote}
+            </Text>
           </View>
           {footerActionLabel ? (
             <TouchableOpacity style={styles.footerBtn} onPress={onFooterAction}>
-              <Text style={styles.footerBtnText}>{footerActionLabel}</Text>
+              <Text style={styles.footerBtnText} numberOfLines={1}>
+                {footerActionLabel}
+              </Text>
               <Ionicons name="options-outline" size={13} color={COLORS.primary} />
             </TouchableOpacity>
           ) : null}
@@ -101,8 +107,14 @@ export const SettingLinkRow: React.FC<SettingLinkRowProps> = ({
         <Ionicons name={icon} size={18} color={COLORS.primary} />
       </View>
       <View style={styles.linkTextCol}>
-        <Text style={styles.linkTitle}>{title}</Text>
-        {subtitle ? <Text style={styles.linkSubtitle}>{subtitle}</Text> : null}
+        <Text style={styles.linkTitle} numberOfLines={1}>
+          {title}
+        </Text>
+        {subtitle ? (
+          <Text style={styles.linkSubtitle} numberOfLines={1}>
+            {subtitle}
+          </Text>
+        ) : null}
       </View>
       {badgeLabel ? <Badge label={badgeLabel} variant="blue" style={{ marginRight: 6 }} /> : null}
       {rightToggleValue !== undefined && onRightToggleChange ? (

@@ -38,10 +38,14 @@ export const PatientMasterIdentityCard: React.FC<PatientMasterIdentityCardProps>
         </View>
         <View style={styles.identityCol}>
           <View style={styles.nameRow}>
-            <Text style={styles.name}>{profile.name}</Text>
+            <Text style={styles.name} numberOfLines={1}>
+              {profile.name}
+            </Text>
             <Badge label={`${profile.age} tuổi • ${profile.gender}`} variant="surface" />
           </View>
-          <Text style={styles.patientCode}>Mã BN: {profile.patientCode}</Text>
+          <Text style={styles.patientCode} numberOfLines={1}>
+            Mã BN: {profile.patientCode}
+          </Text>
           <View style={styles.pillsRow}>
             <Badge
               label={`Nhóm máu ${profile.bloodType}`}
@@ -137,11 +141,15 @@ export const VssIDInsuranceCard: React.FC<VssIDInsuranceCardProps> = ({
       <View style={styles.vssidMetaBox}>
         <View style={styles.vssidMetaRow}>
           <Text style={styles.vssidMetaKey}>Nơi ĐKKCB Ban Đầu:</Text>
-          <Text style={styles.vssidMetaVal}>{profile.bhytHospital}</Text>
+          <Text style={styles.vssidMetaVal} numberOfLines={1}>
+            {profile.bhytHospital}
+          </Text>
         </View>
         <View style={[styles.vssidMetaRow, { marginTop: 4 }]}>
           <Text style={styles.vssidMetaKey}>Hạn bảo hiểm:</Text>
-          <Text style={styles.vssidMetaVal}>{profile.bhytExpiry}</Text>
+          <Text style={styles.vssidMetaVal} numberOfLines={1}>
+            {profile.bhytExpiry}
+          </Text>
         </View>
       </View>
 
@@ -150,7 +158,7 @@ export const VssIDInsuranceCard: React.FC<VssIDInsuranceCardProps> = ({
         activeOpacity={0.8}
         onPress={onDetailPress}
       >
-        <Text style={styles.vssidBtnText}>
+        <Text style={styles.vssidBtnText} numberOfLines={1}>
           Tra cứu chi tiết & Lịch sử quỹ chi trả
         </Text>
         <Ionicons name="arrow-forward" size={14} color="#FFFFFF" />
@@ -183,26 +191,32 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
         </View>
         <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
           <View style={styles.nameRow}>
-            <Text style={styles.nameLg}>{profile.name}</Text>
+            <Text style={styles.nameLg} numberOfLines={1}>
+              {profile.name}
+            </Text>
             <Badge label="eKYC" variant="teal" icon="shield-checkmark-outline" />
           </View>
-          <Text style={styles.metaText}>
+          <Text style={styles.metaText} numberOfLines={1}>
             {profile.age} tuổi • {profile.gender} • Nhóm máu{' '}
             <Text style={{ color: COLORS.primary, fontWeight: '800' }}>
               {profile.bloodType}
             </Text>
           </Text>
           <View style={styles.codeCopyPill}>
-            <Text style={styles.codeCopyText}>{profile.patientCode}</Text>
+            <Text style={styles.codeCopyText} numberOfLines={1}>
+              {profile.patientCode}
+            </Text>
             <Ionicons name="copy-outline" size={13} color={COLORS.primary} />
           </View>
         </View>
       </View>
 
       <TouchableOpacity style={styles.tierBar} activeOpacity={0.8}>
-        <View style={styles.tierLeft}>
+        <View style={[styles.tierLeft, { flex: 1, minWidth: 0, marginRight: 8 }]}>
           <Ionicons name="ribbon-outline" size={16} color={COLORS.primary} />
-          <Text style={styles.tierText}>{profile.tier}</Text>
+          <Text style={[styles.tierText, { flex: 1 }]} numberOfLines={1}>
+            {profile.tier}
+          </Text>
         </View>
         <Ionicons name="chevron-forward" size={15} color={COLORS.textSecondary} />
       </TouchableOpacity>

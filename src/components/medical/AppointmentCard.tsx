@@ -55,9 +55,15 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
           </View>
         </View>
         <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
-          <Text style={styles.doctorName}>{doctor.name}</Text>
-          <Text style={styles.specialty}>{doctor.degree}</Text>
-          <Text style={styles.hospital}>{doctor.hospital}</Text>
+          <Text style={styles.doctorName} numberOfLines={1}>
+            {doctor.name}
+          </Text>
+          <Text style={styles.specialty} numberOfLines={1}>
+            {doctor.degree}
+          </Text>
+          <Text style={styles.hospital} numberOfLines={1}>
+            {doctor.hospital}
+          </Text>
         </View>
       </View>
 
@@ -70,10 +76,12 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             color={COLORS.primary}
           />
           <View style={{ flex: 1, minWidth: 0, marginLeft: 8 }}>
-            <Text style={styles.timeBoxLabel}>
+            <Text style={styles.timeBoxLabel} numberOfLines={1}>
               {isClinic ? 'Thời gian khám' : 'Thời gian hẹn'}
             </Text>
-            <Text style={styles.timeBoxValue}>{appointment.timeRange}</Text>
+            <Text style={styles.timeBoxValue} numberOfLines={1}>
+              {appointment.timeRange}
+            </Text>
           </View>
         </View>
 
@@ -81,8 +89,12 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
           <View style={styles.queueRight}>
             <Ionicons name="ticket-outline" size={16} color={COLORS.secondary} />
             <View style={{ marginLeft: 6 }}>
-              <Text style={styles.timeBoxLabel}>Số thứ tự khám</Text>
-              <Text style={styles.queueNumber}>{appointment.queueNumber}</Text>
+              <Text style={styles.timeBoxLabel} numberOfLines={1}>
+                Số thứ tự
+              </Text>
+              <Text style={styles.queueNumber} numberOfLines={1}>
+                {appointment.queueNumber}
+              </Text>
             </View>
           </View>
         ) : (
@@ -91,7 +103,9 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             onPress={() => onPrimaryPress?.(appointment)}
           >
             <Ionicons name="chatbubbles-outline" size={14} color="#FFFFFF" />
-            <Text style={styles.waitingRoomText}>Chat với Bác sĩ</Text>
+            <Text style={styles.waitingRoomText} numberOfLines={1}>
+              Chat Bác sĩ
+            </Text>
           </TouchableOpacity>
         )}
       </View>
@@ -101,13 +115,19 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
         <>
           <View style={styles.roomRow}>
             <Ionicons name="business-outline" size={15} color={COLORS.primary} />
-            <Text style={styles.roomText}>{appointment.room}</Text>
+            <Text style={[styles.roomText, { flex: 1 }]} numberOfLines={1}>
+              {appointment.room}
+            </Text>
           </View>
 
           <View style={styles.qrCodeRow}>
             <View style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
-              <Text style={styles.codeLabel}>MÃ PHIẾU HẸN</Text>
-              <Text style={styles.codeValue}>{appointment.code}</Text>
+              <Text style={styles.codeLabel} numberOfLines={1}>
+                MÃ PHIẾU HẸN
+              </Text>
+              <Text style={styles.codeValue} numberOfLines={1}>
+                {appointment.code}
+              </Text>
             </View>
             <TouchableOpacity
               style={styles.qrBtn}

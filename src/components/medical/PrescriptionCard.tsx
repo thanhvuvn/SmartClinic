@@ -40,8 +40,10 @@ export const ActivePrescriptionCard: React.FC<ActivePrescriptionCardProps> = ({
       <View style={styles.headerRow}>
         <Image source={{ uri: doctor.avatar }} style={styles.docAvatar} />
         <View style={{ flex: 1, minWidth: 0, marginHorizontal: 10 }}>
-          <Text style={styles.docName}>{doctor.name}</Text>
-          <Text style={styles.docSub}>
+          <Text style={styles.docName} numberOfLines={1}>
+            {doctor.name}
+          </Text>
+          <Text style={styles.docSub} numberOfLines={1}>
             Chuyên khoa {doctor.specialty} • BV ĐHYD
           </Text>
         </View>
@@ -59,8 +61,12 @@ export const ActivePrescriptionCard: React.FC<ActivePrescriptionCardProps> = ({
               <Ionicons name="medkit-outline" size={15} color={COLORS.primary} />
             </View>
             <View style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
-              <Text style={styles.drugName}>{drug.name}</Text>
-              <Text style={styles.drugIndication}>{drug.indication}</Text>
+              <Text style={styles.drugName} numberOfLines={1}>
+                {drug.name}
+              </Text>
+              <Text style={styles.drugIndication} numberOfLines={1}>
+                {drug.indication}
+              </Text>
             </View>
             <Text style={styles.drugQty}>{drug.quantity}</Text>
           </View>
@@ -77,12 +83,13 @@ export const ActivePrescriptionCard: React.FC<ActivePrescriptionCardProps> = ({
                   styles.dosageChipText,
                   drug.isWarning && { color: COLORS.error },
                 ]}
+                numberOfLines={1}
               >
                 {drug.dosageTag}
               </Text>
             </View>
             <View style={styles.instructionChip}>
-              <Text style={styles.instructionChipText}>
+              <Text style={styles.instructionChipText} numberOfLines={1}>
                 {drug.instructionTag}
               </Text>
             </View>
@@ -99,8 +106,12 @@ export const ActivePrescriptionCard: React.FC<ActivePrescriptionCardProps> = ({
         <View style={styles.reminderLeft}>
           <Ionicons name="alarm-outline" size={18} color={COLORS.secondary} />
           <View style={{ flex: 1, minWidth: 0, marginLeft: 8 }}>
-            <Text style={styles.reminderTitle}>Nhắc uống thuốc</Text>
-            <Text style={styles.reminderSub}>Đã bật lịch 08:00 & 21:00 • Chạm xem nhật ký</Text>
+            <Text style={styles.reminderTitle} numberOfLines={1}>
+              Nhắc uống thuốc
+            </Text>
+            <Text style={styles.reminderSub} numberOfLines={1}>
+              Đã bật lịch 08:00 & 21:00 • Chạm xem nhật ký
+            </Text>
           </View>
         </View>
         <Badge label="Bật" variant="teal" />
@@ -118,12 +129,12 @@ export const ActivePrescriptionCard: React.FC<ActivePrescriptionCardProps> = ({
           onPress={onViewOriginal}
         />
         <AppButton
-          title="Mua thuốc giao nhanh"
+          title="Tủ thuốc nhà"
           variant="secondary"
           size="md"
-          leftIcon="bicycle-outline"
+          leftIcon="medkit-outline"
           fullWidth={false}
-          style={{ flex: 1.3 }}
+          style={{ flex: 1 }}
           onPress={onBuyMedicine}
         />
       </View>
@@ -155,7 +166,9 @@ export const LabImagingCard: React.FC<LabImagingCardProps> = ({
             <Badge label="Chẩn đoán hình ảnh" variant="surface" />
             <Badge label="Bình thường" variant="teal" />
           </View>
-          <Text style={styles.labTitle}>Chụp MRI Sọ não (Không cản từ)</Text>
+          <Text style={styles.labTitle} numberOfLines={1}>
+            Chụp MRI Sọ não (Không cản từ)
+          </Text>
         </View>
       </View>
 
@@ -178,17 +191,23 @@ export const LabImagingCard: React.FC<LabImagingCardProps> = ({
             size={16}
             color={COLORS.primary}
           />
-          <Text style={styles.signatureText}>Có chữ ký số bác sĩ CĐHA</Text>
+          <Text style={styles.signatureText} numberOfLines={1}>
+            Đã duyệt CĐHA
+          </Text>
         </TouchableOpacity>
 
         <View style={styles.labBtnsRow}>
           <TouchableOpacity style={styles.dicomBtn} onPress={onViewDicom}>
             <Ionicons name="document-outline" size={14} color={COLORS.primary} />
-            <Text style={styles.dicomBtnText}>Xem DICOM</Text>
+            <Text style={styles.dicomBtnText} numberOfLines={1}>
+              Chi tiết
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.pdfBtn} onPress={onDownloadPdf}>
             <Ionicons name="download-outline" size={14} color="#FFFFFF" />
-            <Text style={styles.pdfBtnText}>Bản PDF</Text>
+            <Text style={styles.pdfBtnText} numberOfLines={1}>
+              Bản PDF
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

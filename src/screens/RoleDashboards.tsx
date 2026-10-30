@@ -105,9 +105,15 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
             </View>
             <Badge label="+18%" variant="teal" />
           </View>
-          <Text style={styles.kpiValue}>142</Text>
-          <Text style={styles.kpiTitle}>Lịch khám hôm nay</Text>
-          <Text style={styles.kpiSub}>118 tại viện • 24 Chat</Text>
+          <Text style={styles.kpiValue} numberOfLines={1}>
+            142
+          </Text>
+          <Text style={styles.kpiTitle} numberOfLines={1}>
+            Lịch khám hôm nay
+          </Text>
+          <Text style={styles.kpiSub} numberOfLines={1}>
+            118 tại viện • 24 Chat
+          </Text>
         </View>
 
         <View style={[styles.kpiCard, SHADOWS.sm]}>
@@ -117,11 +123,15 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
             </View>
             <Badge label="Đạt chỉ tiêu" variant="teal" />
           </View>
-          <Text style={[styles.kpiValue, { color: COLORS.secondary }]}>
+          <Text style={[styles.kpiValue, { color: COLORS.secondary }]} numberOfLines={1}>
             48.5M đ
           </Text>
-          <Text style={styles.kpiTitle}>Doanh thu viện phí</Text>
-          <Text style={styles.kpiSub}>96 lượt thanh toán</Text>
+          <Text style={styles.kpiTitle} numberOfLines={1}>
+            Doanh thu viện phí
+          </Text>
+          <Text style={styles.kpiSub} numberOfLines={1}>
+            96 lượt thanh toán
+          </Text>
         </View>
 
         <View style={[styles.kpiCard, SHADOWS.sm]}>
@@ -131,9 +141,15 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
             </View>
             <Badge label="90% trực" variant="blue" />
           </View>
-          <Text style={styles.kpiValue}>38 / 42</Text>
-          <Text style={styles.kpiTitle}>Bác sĩ đang trực</Text>
-          <Text style={styles.kpiSub}>8 chuyên khoa hoạt động</Text>
+          <Text style={styles.kpiValue} numberOfLines={1}>
+            38 / 42
+          </Text>
+          <Text style={styles.kpiTitle} numberOfLines={1}>
+            Bác sĩ đang trực
+          </Text>
+          <Text style={styles.kpiSub} numberOfLines={1}>
+            8 chuyên khoa hoạt động
+          </Text>
         </View>
 
         <View style={[styles.kpiCard, SHADOWS.sm]}>
@@ -143,9 +159,15 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
             </View>
             <Badge label="+64 mới" variant="teal" />
           </View>
-          <Text style={styles.kpiValue}>12,480</Text>
-          <Text style={styles.kpiTitle}>Hồ sơ bệnh nhân EHR</Text>
-          <Text style={styles.kpiSub}>100% đồng bộ VssID</Text>
+          <Text style={styles.kpiValue} numberOfLines={1}>
+            12,480
+          </Text>
+          <Text style={styles.kpiTitle} numberOfLines={1}>
+            Hồ sơ bệnh nhân EHR
+          </Text>
+          <Text style={styles.kpiSub} numberOfLines={1}>
+            100% đồng bộ VssID
+          </Text>
         </View>
       </View>
 
@@ -163,7 +185,9 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
         ].map((item) => (
           <View key={item.name} style={styles.barRow}>
             <View style={styles.barLabelRow}>
-              <Text style={styles.barName}>{item.name}</Text>
+              <Text style={styles.barName} numberOfLines={1}>
+                {item.name}
+              </Text>
               <Text style={styles.barCount}>{item.count} ca ({item.pct}%)</Text>
             </View>
             <View style={styles.barTrack}>
@@ -236,9 +260,13 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
                   icon="checkmark-circle"
                 />
               </View>
-              <Text style={styles.docSub}>{doc.degree}</Text>
-              <Text style={styles.docHospitalLine}>🏥 {doc.hospital}</Text>
-              <Text style={styles.docMeta}>
+              <Text style={styles.docSub} numberOfLines={1}>
+                {doc.degree}
+              </Text>
+              <Text style={styles.docHospitalLine} numberOfLines={1}>
+                🏥 {doc.hospital}
+              </Text>
+              <Text style={styles.docMeta} numberOfLines={1}>
                 Phí khám: {doc.fee} • ★ {doc.rating} ({doc.reviewCount} lượt)
               </Text>
             </View>
@@ -257,7 +285,7 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
               }
             />
             <AppButton
-              title="Cấu hình phí & BHYT"
+              title="Cấu hình BHYT"
               variant="outline"
               size="sm"
               leftIcon="create-outline"
@@ -650,8 +678,10 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
         {PRESCRIPTION_DRUGS.map((d) => (
           <View key={d.id} style={styles.rxItemRow}>
             <View style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
-              <Text style={styles.docName}>{d.name}</Text>
-              <Text style={styles.docSub}>
+              <Text style={styles.docName} numberOfLines={1}>
+                {d.name}
+              </Text>
+              <Text style={styles.docSub} numberOfLines={1}>
                 {d.dosageTag} • {d.instructionTag}
               </Text>
             </View>

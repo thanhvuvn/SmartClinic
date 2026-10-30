@@ -70,26 +70,45 @@ export const BookingSuccessScreen: React.FC<{
 
           <View style={styles.docRow}>
             <Image source={{ uri: doctor.avatar }} style={styles.avatarMd} />
-            <View style={{ flex: 1, marginLeft: 12 }}>
+            <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
               <Badge label="Khám chuyên khoa" variant="blue" />
-              <Text style={[styles.docName, { marginTop: 4 }]}>{doctor.name}</Text>
-              <Text style={styles.docSub}>{doctor.degree}</Text>
-              <Text style={styles.docHospital}>{doctor.hospital}</Text>
+              <Text style={[styles.docName, { marginTop: 4 }]} numberOfLines={1}>
+                {doctor.name}
+              </Text>
+              <Text style={styles.docSub} numberOfLines={1}>
+                {doctor.degree}
+              </Text>
+              <Text style={styles.docHospital} numberOfLines={1}>
+                {doctor.hospital}
+              </Text>
             </View>
           </View>
 
           <View style={styles.ticketGrid}>
             <View style={styles.ticketBox}>
-              <Text style={styles.capLabel}>THỜI GIAN KHÁM</Text>
-              <Text style={styles.ticketVal}>09:30 - 10:00</Text>
-              <Text style={styles.docSub}>Thứ 3, 29/10/2024</Text>
+              <Text style={styles.capLabel} numberOfLines={1}>
+                THỜI GIAN KHÁM
+              </Text>
+              <Text style={styles.ticketVal} numberOfLines={1}>
+                09:30 - 10:00
+              </Text>
+              <Text style={styles.docSub} numberOfLines={1}>
+                Thứ 3, 29/10/2024
+              </Text>
             </View>
             <View style={styles.ticketBox}>
-              <Text style={styles.capLabel}>PHÒNG KHÁM & STT</Text>
-              <Text style={[styles.ticketVal, { color: COLORS.secondary }]}>
+              <Text style={styles.capLabel} numberOfLines={1}>
+                PHÒNG KHÁM & STT
+              </Text>
+              <Text
+                style={[styles.ticketVal, { color: COLORS.secondary }]}
+                numberOfLines={1}
+              >
                 STT #14 • P.302
               </Text>
-              <Text style={styles.docSub}>Tầng 3, Tòa nhà A</Text>
+              <Text style={styles.docSub} numberOfLines={1}>
+                Tầng 3, Tòa nhà A
+              </Text>
             </View>
           </View>
         </View>
@@ -215,16 +234,18 @@ export const FamilyProfilesScreen: React.FC<{
         <View style={[styles.card, SHADOWS.sm]}>
           <View style={styles.rowBetween}>
             <Badge label="Chủ hộ • Đang xem" variant="primarySolid" />
-            <Badge label="Đã đồng bộ VssID & BHYT gia đình" variant="teal" />
+            <Badge label="Đã đồng bộ VssID" variant="teal" />
           </View>
           <View style={[styles.docRow, { marginTop: 10 }]}>
             <Image
               source={{ uri: PATIENT_PROFILE.avatar }}
               style={styles.avatarMd}
             />
-            <View style={{ flex: 1, marginLeft: 12 }}>
-              <Text style={styles.docName}>Nguyễn Văn Vũ (Bản thân)</Text>
-              <Text style={styles.docSub}>
+            <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
+              <Text style={styles.docName} numberOfLines={1}>
+                Nguyễn Văn Vũ (Bản thân)
+              </Text>
+              <Text style={styles.docSub} numberOfLines={1}>
                 32 tuổi • #BN-882910 • Nhóm máu O+
               </Text>
             </View>
@@ -248,7 +269,7 @@ export const FamilyProfilesScreen: React.FC<{
           </Text>
           <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
             <AppButton
-              title="Nhắc đo huyết áp"
+              title="Nhắc huyết áp"
               variant="white"
               size="sm"
               fullWidth={false}
@@ -256,7 +277,7 @@ export const FamilyProfilesScreen: React.FC<{
               onPress={() => onNavigate?.('medLog')}
             />
             <AppButton
-              title="Đặt hẹn tiêm nhắc"
+              title="Đặt lịch tiêm"
               variant="secondary"
               size="sm"
               fullWidth={false}
@@ -309,10 +330,12 @@ export const FamilyProfilesScreen: React.FC<{
             style={[styles.card, SHADOWS.sm]}
           >
             <View style={styles.rowBetween}>
-              <Text style={styles.docName}>{mem.name}</Text>
+              <Text style={[styles.docName, { flex: 1 }]} numberOfLines={1}>
+                {mem.name}
+              </Text>
               <Badge label={mem.badge} variant="blue" />
             </View>
-            <Text style={styles.docSub}>
+            <Text style={styles.docSub} numberOfLines={1}>
               {mem.relation} • Mã EHR: {mem.code} • Nhóm máu {mem.blood}
             </Text>
             <View style={styles.memberNoteBox}>
@@ -321,7 +344,9 @@ export const FamilyProfilesScreen: React.FC<{
                 size={14}
                 color={COLORS.secondary}
               />
-              <Text style={styles.memberNoteText}>{mem.note}</Text>
+              <Text style={styles.memberNoteText} numberOfLines={1}>
+                {mem.note}
+              </Text>
             </View>
           </TouchableOpacity>
         ))}
@@ -357,10 +382,12 @@ export const ChildEHRDetailScreen: React.FC<{ onBack?: () => void }> = ({
         {/* Master Profile Card */}
         <View style={[styles.card, SHADOWS.sm]}>
           <View style={styles.rowBetween}>
-            <View>
-              <Text style={styles.docName}>Nguyễn Bảo Nam</Text>
-              <Text style={styles.docSub}>
-                Nam (18/09/2020) • Nhóm máu O+ • Chủ hộ: Nguyễn Văn Vũ
+            <View style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
+              <Text style={styles.docName} numberOfLines={1}>
+                Nguyễn Bảo Nam
+              </Text>
+              <Text style={styles.docSub} numberOfLines={1}>
+                Nam (18/09/2020) • Nhóm máu O+ • Chủ hộ: Vũ
               </Text>
             </View>
             <Badge label="Chuẩn WHO" variant="teal" />
@@ -368,19 +395,37 @@ export const ChildEHRDetailScreen: React.FC<{ onBack?: () => void }> = ({
 
           <View style={styles.vitals3Grid}>
             <View style={styles.vitalBox}>
-              <Text style={styles.capLabel}>Chiều cao</Text>
-              <Text style={styles.vitalBig}>104 cm</Text>
-              <Text style={styles.vitalTag}>Chuẩn WHO</Text>
+              <Text style={styles.capLabel} numberOfLines={1}>
+                Chiều cao
+              </Text>
+              <Text style={styles.vitalBig} numberOfLines={1}>
+                104 cm
+              </Text>
+              <Text style={styles.vitalTag} numberOfLines={1}>
+                Chuẩn WHO
+              </Text>
             </View>
             <View style={styles.vitalBox}>
-              <Text style={styles.capLabel}>Cân nặng</Text>
-              <Text style={styles.vitalBig}>16.5 kg</Text>
-              <Text style={styles.vitalTag}>+0.4kg/quý</Text>
+              <Text style={styles.capLabel} numberOfLines={1}>
+                Cân nặng
+              </Text>
+              <Text style={styles.vitalBig} numberOfLines={1}>
+                16.5 kg
+              </Text>
+              <Text style={styles.vitalTag} numberOfLines={1}>
+                +0.4kg/quý
+              </Text>
             </View>
             <View style={styles.vitalBox}>
-              <Text style={styles.capLabel}>BMI Thể trạng</Text>
-              <Text style={styles.vitalBig}>15.2</Text>
-              <Text style={styles.vitalTag}>Phát triển tốt</Text>
+              <Text style={styles.capLabel} numberOfLines={1}>
+                BMI Thể trạng
+              </Text>
+              <Text style={styles.vitalBig} numberOfLines={1}>
+                15.2
+              </Text>
+              <Text style={styles.vitalTag} numberOfLines={1}>
+                Phát triển tốt
+              </Text>
             </View>
           </View>
         </View>
@@ -662,15 +707,19 @@ export const TeleconsultationScreen: React.FC<{
         <View style={[styles.card, SHADOWS.sm]}>
           <View style={styles.docRow}>
             <Image source={{ uri: doctor.avatar }} style={styles.avatarMd} />
-            <View style={{ flex: 1, marginLeft: 12 }}>
+            <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
               <View style={styles.rowBetween}>
-                <Text style={styles.docName}>{doctor.name}</Text>
+                <Text style={[styles.docName, { flex: 1 }]} numberOfLines={1}>
+                  {doctor.name}
+                </Text>
                 <Badge label="Đang hoạt động" variant="teal" showDot />
               </View>
-              <Text style={styles.docSub}>
+              <Text style={styles.docSub} numberOfLines={1}>
                 Ca tư vấn #SC-241029-8892 • BN: Nguyễn Văn Vũ
               </Text>
-              <Text style={styles.docHospital}>{doctor.hospital}</Text>
+              <Text style={styles.docHospital} numberOfLines={1}>
+                {doctor.hospital}
+              </Text>
             </View>
           </View>
 
@@ -678,7 +727,7 @@ export const TeleconsultationScreen: React.FC<{
 
           <View style={{ flexDirection: 'row', gap: 8 }}>
             <AppButton
-              title="Xem Kết quả CĐHA"
+              title="Kết quả CĐHA"
               variant="tonal"
               size="sm"
               leftIcon="document-text-outline"
@@ -687,7 +736,7 @@ export const TeleconsultationScreen: React.FC<{
               onPress={onOpenLabResults}
             />
             <AppButton
-              title="Xem Kết luận & Đơn thuốc"
+              title="Đơn thuốc & Kết luận"
               variant="primary"
               size="sm"
               leftIcon="medkit-outline"
@@ -746,11 +795,11 @@ export const TeleconsultationScreen: React.FC<{
                         size={20}
                         color={COLORS.primary}
                       />
-                      <View style={{ flex: 1 }}>
-                        <Text style={styles.chatAttachmentTitle}>
+                      <View style={{ flex: 1, minWidth: 0 }}>
+                        <Text style={styles.chatAttachmentTitle} numberOfLines={1}>
                           {msg.attachmentTitle}
                         </Text>
-                        <Text style={styles.chatAttachmentSub}>
+                        <Text style={styles.chatAttachmentSub} numberOfLines={1}>
                           {msg.attachmentSubtitle}
                         </Text>
                       </View>
@@ -1010,9 +1059,13 @@ export const LabAndImagingResultsScreen: React.FC<{
             { name: 'Creatinine huyết thanh', val: '78 µmol/L', ref: '62 - 106' },
           ].map((lab) => (
             <View key={lab.name} style={styles.labRow}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.docName}>{lab.name}</Text>
-                <Text style={styles.docSub}>Tham chiếu: {lab.ref}</Text>
+              <View style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
+                <Text style={styles.docName} numberOfLines={1}>
+                  {lab.name}
+                </Text>
+                <Text style={styles.docSub} numberOfLines={1}>
+                  Tham chiếu: {lab.ref}
+                </Text>
               </View>
               <Text style={styles.labVal}>{lab.val}</Text>
             </View>

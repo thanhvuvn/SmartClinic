@@ -154,8 +154,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <View style={[styles.quickServiceIcon, { backgroundColor: srv.bg }]}>
                 <Ionicons name={srv.icon as any} size={20} color={srv.color} />
               </View>
-              <Text style={styles.quickServiceTitle}>{srv.title}</Text>
-              <Text style={styles.quickServiceSub}>{srv.sub}</Text>
+              <Text style={styles.quickServiceTitle} numberOfLines={1}>
+                {srv.title}
+              </Text>
+              <Text style={styles.quickServiceSub} numberOfLines={1}>
+                {srv.sub}
+              </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -355,8 +359,10 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
             <Ionicons name="scan-outline" size={20} color="#FFFFFF" />
           </View>
           <View style={{ flex: 1, minWidth: 140, marginHorizontal: 10 }}>
-            <Text style={styles.ocrTitle}>Tải lên hồ sơ / Toa thuốc cũ</Text>
-            <Text style={styles.ocrSub}>
+            <Text style={styles.ocrTitle} numberOfLines={1}>
+              Tải lên hồ sơ / Toa thuốc cũ
+            </Text>
+            <Text style={styles.ocrSub} numberOfLines={1}>
               Lưu trữ hình ảnh kết quả xét nghiệm và đơn thuốc cá nhân
             </Text>
           </View>
@@ -707,8 +713,10 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
               <Badge label="Gần nhất" variant="blue" />
             </View>
             <Text style={[styles.statBigNum, { color: COLORS.primary }]}>2</Text>
-            <Text style={styles.statBoxTitle}>Lịch hẹn sắp tới</Text>
-            <Text style={styles.statBoxSub}>
+            <Text style={styles.statBoxTitle} numberOfLines={1}>
+              Lịch hẹn sắp tới
+            </Text>
+            <Text style={styles.statBoxSub} numberOfLines={1}>
               10:30 Thứ Năm (Nội thần kinh)
             </Text>
           </TouchableOpacity>
@@ -730,8 +738,12 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
               <Badge label="94% chuẩn" variant="teal" />
             </View>
             <Text style={[styles.statBigNum, { color: COLORS.secondary }]}>1</Text>
-            <Text style={styles.statBoxTitle}>Toa thuốc đang uống</Text>
-            <Text style={styles.statBoxSub}>3 cữ/ngày • Còn 5 ngày</Text>
+            <Text style={styles.statBoxTitle} numberOfLines={1}>
+              Toa thuốc đang uống
+            </Text>
+            <Text style={styles.statBoxSub} numberOfLines={1}>
+              3 cữ/ngày • Còn 5 ngày
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -750,8 +762,12 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
               />
             </View>
             <Text style={styles.statBigNum}>12</Text>
-            <Text style={styles.statBoxTitle}>Hồ sơ bệnh án</Text>
-            <Text style={styles.statBoxSub}>MRI, X-Quang & Huyết học</Text>
+            <Text style={styles.statBoxTitle} numberOfLines={1}>
+              Hồ sơ bệnh án
+            </Text>
+            <Text style={styles.statBoxSub} numberOfLines={1}>
+              MRI, X-Quang & Huyết học
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -770,8 +786,12 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
               />
             </View>
             <Text style={styles.statBigNum}>3</Text>
-            <Text style={styles.statBoxTitle}>Bác sĩ phụ trách</Text>
-            <Text style={styles.statBoxSub}>Chuyên khoa & Tư vấn AI</Text>
+            <Text style={styles.statBoxTitle} numberOfLines={1}>
+              Bác sĩ phụ trách
+            </Text>
+            <Text style={styles.statBoxSub} numberOfLines={1}>
+              Chuyên khoa & Tư vấn AI
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -882,11 +902,13 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
           <View style={styles.hotlineIcon}>
             <Ionicons name="headset-outline" size={20} color={COLORS.error} />
           </View>
-          <View style={{ flex: 1, marginHorizontal: 10 }}>
-            <Text style={styles.hotlineLabel}>
+          <View style={{ flex: 1, minWidth: 0, marginHorizontal: 10 }}>
+            <Text style={styles.hotlineLabel} numberOfLines={1}>
               Hotline Cấp Cứu & Trợ Giúp 24/7
             </Text>
-            <Text style={styles.hotlineNumber}>1900 6868</Text>
+            <Text style={styles.hotlineNumber} numberOfLines={1}>
+              1900 6868
+            </Text>
           </View>
           <AppButton
             title="Gọi ngay"

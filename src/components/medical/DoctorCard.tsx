@@ -45,10 +45,10 @@ export const FeaturedDoctorCard: React.FC<FeaturedDoctorCardProps> = ({
           <Text style={styles.specialtyMeta} numberOfLines={1}>
             {doctor.specialty} • {doctor.experienceYears} năm KN
           </Text>
-          <Text style={styles.doctorNameSm}>
+          <Text style={styles.doctorNameSm} numberOfLines={1}>
             {doctor.name}
           </Text>
-          <Text style={styles.hospitalSm}>
+          <Text style={styles.hospitalSm} numberOfLines={1}>
             {doctor.hospital}
           </Text>
         </View>
@@ -60,7 +60,9 @@ export const FeaturedDoctorCard: React.FC<FeaturedDoctorCardProps> = ({
           <Text style={styles.ratingScore}>{doctor.rating}</Text>
           <Text style={styles.ratingCount}>({doctor.reviewCount}+)</Text>
         </View>
-        <Text style={styles.availableTag}>{doctor.availableText}</Text>
+        <Text style={styles.availableTag} numberOfLines={1}>
+          {doctor.availableText}
+        </Text>
       </View>
 
       <AppButton
@@ -102,40 +104,48 @@ export const DoctorProfileHeaderCard: React.FC<DoctorProfileHeaderCardProps> = (
             />
             <Badge label="BV ĐHYD TP.HCM" variant="blue" />
           </View>
-          <Text style={styles.doctorNameLg}>{doctor.name}</Text>
-          <Text style={styles.degreeText}>{doctor.degree}</Text>
-          <Text style={styles.degreeHospitalText}>{doctor.hospital}</Text>
-          <Text style={styles.subSpecialtyText}>{doctor.subSpecialty}</Text>
+          <Text style={styles.doctorNameLg} numberOfLines={1}>
+            {doctor.name}
+          </Text>
+          <Text style={styles.degreeText} numberOfLines={1}>
+            {doctor.degree}
+          </Text>
+          <Text style={styles.degreeHospitalText} numberOfLines={1}>
+            {doctor.hospital}
+          </Text>
+          <Text style={styles.subSpecialtyText} numberOfLines={2}>
+            {doctor.subSpecialty}
+          </Text>
         </View>
       </View>
 
       {/* 4-column Quick Stats Strip */}
       <View style={styles.statsStrip}>
         <View style={styles.statCol}>
-          <Text style={[styles.statVal, { color: COLORS.primary }]}>
+          <Text style={[styles.statVal, { color: COLORS.primary }]} numberOfLines={1}>
             {doctor.experienceYears} năm
           </Text>
-          <Text style={styles.statLabel}>Kinh nghiệm</Text>
+          <Text style={styles.statLabel} numberOfLines={1}>Kinh nghiệm</Text>
         </View>
         <View style={styles.statDivider} />
         <View style={styles.statCol}>
           <View style={styles.ratingRowInline}>
             <Ionicons name="star" size={13} color={COLORS.warning} />
-            <Text style={styles.statVal}>{doctor.rating}</Text>
+            <Text style={styles.statVal} numberOfLines={1}>{doctor.rating}</Text>
           </View>
-          <Text style={styles.statLabel}>{doctor.reviewCount}+ lượt</Text>
+          <Text style={styles.statLabel} numberOfLines={1}>{doctor.reviewCount}+ lượt</Text>
         </View>
         <View style={styles.statDivider} />
         <View style={styles.statCol}>
-          <Text style={styles.statVal}>{doctor.patientCount}</Text>
-          <Text style={styles.statLabel}>Bệnh nhân</Text>
+          <Text style={styles.statVal} numberOfLines={1}>{doctor.patientCount}</Text>
+          <Text style={styles.statLabel} numberOfLines={1}>Bệnh nhân</Text>
         </View>
         <View style={styles.statDivider} />
         <View style={styles.statCol}>
-          <Text style={[styles.statVal, { color: COLORS.secondary }]}>
+          <Text style={[styles.statVal, { color: COLORS.secondary }]} numberOfLines={1}>
             {doctor.responseTime}
           </Text>
-          <Text style={styles.statLabel}>Phản hồi</Text>
+          <Text style={styles.statLabel} numberOfLines={1}>Phản hồi</Text>
         </View>
       </View>
 
@@ -144,8 +154,12 @@ export const DoctorProfileHeaderCard: React.FC<DoctorProfileHeaderCardProps> = (
         <View style={styles.feeBannerLeft}>
           <Ionicons name="shield-checkmark-outline" size={18} color={COLORS.primary} />
           <View style={{ flex: 1, minWidth: 0, marginLeft: 8 }}>
-            <Text style={styles.feeTitle}>Phí tư vấn chuyên sâu</Text>
-            <Text style={styles.feeSub}>{doctor.bhytSupport}</Text>
+            <Text style={styles.feeTitle} numberOfLines={1}>
+              Phí tư vấn chuyên sâu
+            </Text>
+            <Text style={styles.feeSub} numberOfLines={1}>
+              {doctor.bhytSupport}
+            </Text>
           </View>
         </View>
         <Text style={styles.feePrice}>{doctor.fee}</Text>
@@ -173,9 +187,15 @@ export const BookingDoctorSummaryCard: React.FC<BookingDoctorSummaryCardProps> =
           </View>
         </View>
         <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
-          <Text style={styles.doctorNameLg}>{doctor.name}</Text>
-          <Text style={styles.degreeText}>{doctor.degree}</Text>
-          <Text style={styles.degreeHospitalText}>{doctor.hospital}</Text>
+          <Text style={styles.doctorNameLg} numberOfLines={1}>
+            {doctor.name}
+          </Text>
+          <Text style={styles.degreeText} numberOfLines={1}>
+            {doctor.degree}
+          </Text>
+          <Text style={styles.degreeHospitalText} numberOfLines={1}>
+            {doctor.hospital}
+          </Text>
           <View style={styles.summaryPillsRow}>
             <Badge
               label={`${doctor.rating} (${doctor.reviewCount}+)`}
@@ -192,9 +212,11 @@ export const BookingDoctorSummaryCard: React.FC<BookingDoctorSummaryCardProps> =
       </View>
 
       <View style={styles.summaryFooter}>
-        <View style={styles.summaryLocationRow}>
+        <View style={[styles.summaryLocationRow, { flex: 1, minWidth: 0, marginRight: 8 }]}>
           <Ionicons name="location-outline" size={15} color={COLORS.primary} />
-          <Text style={styles.summaryLocationText}>Cơ sở 1 - ĐHYD TP.HCM</Text>
+          <Text style={[styles.summaryLocationText, { flex: 1 }]} numberOfLines={1}>
+            Cơ sở 1 - ĐHYD TP.HCM
+          </Text>
         </View>
         <View style={{ alignItems: 'flex-end', flexShrink: 0 }}>
           <Text style={styles.feePrice}>{doctor.fee}</Text>
@@ -227,8 +249,12 @@ export const PatientReviewCard: React.FC<PatientReviewCardProps> = ({
           <Text style={styles.initialsText}>{initials}</Text>
         </View>
         <View style={{ flex: 1, minWidth: 0, marginHorizontal: 10 }}>
-          <Text style={styles.reviewAuthor}>{authorName}</Text>
-          <Text style={styles.reviewMeta}>{metaText}</Text>
+          <Text style={styles.reviewAuthor} numberOfLines={1}>
+            {authorName}
+          </Text>
+          <Text style={styles.reviewMeta} numberOfLines={1}>
+            {metaText}
+          </Text>
         </View>
         <View style={styles.starsRow}>
           {[1, 2, 3, 4, 5].map((s) => (
