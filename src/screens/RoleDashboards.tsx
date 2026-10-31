@@ -402,7 +402,7 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
         badgeText="ADMIN"
         leftIconBox="shield-checkmark-outline"
         rightActions={[
-          { icon: 'log-out-outline', onPress: onLogout },
+          { icon: 'log-out-outline', label: 'Đăng xuất Admin', onPress: onLogout },
         ]}
       />
 
@@ -427,17 +427,23 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
               key={t.key}
               style={styles.roleTabItem}
               onPress={() => setActiveTab(t.key as AdminTab)}
+              accessibilityRole="tab"
+              accessibilityLabel={t.label}
+              accessibilityState={{ selected: active }}
             >
               <Ionicons
                 name={t.icon as any}
                 size={20}
                 color={active ? COLORS.primary : COLORS.textSecondary}
+                importantForAccessibility="no"
               />
               <Text
                 style={[
                   styles.roleTabLabel,
                   active && styles.roleTabLabelActive,
                 ]}
+                numberOfLines={1}
+                maxFontSizeMultiplier={1.2}
               >
                 {t.label}
               </Text>
@@ -737,7 +743,9 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
         subtitle={doctor.name}
         badgeText="BÁC SĨ"
         leftIconBox="medkit-outline"
-        rightActions={[{ icon: 'log-out-outline', onPress: onLogout }]}
+        rightActions={[
+          { icon: 'log-out-outline', label: 'Đăng xuất Bác sĩ', onPress: onLogout },
+        ]}
       />
 
       <View style={{ flex: 1 }}>
@@ -761,17 +769,23 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
               key={t.key}
               style={styles.roleTabItem}
               onPress={() => setActiveTab(t.key as DoctorTab)}
+              accessibilityRole="tab"
+              accessibilityLabel={t.label}
+              accessibilityState={{ selected: active }}
             >
               <Ionicons
                 name={t.icon as any}
                 size={20}
                 color={active ? COLORS.primary : COLORS.textSecondary}
+                importantForAccessibility="no"
               />
               <Text
                 style={[
                   styles.roleTabLabel,
                   active && styles.roleTabLabelActive,
                 ]}
+                numberOfLines={1}
+                maxFontSizeMultiplier={1.2}
               >
                 {t.label}
               </Text>

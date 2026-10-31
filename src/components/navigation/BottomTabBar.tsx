@@ -64,12 +64,16 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
             style={styles.tabItem}
             onPress={() => onSelectTab(tab.key)}
             activeOpacity={0.75}
+            accessibilityRole="tab"
+            accessibilityLabel={tab.label}
+            accessibilityState={{ selected: isActive }}
           >
             <View
               style={[
                 styles.iconPill,
                 isActive && styles.iconPillActive,
               ]}
+              importantForAccessibility="no-hide-descendants"
             >
               <Ionicons
                 name={isActive ? tab.activeIcon : tab.icon}
@@ -82,6 +86,8 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
                 styles.label,
                 isActive ? styles.labelActive : styles.labelInactive,
               ]}
+              numberOfLines={1}
+              maxFontSizeMultiplier={1.2}
             >
               {tab.label}
             </Text>

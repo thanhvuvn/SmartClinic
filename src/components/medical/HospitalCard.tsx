@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, RADIUS, SHADOWS } from '../../theme';
+import { COLORS, RADIUS, SHADOWS, TOUCH } from '../../theme';
 import { HospitalItem } from '../../data/mockData';
 
 export interface HospitalCardProps {
@@ -24,7 +24,11 @@ export const HospitalCard: React.FC<HospitalCardProps> = ({
 }) => {
   return (
     <View style={[styles.card, SHADOWS.sm, style]}>
-      <Image source={{ uri: hospital.image }} style={styles.thumb} />
+      <Image
+        source={{ uri: hospital.image }}
+        style={styles.thumb}
+        accessibilityLabel={`Ảnh ${hospital.name}`}
+      />
       <View style={styles.infoCol}>
         <View style={styles.titleRow}>
           <Ionicons
@@ -32,13 +36,19 @@ export const HospitalCard: React.FC<HospitalCardProps> = ({
             size={15}
             color={COLORS.primary}
             style={{ marginRight: 4 }}
+            importantForAccessibility="no"
           />
           <Text style={styles.name} numberOfLines={1}>
             {hospital.name}
           </Text>
         </View>
         <View style={styles.metaRow}>
-          <Ionicons name="star" size={13} color={COLORS.warning} />
+          <Ionicons
+            name="star"
+            size={13}
+            color={COLORS.warning}
+            importantForAccessibility="no"
+          />
           <Text style={styles.rating}>{hospital.rating}</Text>
           <Text style={styles.dot}>•</Text>
           <Text style={styles.distance}>{hospital.distance}</Text>
@@ -53,8 +63,16 @@ export const HospitalCard: React.FC<HospitalCardProps> = ({
         style={styles.mapBtn}
         activeOpacity={0.8}
         onPress={() => onMapPress?.(hospital)}
+        accessibilityRole="button"
+        accessibilityLabel={`Xem bản đồ ${hospital.name}`}
+        hitSlop={TOUCH.hitSlopSm}
       >
-        <Ionicons name="navigate-outline" size={14} color={COLORS.primary} />
+        <Ionicons
+          name="navigate-outline"
+          size={14}
+          color={COLORS.primary}
+          importantForAccessibility="no"
+        />
         <Text style={styles.mapBtnText}>Bản đồ</Text>
       </TouchableOpacity>
     </View>

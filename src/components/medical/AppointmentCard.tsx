@@ -101,6 +101,8 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
           <TouchableOpacity
             style={styles.waitingRoomPill}
             onPress={() => onPrimaryPress?.(appointment)}
+            accessibilityRole="button"
+            accessibilityLabel={`Chat với bác sĩ ${doctor.name}`}
           >
             <Ionicons name="chatbubbles-outline" size={14} color="#FFFFFF" />
             <Text style={styles.waitingRoomText} numberOfLines={1}>
@@ -133,6 +135,8 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
               style={styles.qrBtn}
               activeOpacity={0.8}
               onPress={() => onPrimaryPress?.(appointment)}
+              accessibilityRole="button"
+              accessibilityLabel={`Mở mã QR check-in phiếu hẹn ${appointment.code}`}
             >
               <Ionicons name="qr-code-outline" size={14} color={COLORS.primary} />
               <Text style={styles.qrBtnText}>Check-in QR</Text>

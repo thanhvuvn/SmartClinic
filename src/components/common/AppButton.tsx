@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, GRADIENTS, RADIUS, SHADOWS } from '../../theme';
+import { COLORS, GRADIENTS, RADIUS, SHADOWS, TOUCH } from '../../theme';
 
 export type ButtonVariant =
   | 'gradient'
@@ -53,13 +53,13 @@ export const AppButton: React.FC<AppButtonProps> = ({
   textStyle,
 }) => {
   const heightMap: Record<ButtonSize, number> = {
-    sm: 36,
+    sm: 40,
     md: 46,
     lg: 52,
   };
 
   const fontSizeMap: Record<ButtonSize, number> = {
-    sm: 12,
+    sm: 12.5,
     md: 14,
     lg: 15,
   };
@@ -96,7 +96,7 @@ export const AppButton: React.FC<AppButtonProps> = ({
         return {
           backgroundColor: COLORS.surface,
           borderWidth: 1,
-          borderColor: COLORS.outlineVariant,
+          borderColor: COLORS.outline,
         };
       case 'danger':
         return { backgroundColor: COLORS.error };
@@ -110,7 +110,7 @@ export const AppButton: React.FC<AppButtonProps> = ({
         return {
           backgroundColor: COLORS.surface,
           borderWidth: 1,
-          borderColor: COLORS.outlineVariant,
+          borderColor: COLORS.border,
           ...SHADOWS.sm,
         };
       case 'white':
@@ -143,6 +143,7 @@ export const AppButton: React.FC<AppButtonProps> = ({
               size={iconSize}
               color={textColor}
               style={styles.leftIcon}
+              importantForAccessibility="no"
             />
           )}
           <Text
@@ -152,6 +153,7 @@ export const AppButton: React.FC<AppButtonProps> = ({
               textStyle,
             ]}
             numberOfLines={1}
+            maxFontSizeMultiplier={1.2}
           >
             {title}
           </Text>
@@ -161,6 +163,7 @@ export const AppButton: React.FC<AppButtonProps> = ({
               size={iconSize}
               color={textColor}
               style={styles.rightIcon}
+              importantForAccessibility="no"
             />
           )}
         </>
@@ -180,6 +183,10 @@ export const AppButton: React.FC<AppButtonProps> = ({
         activeOpacity={0.85}
         onPress={onPress}
         disabled={disabled || loading}
+        accessibilityRole="button"
+        accessibilityLabel={title}
+        accessibilityState={{ disabled: disabled || loading, busy: loading }}
+        hitSlop={size === 'sm' ? TOUCH.hitSlopSm : undefined}
         style={[
           fullWidth && styles.fullWidth,
           disabled && styles.disabled,
@@ -194,9 +201,9 @@ export const AppButton: React.FC<AppButtonProps> = ({
           style={[
             styles.base,
             {
-              height: heightMap[size],
+              minHeight: heightMap[size],
               paddingHorizontal: styles_padHorizontal[size],
-              borderRadius: size === 'sm' ? RADIUS.full : RADIUS.md,
+              borderRadius: RADIUS.md,
             },
           ]}
         >
@@ -211,12 +218,16 @@ export const AppButton: React.FC<AppButtonProps> = ({
       activeOpacity={0.8}
       onPress={onPress}
       disabled={disabled || loading}
+      accessibilityRole="button"
+      accessibilityLabel={title}
+      accessibilityState={{ disabled: disabled || loading, busy: loading }}
+      hitSlop={size === 'sm' ? TOUCH.hitSlopSm : undefined}
       style={[
         styles.base,
         {
-          height: heightMap[size],
+          minHeight: heightMap[size],
           paddingHorizontal: styles_padHorizontal[size],
-          borderRadius: variant === 'white' ? RADIUS.full : RADIUS.md,
+          borderRadius: RADIUS.md,
         },
         getContainerStyle(),
         fullWidth && styles.fullWidth,

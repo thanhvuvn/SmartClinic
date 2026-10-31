@@ -101,6 +101,8 @@ export const ActivePrescriptionCard: React.FC<ActivePrescriptionCardProps> = ({
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={onReminderPress}
+        accessibilityRole="button"
+        accessibilityLabel="Mở lịch nhắc uống thuốc"
         style={styles.reminderBar}
       >
         <View style={styles.reminderLeft}>
@@ -185,6 +187,8 @@ export const LabImagingCard: React.FC<LabImagingCardProps> = ({
           style={styles.signatureRow}
           activeOpacity={0.75}
           onPress={onVerifySignature}
+          accessibilityRole="button"
+          accessibilityLabel="Trạng thái đã duyệt chẩn đoán hình ảnh"
         >
           <Ionicons
             name="checkmark-done-circle-outline"
@@ -197,13 +201,23 @@ export const LabImagingCard: React.FC<LabImagingCardProps> = ({
         </TouchableOpacity>
 
         <View style={styles.labBtnsRow}>
-          <TouchableOpacity style={styles.dicomBtn} onPress={onViewDicom}>
+          <TouchableOpacity
+            style={styles.dicomBtn}
+            onPress={onViewDicom}
+            accessibilityRole="button"
+            accessibilityLabel="Xem chi tiết kết quả chẩn đoán hình ảnh"
+          >
             <Ionicons name="document-outline" size={14} color={COLORS.primary} />
             <Text style={styles.dicomBtnText} numberOfLines={1}>
               Chi tiết
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.pdfBtn} onPress={onDownloadPdf}>
+          <TouchableOpacity
+            style={styles.pdfBtn}
+            onPress={onDownloadPdf}
+            accessibilityRole="button"
+            accessibilityLabel="Tải bản PDF kết quả chẩn đoán hình ảnh"
+          >
             <Ionicons name="download-outline" size={14} color="#FFFFFF" />
             <Text style={styles.pdfBtnText} numberOfLines={1}>
               Bản PDF

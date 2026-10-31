@@ -10,7 +10,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, RADIUS, SHADOWS } from '../../theme';
+import { COLORS, RADIUS, SHADOWS, TOUCH } from '../../theme';
 import { DoctorItem } from '../../data/mockData';
 import { Badge } from '../common/Badge';
 import { AppButton } from '../common/AppButton';
@@ -214,11 +214,15 @@ export const QuickPromptChips: React.FC<QuickPromptChipsProps> = ({
         key={p.label}
         style={[styles.promptChip, p.danger && styles.promptChipDanger]}
         onPress={() => onSelectPrompt?.(p.label)}
+        accessibilityRole="button"
+        accessibilityLabel={p.label}
+        hitSlop={TOUCH.hitSlopSm}
       >
         <Ionicons
           name={p.icon}
           size={14}
           color={p.danger ? COLORS.error : COLORS.primary}
+          importantForAccessibility="no"
         />
         <Text
           style={[
@@ -246,10 +250,20 @@ export const ChatBottomInputBar: React.FC<ChatBottomInputBarProps> = ({
 }) => {
   return (
     <View style={styles.chatInputBar}>
-      <TouchableOpacity style={styles.attachBtn}>
+      <TouchableOpacity
+        style={styles.attachBtn}
+        accessibilityRole="button"
+        accessibilityLabel="Đính kèm tệp hoặc hình ảnh"
+        hitSlop={TOUCH.hitSlopSm}
+      >
         <Ionicons name="attach-outline" size={20} color={COLORS.textSecondary} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.attachBtn}>
+      <TouchableOpacity
+        style={styles.attachBtn}
+        accessibilityRole="button"
+        accessibilityLabel="Nhập bằng giọng nói"
+        hitSlop={TOUCH.hitSlopSm}
+      >
         <Ionicons name="mic-outline" size={19} color={COLORS.textSecondary} />
       </TouchableOpacity>
       <View style={styles.chatTextInputWrap}>
@@ -257,7 +271,10 @@ export const ChatBottomInputBar: React.FC<ChatBottomInputBarProps> = ({
           value={value}
           onChangeText={onChangeText}
           placeholder="Mô tả triệu chứng hoặc đặt câu hỏi..."
-          placeholderTextColor={COLORS.textMuted}
+          placeholderTextColor={COLORS.placeholder}
+          accessibilityLabel="Nhập nội dung tin nhắn"
+          returnKeyType="send"
+          onSubmitEditing={onSend}
           style={styles.chatTextInput}
         />
       </View>
@@ -265,6 +282,9 @@ export const ChatBottomInputBar: React.FC<ChatBottomInputBarProps> = ({
         style={[styles.sendBtn, SHADOWS.sm]}
         onPress={onSend}
         activeOpacity={0.8}
+        accessibilityRole="button"
+        accessibilityLabel="Gửi tin nhắn"
+        hitSlop={TOUCH.hitSlopSm}
       >
         <Ionicons name="paper-plane-outline" size={18} color="#FFFFFF" />
       </TouchableOpacity>
@@ -536,29 +556,29 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   attachBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: COLORS.surfaceContainerLow,
     alignItems: 'center',
     justifyContent: 'center',
   },
   chatTextInputWrap: {
     flex: 1,
-    height: 40,
+    minHeight: 42,
     borderRadius: RADIUS.full,
     backgroundColor: COLORS.surfaceContainerLow,
     justifyContent: 'center',
     paddingHorizontal: 14,
   },
   chatTextInput: {
-    fontSize: 12.5,
+    fontSize: 13.5,
     color: COLORS.textPrimary,
   },
   sendBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',

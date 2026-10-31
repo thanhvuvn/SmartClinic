@@ -39,6 +39,11 @@ export const HorizontalDateSelector: React.FC<HorizontalDateSelectorProps> = ({
             activeOpacity={0.8}
             disabled={isFull}
             onPress={() => onSelectDay(day.id)}
+            accessibilityRole="button"
+            accessibilityLabel={`${day.dayLabel}, ngày ${day.dateNumber}, ${
+              isFull ? 'Kín lịch' : `Còn ${day.slotsAvailable} chỗ`
+            }`}
+            accessibilityState={{ selected: isSelected, disabled: !!isFull }}
             style={[
               styles.dayCard,
               isSelected && [styles.dayCardSelected, SHADOWS.md],
@@ -111,6 +116,9 @@ export const TimeSlotGrid: React.FC<TimeSlotGridProps> = ({
         disabled={isBooked}
         activeOpacity={0.8}
         onPress={() => onSelectSlot(slot)}
+        accessibilityRole="button"
+        accessibilityLabel={`Khung giờ ${slot.time}`}
+        accessibilityState={{ selected: isSelected, disabled: isBooked }}
         style={[
           styles.slotBtn,
           isBooked && styles.slotBooked,

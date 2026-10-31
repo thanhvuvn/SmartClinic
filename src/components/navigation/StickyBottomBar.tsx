@@ -179,9 +179,9 @@ const styles = StyleSheet.create({
     width: 82,
   },
   stepCircle: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: COLORS.surfaceContainer,
     alignItems: 'center',
     justifyContent: 'center',

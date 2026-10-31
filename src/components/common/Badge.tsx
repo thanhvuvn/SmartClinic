@@ -56,7 +56,7 @@ export const Badge: React.FC<BadgeProps> = ({
       case 'warning':
         return {
           bg: COLORS.warningContainer,
-          text: '#B45309',
+          text: COLORS.warningText,
           dot: COLORS.warning,
         };
       case 'glass':
@@ -86,9 +86,14 @@ export const Badge: React.FC<BadgeProps> = ({
           size={12}
           color={palette.text}
           style={styles.icon}
+          importantForAccessibility="no"
         />
       )}
-      <Text style={[styles.label, { color: palette.text }]} numberOfLines={1}>
+      <Text
+        style={[styles.label, { color: palette.text }]}
+        numberOfLines={1}
+        maxFontSizeMultiplier={1.2}
+      >
         {label}
       </Text>
     </View>

@@ -29,16 +29,23 @@ export const COLORS = {
   textSecondary: '#3F4850',
   textMuted: '#707881',
   textOnPrimary: '#FFFFFF',
+  placeholder: '#707881',
 
   // Borders & Outlines
   outline: '#BFC7D2',
   outlineVariant: '#DAE2FD',
+  border: '#E2E8F0',
+  borderSubtle: '#EEF2FF',
+  divider: '#F1F5F9',
+  switchTrackOff: '#CBD5E1',
 
   // Semantic Status Colors
   error: '#BA1A1A',
   errorDark: '#93000A',
   errorContainer: '#FFDAD6',
+  errorSurface: '#FFF5F5',
   warning: '#F59E0B',
+  warningText: '#B45309',
   warningContainer: '#FEF3C7',
   success: '#006A61',
   successDot: '#10B981',
@@ -79,6 +86,43 @@ export const RADIUS = {
   xl: 20,
   full: 9999,
 } as const;
+
+export const TYPOGRAPHY = {
+  display: 24,
+  h1: 20,
+  h2: 17,
+  title: 15,
+  body: 14,
+  bodySm: 13,
+  caption: 12,
+  micro: 11,
+  lineHeight: {
+    tight: 16,
+    normal: 19,
+    relaxed: 22,
+  },
+} as const;
+
+export const TOUCH = {
+  min: 44,
+  hitSlopSm: { top: 6, bottom: 6, left: 6, right: 6 },
+  hitSlopMd: { top: 8, bottom: 8, left: 8, right: 8 },
+} as const;
+
+export const LAYOUT: {
+  maxWidth: number;
+  card: ViewStyle;
+} = {
+  maxWidth: 640,
+  card: {
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.lg,
+    padding: SPACING.lg,
+    marginBottom: SPACING.lg,
+    borderWidth: 1,
+    borderColor: COLORS.borderSubtle,
+  },
+};
 
 export const SHADOWS: Record<'sm' | 'md' | 'lg', ViewStyle> = {
   sm: Platform.select({

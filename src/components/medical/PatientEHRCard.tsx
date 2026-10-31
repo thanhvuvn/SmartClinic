@@ -52,7 +52,12 @@ export const PatientMasterIdentityCard: React.FC<PatientMasterIdentityCardProps>
               variant="surface"
               icon="water-outline"
             />
-            <TouchableOpacity activeOpacity={0.8} onPress={onBhytPress}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={onBhytPress}
+              accessibilityRole="button"
+              accessibilityLabel="Xem thông tin thẻ BHYT 80%"
+            >
               <Badge label="BHYT: 80%" variant="blue" icon="card-outline" />
             </TouchableOpacity>
           </View>
@@ -62,6 +67,8 @@ export const PatientMasterIdentityCard: React.FC<PatientMasterIdentityCardProps>
           style={styles.qrBox}
           activeOpacity={0.8}
           onPress={onQrPress}
+          accessibilityRole="button"
+          accessibilityLabel="Mở mã QR y tế cá nhân"
         >
           <Ionicons name="qr-code-outline" size={20} color={COLORS.primary} />
           <Text style={styles.qrBoxText}>Mã y tế</Text>
@@ -157,6 +164,8 @@ export const VssIDInsuranceCard: React.FC<VssIDInsuranceCardProps> = ({
         style={styles.vssidBtn}
         activeOpacity={0.8}
         onPress={onDetailPress}
+        accessibilityRole="button"
+        accessibilityLabel="Tra cứu chi tiết và lịch sử quỹ chi trả BHYT"
       >
         <Text style={styles.vssidBtnText} numberOfLines={1}>
           Tra cứu chi tiết & Lịch sử quỹ chi trả

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StatusBar,
   StyleSheet,
+  BackHandler,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { COLORS } from './src/theme';
+import { COLORS, LAYOUT } from './src/theme';
 import { DOCTORS, DoctorItem } from './src/data/mockData';
 import { BottomTabBar, MainTabKey } from './src/components';
 import {
@@ -49,6 +51,8 @@ export default function App() {
   const [routeHistory, setRouteHistory] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<MainTabKey>('home');
   const [selectedDoctor, setSelectedDoctor] = useState<DoctorItem>(DOCTORS[0]);
+  const { width } = useWindowDimensions();
+  const isTablet = width > 700;
 
   const navigateTo = (nextRoute: string) => {
     if (nextRoute === route) return;
@@ -68,6 +72,21 @@ export default function App() {
       return next;
     });
   };
+
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (routeHistory.length > 0) {
+        goBack();
+        return true;
+      }
+      if (route === 'main' && activeTab !== 'home') {
+        setActiveTab('home');
+        return true;
+      }
+      return false;
+    });
+    return () => sub.remove();
+  }, [route, routeHistory.length, activeTab]);
 
   const handleOpenDoctor = (doc: DoctorItem) => {
     setSelectedDoctor(doc);
@@ -289,7 +308,9 @@ export default function App() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeRoot}>
         <StatusBar barStyle="dark-content" />
-        <View style={{ flex: 1 }}>{renderCurrentScreen()}</View>
+        <View style={[styles.appViewport, isTablet && styles.tabletViewport]}>
+          {renderCurrentScreen()}
+        </View>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -299,6 +320,14 @@ const styles = StyleSheet.create({
   safeRoot: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  appViewport: {
+    flex: 1,
+    width: '100%',
+  },
+  tabletViewport: {
+    maxWidth: LAYOUT.maxWidth,
+    alignSelf: 'center',
   },
   mainWrapper: {
     flex: 1,

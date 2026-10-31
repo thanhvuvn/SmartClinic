@@ -4,6 +4,8 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -145,8 +147,13 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     return 'patient';
   };
 
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
   const handleSelectPreset = (role: UserRole) => {
     setSelectedRolePreset(role);
+    setEmailError('');
+    setPasswordError('');
     if (role === 'admin') {
       setEmail('admin@smartclinic.vn');
       setPassword('admin123');
@@ -160,12 +167,25 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   };
 
   const handleLoginPress = () => {
+    if (!email.trim()) {
+      setEmailError('Vui lòng nhập email hoặc số điện thoại');
+      return;
+    }
+    if (!password || password.length < 6) {
+      setPasswordError('Mật khẩu cần tối thiểu 6 ký tự');
+      return;
+    }
+    setEmailError('');
+    setPasswordError('');
     const role = detectRoleFromEmail(email);
     onLoginSuccess(role, email);
   };
 
   return (
-    <View style={styles.screenBg}>
+    <KeyboardAvoidingView
+      style={styles.screenBg}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <AppHeader
         title="Đăng Nhập"
         onBack={onBack}
@@ -174,6 +194,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         {/* Brand Header */}
         <View style={styles.authHero}>
@@ -274,10 +295,15 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           value={email}
           onChangeText={(txt) => {
             setEmail(txt);
+            if (emailError) setEmailError('');
             setSelectedRolePreset(detectRoleFromEmail(txt));
           }}
           keyboardType="email-address"
           autoCapitalize="none"
+          autoComplete="email"
+          textContentType="emailAddress"
+          returnKeyType="next"
+          error={emailError}
         />
 
         <AppInput
@@ -285,14 +311,25 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           leftIcon="lock-closed-outline"
           placeholder="Nhập mật khẩu"
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(txt) => {
+            setPassword(txt);
+            if (passwordError) setPasswordError('');
+          }}
           isPassword
+          autoComplete="password"
+          textContentType="password"
+          returnKeyType="done"
+          onSubmitEditing={handleLoginPress}
+          error={passwordError}
         />
 
         <View style={styles.rememberRow}>
           <TouchableOpacity
             style={styles.checkboxRow}
             onPress={() => setRemember(!remember)}
+            accessibilityRole="checkbox"
+            accessibilityLabel="Ghi nhớ đăng nhập"
+            accessibilityState={{ checked: remember }}
           >
             <View
               style={[
@@ -307,7 +344,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             <Text style={styles.rememberLabel}>Ghi nhớ đăng nhập</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity>
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Quên mật khẩu">
             <Text style={styles.forgotText}>Quên mật khẩu?</Text>
           </TouchableOpacity>
         </View>
@@ -335,7 +372,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
 
         <View style={styles.switchAuthRow}>
           <Text style={styles.switchAuthLabel}>Chưa có tài khoản? </Text>
-          <TouchableOpacity onPress={onGoRegister}>
+          <TouchableOpacity
+            onPress={onGoRegister}
+            accessibilityRole="button"
+            accessibilityLabel="Đăng ký ngay"
+          >
             <Text style={styles.switchAuthLink}>Đăng ký ngay</Text>
           </TouchableOpacity>
         </View>
@@ -351,7 +392,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           </Text>
         </View>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -374,7 +415,10 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
   const [agreed, setAgreed] = useState(true);
 
   return (
-    <View style={styles.screenBg}>
+    <KeyboardAvoidingView
+      style={styles.screenBg}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <AppHeader
         title="Đăng Ký"
         onBack={onGoLogin}
@@ -383,6 +427,7 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <Badge
           label="Bảo mật chuẩn Y tế"
@@ -415,6 +460,9 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
           placeholder="Ví dụ: Nguyễn Văn Vũ"
           value={fullName}
           onChangeText={setFullName}
+          autoComplete="name"
+          textContentType="name"
+          returnKeyType="next"
         />
         <AppInput
           label="Email"
@@ -423,6 +471,10 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
+          autoCapitalize="none"
+          autoComplete="email"
+          textContentType="emailAddress"
+          returnKeyType="next"
         />
         <AppInput
           label="Số điện thoại"
@@ -431,6 +483,9 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
           value={phone}
           onChangeText={setPhone}
           keyboardType="phone-pad"
+          autoComplete="tel"
+          textContentType="telephoneNumber"
+          returnKeyType="next"
         />
 
         <View style={styles.rowTwoCols}>
@@ -441,6 +496,7 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
               placeholder="DD/MM/YYYY"
               value={dob}
               onChangeText={setDob}
+              returnKeyType="next"
             />
           </View>
           <View style={{ flex: 1.15 }}>
@@ -465,6 +521,9 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
           value={password}
           onChangeText={setPassword}
           isPassword
+          autoComplete="new-password"
+          textContentType="newPassword"
+          returnKeyType="next"
         />
         <AppInput
           label="Xác nhận mật khẩu"
@@ -473,11 +532,18 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           isPassword
+          autoComplete="new-password"
+          textContentType="newPassword"
+          returnKeyType="done"
+          onSubmitEditing={onRegisterSuccess}
         />
 
         <TouchableOpacity
           style={styles.termsRow}
           onPress={() => setAgreed(!agreed)}
+          accessibilityRole="checkbox"
+          accessibilityLabel="Đồng ý điều khoản dịch vụ và chính sách bảo mật y tế"
+          accessibilityState={{ checked: agreed }}
         >
           <View style={[styles.checkbox, agreed && styles.checkboxChecked]}>
             {agreed && <Ionicons name="checkmark" size={13} color="#FFFFFF" />}
@@ -513,12 +579,16 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
 
         <View style={styles.switchAuthRow}>
           <Text style={styles.switchAuthLabel}>Đã có tài khoản? </Text>
-          <TouchableOpacity onPress={onGoLogin}>
+          <TouchableOpacity
+            onPress={onGoLogin}
+            accessibilityRole="button"
+            accessibilityLabel="Đăng nhập ngay"
+          >
             <Text style={styles.switchAuthLink}>Đăng nhập ngay</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

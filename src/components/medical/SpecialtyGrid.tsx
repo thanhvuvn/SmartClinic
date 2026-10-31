@@ -32,6 +32,9 @@ export const SpecialtyGrid: React.FC<SpecialtyGridProps> = ({
             key={item.id}
             activeOpacity={0.8}
             onPress={() => onSelect?.(item)}
+            accessibilityRole="button"
+            accessibilityLabel={`Chuyên khoa ${item.name}`}
+            accessibilityState={{ selected: isSelected }}
             style={[
               styles.card,
               SHADOWS.sm,
@@ -43,6 +46,7 @@ export const SpecialtyGrid: React.FC<SpecialtyGridProps> = ({
                 styles.iconCircle,
                 { backgroundColor: item.bgColor },
               ]}
+              importantForAccessibility="no-hide-descendants"
             >
               <Ionicons
                 name={item.icon as keyof typeof Ionicons.glyphMap}
@@ -50,7 +54,11 @@ export const SpecialtyGrid: React.FC<SpecialtyGridProps> = ({
                 color={item.iconColor}
               />
             </View>
-            <Text style={styles.name} numberOfLines={1}>
+            <Text
+              style={styles.name}
+              numberOfLines={1}
+              maxFontSizeMultiplier={1.2}
+            >
               {item.name}
             </Text>
           </TouchableOpacity>

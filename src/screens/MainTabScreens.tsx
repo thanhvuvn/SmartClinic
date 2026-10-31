@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
   Alert,
   StyleSheet,
 } from 'react-native';
@@ -149,6 +151,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               key={srv.route}
               activeOpacity={0.85}
               onPress={() => onNavigate(srv.route)}
+              accessibilityRole="button"
+              accessibilityLabel={`${srv.title}, ${srv.sub}`}
               style={[styles.quickServiceCard, SHADOWS.sm]}
             >
               <View style={[styles.quickServiceIcon, { backgroundColor: srv.bg }]}>
@@ -563,6 +567,7 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({
   const [extraMessages, setExtraMessages] = useState<
     { id: string; sender: 'user' | 'ai'; text: string; time: string }[]
   >([]);
+  const chatScrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
 
   const handleSend = (customText?: string) => {
     const content = (customText ?? inputMsg).trim();
@@ -578,24 +583,36 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({
       },
     ]);
     if (!customText) setInputMsg('');
+    setTimeout(() => {
+      chatScrollRef.current?.scrollToEnd({ animated: true });
+    }, 100);
   };
 
   return (
-    <View style={styles.screen}>
+    <KeyboardAvoidingView
+      style={styles.screen}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <AppHeader
         title="AI Health Assistant"
-        subtitle="● Trợ lý y tế thông minh AI"
+        subtitle="Trợ lý y tế thông minh AI"
         badgeText="AI 24/7"
         leftIconBox="sparkles"
         rightActions={[
-          { icon: 'time-outline' },
-          { icon: 'refresh-outline', onPress: () => setExtraMessages([]) },
+          { icon: 'time-outline', label: 'Lịch sử trò chuyện' },
+          {
+            icon: 'refresh-outline',
+            label: 'Làm mới cuộc trò chuyện',
+            onPress: () => setExtraMessages([]),
+          },
         ]}
       />
 
       <ScrollView
+        ref={chatScrollRef}
         contentContainerStyle={styles.scrollPad}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <AIMedicalTriageBanner />
 
@@ -644,7 +661,7 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({
         onChangeText={setInputMsg}
         onSend={() => handleSend()}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

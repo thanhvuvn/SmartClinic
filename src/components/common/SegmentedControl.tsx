@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, RADIUS, SHADOWS } from '../../theme';
+import { COLORS, RADIUS, SHADOWS, TOUCH } from '../../theme';
 
 export interface SegmentOption {
   key: string;
@@ -46,6 +46,10 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
               key={opt.key}
               activeOpacity={0.8}
               onPress={() => onSelect(opt.key)}
+              accessibilityRole="tab"
+              accessibilityLabel={opt.label}
+              accessibilityState={{ selected: active }}
+              hitSlop={TOUCH.hitSlopSm}
               style={[
                 styles.chipItem,
                 active ? styles.chipActive : styles.chipInactive,
@@ -57,6 +61,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
                   size={14}
                   color={active ? COLORS.textOnPrimary : COLORS.textSecondary}
                   style={styles.chipIcon}
+                  importantForAccessibility="no"
                 />
               )}
               <Text
@@ -64,6 +69,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
                   styles.chipLabel,
                   active ? styles.chipLabelActive : styles.chipLabelInactive,
                 ]}
+                maxFontSizeMultiplier={1.2}
               >
                 {opt.label}
               </Text>
@@ -84,6 +90,9 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
             key={opt.key}
             activeOpacity={0.85}
             onPress={() => onSelect(opt.key)}
+            accessibilityRole="tab"
+            accessibilityLabel={opt.label}
+            accessibilityState={{ selected: active }}
             style={[
               styles.boxTab,
               active &&
@@ -104,6 +113,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
                     : COLORS.textSecondary
                 }
                 style={styles.tabIcon}
+                importantForAccessibility="no"
               />
             )}
             <Text
@@ -116,6 +126,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
                   : styles.boxLabelInactive,
               ]}
               numberOfLines={1}
+              maxFontSizeMultiplier={1.2}
             >
               {opt.label}
             </Text>
@@ -215,6 +226,7 @@ const styles = StyleSheet.create({
   chipItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    minHeight: 38,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: RADIUS.full,

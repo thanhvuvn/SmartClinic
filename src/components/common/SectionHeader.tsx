@@ -7,7 +7,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS } from '../../theme';
+import { COLORS, TOUCH } from '../../theme';
 import { Badge, BadgeVariant } from './Badge';
 
 export interface SectionHeaderProps {
@@ -43,9 +43,14 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
               size={18}
               color={COLORS.primary}
               style={styles.leftIcon}
+              importantForAccessibility="no"
             />
           )}
-          <Text style={styles.title} numberOfLines={1}>
+          <Text
+            style={styles.title}
+            numberOfLines={1}
+            accessibilityRole="header"
+          >
             {title}
           </Text>
           {badgeText && (
@@ -69,11 +74,19 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
           style={styles.actionBtn}
           onPress={onActionPress}
           activeOpacity={0.75}
+          accessibilityRole="button"
+          accessibilityLabel={actionText}
+          hitSlop={TOUCH.hitSlopMd}
         >
           <Text style={styles.actionText} numberOfLines={1}>
             {actionText}
           </Text>
-          <Ionicons name="chevron-forward" size={14} color={COLORS.primary} />
+          <Ionicons
+            name="chevron-forward"
+            size={14}
+            color={COLORS.primary}
+            importantForAccessibility="no"
+          />
         </TouchableOpacity>
       ) : null}
     </View>

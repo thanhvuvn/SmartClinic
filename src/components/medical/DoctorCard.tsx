@@ -30,11 +30,17 @@ export const FeaturedDoctorCard: React.FC<FeaturedDoctorCardProps> = ({
     <TouchableOpacity
       activeOpacity={0.9}
       onPress={() => onPress?.(doctor)}
+      accessibilityRole="button"
+      accessibilityLabel={`Bác sĩ ${doctor.name}, chuyên khoa ${doctor.specialty}`}
       style={[styles.featuredCard, SHADOWS.sm, style]}
     >
       <View style={styles.featuredTopRow}>
         <View style={styles.avatarContainer}>
-          <Image source={{ uri: doctor.avatar }} style={styles.avatarSm} />
+          <Image
+            source={{ uri: doctor.avatar }}
+            style={styles.avatarSm}
+            accessibilityLabel={`Ảnh bác sĩ ${doctor.name}`}
+          />
           {doctor.verified && (
             <View style={styles.verifiedBadgeSm}>
               <Ionicons name="checkmark-circle" size={14} color={COLORS.primary} />

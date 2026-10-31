@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
   Image,
   StyleSheet,
   Alert,
@@ -327,13 +329,23 @@ export const FamilyProfilesScreen: React.FC<{
             key={mem.code}
             activeOpacity={0.85}
             onPress={mem.onPress}
+            accessibilityRole="button"
+            accessibilityLabel={`Hồ sơ ${mem.name}, ${mem.relation}`}
             style={[styles.card, SHADOWS.sm]}
           >
             <View style={styles.rowBetween}>
               <Text style={[styles.docName, { flex: 1 }]} numberOfLines={1}>
                 {mem.name}
               </Text>
-              <Badge label={mem.badge} variant="blue" />
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <Badge label={mem.badge} variant="blue" />
+                <Ionicons
+                  name="chevron-forward"
+                  size={16}
+                  color={COLORS.textMuted}
+                  importantForAccessibility="no"
+                />
+              </View>
             </View>
             <Text style={styles.docSub}>
               {mem.relation} • {mem.code} • Nhóm máu {mem.blood}
@@ -517,13 +529,19 @@ export const AddEditFamilyMemberScreen: React.FC<{ onBack?: () => void }> = ({
   ];
 
   return (
-    <View style={styles.screen}>
+    <KeyboardAvoidingView
+      style={styles.screen}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <AppHeader
         title="Thêm Hồ Sơ Người Thân"
         subtitle="Chủ tài khoản bảo trợ: Nguyễn Văn Vũ"
         onBack={onBack}
       />
-      <ScrollView contentContainerStyle={styles.scrollPad}>
+      <ScrollView
+        contentContainerStyle={styles.scrollPad}
+        keyboardShouldPersistTaps="handled"
+      >
         {/* AI Quick Scan Banner */}
         <LinearGradient
           colors={GRADIENTS.primaryTeal}
@@ -555,6 +573,9 @@ export const AddEditFamilyMemberScreen: React.FC<{ onBack?: () => void }> = ({
           <TouchableOpacity
             activeOpacity={0.85}
             onPress={() => setShowRelationDropdown((prev) => !prev)}
+            accessibilityRole="button"
+            accessibilityLabel={`Mối quan hệ với bạn: ${relation}`}
+            accessibilityState={{ expanded: showRelationDropdown }}
             style={[
               styles.dropdownTrigger,
               SHADOWS.sm,
@@ -586,6 +607,9 @@ export const AddEditFamilyMemberScreen: React.FC<{ onBack?: () => void }> = ({
                   <TouchableOpacity
                     key={rel}
                     activeOpacity={0.8}
+                    accessibilityRole="menuitem"
+                    accessibilityLabel={rel}
+                    accessibilityState={{ selected: active }}
                     onPress={() => {
                       setRelation(rel);
                       setShowRelationDropdown(false);
@@ -651,7 +675,7 @@ export const AddEditFamilyMemberScreen: React.FC<{ onBack?: () => void }> = ({
           onPress={onBack}
         />
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -705,6 +729,7 @@ export const TeleconsultationScreen: React.FC<{
   const [messages, setMessages] =
     useState<DoctorChatMessage[]>(INITIAL_DOCTOR_CHAT);
   const [inputText, setInputText] = useState('');
+  const chatScrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
 
   const handleSendMessage = (customText?: string) => {
     const content = (customText ?? inputText).trim();
@@ -743,10 +768,16 @@ export const TeleconsultationScreen: React.FC<{
     if (!customText) {
       setInputText('');
     }
+    setTimeout(() => {
+      chatScrollRef.current?.scrollToEnd({ animated: true });
+    }, 100);
   };
 
   return (
-    <View style={styles.screen}>
+    <KeyboardAvoidingView
+      style={styles.screen}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <AppHeader
         title="Chat Trực Tuyến Với Bác Sĩ"
         subtitle="TS. BS. Lê Thu Trang • Nội Thần Kinh"
@@ -755,9 +786,11 @@ export const TeleconsultationScreen: React.FC<{
       />
 
       <ScrollView
+        ref={chatScrollRef}
         style={{ flex: 1 }}
         contentContainerStyle={styles.scrollPad}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         {/* Top Doctor & Session Info Banner */}
         <View style={[styles.card, SHADOWS.sm]}>
@@ -908,7 +941,7 @@ export const TeleconsultationScreen: React.FC<{
         onChangeText={setInputText}
         onSend={() => handleSendMessage()}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

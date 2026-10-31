@@ -8,13 +8,14 @@ import {
   ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, RADIUS, SHADOWS } from '../../theme';
+import { COLORS, RADIUS, SHADOWS, TOUCH } from '../../theme';
 import { Badge } from '../common/Badge';
 
 export interface HeaderAction {
   icon: keyof typeof Ionicons.glyphMap;
   onPress?: () => void;
   showBadgeDot?: boolean;
+  label?: string;
 }
 
 export interface AppHeaderProps {
@@ -48,18 +49,28 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
             style={styles.backBtn}
             onPress={onBack}
             activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel="Quay lại"
+            hitSlop={TOUCH.hitSlopSm}
           >
             <Ionicons name="arrow-back" size={22} color={COLORS.textPrimary} />
           </TouchableOpacity>
         )}
         {leftIconBox && (
-          <View style={styles.leftIconCircle}>
+          <View
+            style={styles.leftIconCircle}
+            importantForAccessibility="no-hide-descendants"
+          >
             <Ionicons name={leftIconBox} size={20} color={COLORS.primary} />
           </View>
         )}
         <View style={styles.titleBlock}>
           <View style={styles.titleLine}>
-            <Text style={styles.title} numberOfLines={1}>
+            <Text
+              style={styles.title}
+              numberOfLines={1}
+              accessibilityRole="header"
+            >
               {title}
             </Text>
             {badgeText && (
@@ -85,6 +96,9 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
             style={styles.iconBtn}
             onPress={act.onPress}
             activeOpacity={0.75}
+            accessibilityRole="button"
+            accessibilityLabel={act.label || `Tác vụ ${act.icon}`}
+            hitSlop={TOUCH.hitSlopSm}
           >
             <Ionicons name={act.icon} size={20} color={COLORS.textSecondary} />
             {act.showBadgeDot && <View style={styles.redDot} />}
@@ -96,6 +110,9 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
             style={styles.profileCircle}
             onPress={onProfilePress}
             activeOpacity={0.8}
+            accessibilityRole="button"
+            accessibilityLabel="Trang cá nhân"
+            hitSlop={TOUCH.hitSlopSm}
           >
             <Ionicons name="person-outline" size={17} color="#FFFFFF" />
           </TouchableOpacity>
@@ -128,9 +145,15 @@ export const HomeGreetingHeader: React.FC<HomeGreetingHeaderProps> = ({
         style={styles.greetingLeft}
         onPress={onAvatarPress}
         activeOpacity={0.85}
+        accessibilityRole="button"
+        accessibilityLabel={`Hồ sơ của ${userName}`}
       >
         <View style={styles.avatarWrap}>
-          <Image source={{ uri: avatarUrl }} style={styles.avatar} />
+          <Image
+            source={{ uri: avatarUrl }}
+            style={styles.avatar}
+            accessibilityLabel={`Ảnh đại diện ${userName}`}
+          />
           <View style={styles.onlineDot} />
         </View>
         <View>
@@ -143,6 +166,9 @@ export const HomeGreetingHeader: React.FC<HomeGreetingHeaderProps> = ({
         <TouchableOpacity
           style={[styles.circleActionBtn, SHADOWS.sm]}
           onPress={onChatPress}
+          accessibilityRole="button"
+          accessibilityLabel="Trợ lý AI và tin nhắn"
+          hitSlop={TOUCH.hitSlopSm}
         >
           <Ionicons
             name="chatbubble-outline"
@@ -153,6 +179,9 @@ export const HomeGreetingHeader: React.FC<HomeGreetingHeaderProps> = ({
         <TouchableOpacity
           style={[styles.circleActionBtn, SHADOWS.sm]}
           onPress={onNotificationPress}
+          accessibilityRole="button"
+          accessibilityLabel="Thông báo và nhắc uống thuốc"
+          hitSlop={TOUCH.hitSlopSm}
         >
           <Ionicons
             name="notifications-outline"
@@ -185,12 +214,12 @@ const styles = StyleSheet.create({
     paddingRight: 8,
   },
   backBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 8,
+    marginRight: 6,
   },
   leftIconCircle: {
     width: 40,
@@ -226,9 +255,9 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   iconBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
@@ -243,9 +272,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   profileCircle: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',

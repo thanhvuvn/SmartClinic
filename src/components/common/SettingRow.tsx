@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, RADIUS } from '../../theme';
+import { COLORS, RADIUS, TOUCH } from '../../theme';
 import { Badge } from './Badge';
 
 export interface SettingToggleRowProps {
@@ -40,14 +40,23 @@ export const SettingToggleRow: React.FC<SettingToggleRowProps> = ({
     <View style={[styles.toggleCard, style]}>
       <View style={styles.topRow}>
         <View style={styles.titleGroup}>
-          <Ionicons name={icon} size={18} color={iconColor} style={styles.icon} />
+          <Ionicons
+            name={icon}
+            size={18}
+            color={iconColor}
+            style={styles.icon}
+            importantForAccessibility="no"
+          />
           <Text style={styles.title}>{title}</Text>
         </View>
         <Switch
           value={value}
           onValueChange={onValueChange}
-          trackColor={{ false: '#CBD5E1', true: COLORS.primary }}
-          thumbColor="#FFFFFF"
+          accessibilityRole="switch"
+          accessibilityLabel={title}
+          accessibilityState={{ checked: value }}
+          trackColor={{ false: COLORS.switchTrackOff, true: COLORS.primary }}
+          thumbColor={COLORS.surface}
         />
       </View>
       <Text style={styles.description}>{description}</Text>
@@ -55,17 +64,33 @@ export const SettingToggleRow: React.FC<SettingToggleRowProps> = ({
       {footerNote ? (
         <View style={styles.footerRow}>
           <View style={styles.footerLeft}>
-            <Ionicons name="volume-high-outline" size={14} color={COLORS.secondary} />
+            <Ionicons
+              name="volume-high-outline"
+              size={14}
+              color={COLORS.secondary}
+              importantForAccessibility="no"
+            />
             <Text style={[styles.footerNoteText, { flex: 1 }]} numberOfLines={1}>
               {footerNote}
             </Text>
           </View>
           {footerActionLabel ? (
-            <TouchableOpacity style={styles.footerBtn} onPress={onFooterAction}>
+            <TouchableOpacity
+              style={styles.footerBtn}
+              onPress={onFooterAction}
+              accessibilityRole="button"
+              accessibilityLabel={footerActionLabel}
+              hitSlop={TOUCH.hitSlopSm}
+            >
               <Text style={styles.footerBtnText} numberOfLines={1}>
                 {footerActionLabel}
               </Text>
-              <Ionicons name="options-outline" size={13} color={COLORS.primary} />
+              <Ionicons
+                name="options-outline"
+                size={13}
+                color={COLORS.primary}
+                importantForAccessibility="no"
+              />
             </TouchableOpacity>
           ) : null}
         </View>
@@ -100,9 +125,16 @@ export const SettingLinkRow: React.FC<SettingLinkRowProps> = ({
       style={styles.linkRow}
       activeOpacity={onPress ? 0.75 : 1}
       onPress={onPress}
+      accessibilityRole={onPress ? 'button' : 'none'}
+      accessibilityLabel={title}
     >
       <View style={styles.linkIconWrap}>
-        <Ionicons name={icon} size={18} color={COLORS.primary} />
+        <Ionicons
+          name={icon}
+          size={18}
+          color={COLORS.primary}
+          importantForAccessibility="no"
+        />
       </View>
       <View style={styles.linkTextCol}>
         <Text style={styles.linkTitle}>{title}</Text>
@@ -115,14 +147,18 @@ export const SettingLinkRow: React.FC<SettingLinkRowProps> = ({
         <Switch
           value={rightToggleValue}
           onValueChange={onRightToggleChange}
-          trackColor={{ false: '#CBD5E1', true: COLORS.secondary }}
-          thumbColor="#FFFFFF"
+          accessibilityRole="switch"
+          accessibilityLabel={title}
+          accessibilityState={{ checked: rightToggleValue }}
+          trackColor={{ false: COLORS.switchTrackOff, true: COLORS.secondary }}
+          thumbColor={COLORS.surface}
         />
       ) : (
         <Ionicons
           name={isDownload ? 'download-outline' : 'chevron-forward'}
           size={18}
           color={isDownload ? COLORS.primary : COLORS.textMuted}
+          importantForAccessibility="no"
         />
       )}
     </TouchableOpacity>
@@ -200,13 +236,14 @@ const styles = StyleSheet.create({
   linkRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    minHeight: 48,
     paddingVertical: 11,
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: COLORS.divider,
   },
   linkIconWrap: {
-    width: 34,
-    height: 34,
+    width: 36,
+    height: 36,
     borderRadius: RADIUS.sm,
     backgroundColor: COLORS.surfaceContainerLow,
     alignItems: 'center',
