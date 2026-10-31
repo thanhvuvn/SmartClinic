@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, GRADIENTS, RADIUS, SHADOWS } from '../../theme';
+import { COLORS, GRADIENTS, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../../theme';
 import { Badge } from '../common/Badge';
 import { AppButton } from '../common/AppButton';
 
@@ -76,9 +76,14 @@ export const SmartPromoBanner: React.FC<SmartPromoBannerProps> = ({
     <TouchableOpacity
       activeOpacity={0.85}
       onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel="Đặt khám tại nhà và tại viện, hỗ trợ BHYT 100%"
       style={[styles.promoCard, SHADOWS.sm, style]}
     >
-      <View style={styles.promoIconBox}>
+      <View
+        style={styles.promoIconBox}
+        importantForAccessibility="no-hide-descendants"
+      >
         <Ionicons name="shield-checkmark" size={22} color={COLORS.secondary} />
       </View>
       <View style={styles.promoContent}>
@@ -90,7 +95,10 @@ export const SmartPromoBanner: React.FC<SmartPromoBannerProps> = ({
           Hỗ trợ thông tuyến bảo hiểm y tế, miễn phí đặt lịch trước.
         </Text>
       </View>
-      <View style={styles.promoChevron}>
+      <View
+        style={styles.promoChevron}
+        importantForAccessibility="no-hide-descendants"
+      >
         <Ionicons name="chevron-forward" size={16} color={COLORS.primary} />
       </View>
     </TouchableOpacity>
@@ -178,7 +186,7 @@ export const AIClinicalInsightCard: React.FC<AIClinicalInsightCardProps> = ({
 const styles = StyleSheet.create({
   heroCard: {
     borderRadius: RADIUS.lg,
-    padding: 18,
+    padding: SPACING.lg,
   },
   heroTopRow: {
     flexDirection: 'row',
@@ -186,34 +194,34 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexWrap: 'wrap',
     gap: 6,
-    marginBottom: 12,
+    marginBottom: SPACING.md,
   },
   readyText: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.micro,
     color: 'rgba(255,255,255,0.85)',
     fontWeight: '600',
   },
   heroTitle: {
-    fontSize: 18,
+    fontSize: TYPOGRAPHY.h2,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: COLORS.textOnPrimary,
     marginBottom: 6,
   },
   heroDesc: {
-    fontSize: 12.5,
-    lineHeight: 18,
+    fontSize: TYPOGRAPHY.bodySm,
+    lineHeight: TYPOGRAPHY.lineHeight.normal,
     color: 'rgba(255,255,255,0.88)',
-    marginBottom: 16,
+    marginBottom: SPACING.lg,
   },
   heroBottomRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: SPACING.sm,
   },
   askBtn: {
-    paddingHorizontal: 18,
+    paddingHorizontal: SPACING.lg,
   },
   accuracyRow: {
     flexDirection: 'row',
@@ -221,18 +229,18 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   accuracyText: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.caption,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: COLORS.textOnPrimary,
   },
   promoCard: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.lg,
-    padding: 14,
+    padding: SPACING.lg,
     borderWidth: 1,
-    borderColor: '#EEF2FF',
+    borderColor: COLORS.borderSubtle,
   },
   promoIconBox: {
     width: 44,
@@ -241,13 +249,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.tintTeal,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: SPACING.md,
     flexShrink: 0,
   },
   promoContent: {
     flex: 1,
     minWidth: 0,
-    paddingRight: 8,
+    paddingRight: SPACING.sm,
   },
   promoHeaderRow: {
     flexDirection: 'row',
@@ -255,23 +263,23 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexWrap: 'wrap',
     gap: 6,
-    marginBottom: 4,
+    marginBottom: SPACING.xs,
   },
   promoTitle: {
-    fontSize: 14,
+    fontSize: TYPOGRAPHY.body,
     fontWeight: '700',
     color: COLORS.textPrimary,
     flexShrink: 1,
   },
   promoSub: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.caption,
     color: COLORS.textSecondary,
-    lineHeight: 16,
+    lineHeight: TYPOGRAPHY.lineHeight.tight,
   },
   promoChevron: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: COLORS.surfaceContainer,
     alignItems: 'center',
     justifyContent: 'center',
@@ -281,7 +289,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.lg,
-    padding: 14,
+    padding: SPACING.lg,
     borderWidth: 1,
     borderColor: COLORS.outlineVariant,
   },
@@ -292,7 +300,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.secondaryContainer,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: SPACING.md,
     flexShrink: 0,
   },
   reminderContent: {
@@ -303,10 +311,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
-    marginBottom: 4,
+    marginBottom: SPACING.xs,
   },
   reminderBadgeText: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.micro,
     fontWeight: '800',
     color: COLORS.secondary,
   },
@@ -318,13 +326,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 6,
   },
   reminderTimeText: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.micro,
     color: COLORS.textSecondary,
     fontWeight: '600',
   },
   reminderBody: {
-    fontSize: 12.5,
-    lineHeight: 18,
+    fontSize: TYPOGRAPHY.bodySm,
+    lineHeight: TYPOGRAPHY.lineHeight.normal,
     color: COLORS.textPrimary,
   },
   highlightText: {
@@ -334,7 +342,7 @@ const styles = StyleSheet.create({
   insightCard: {
     backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.lg,
-    padding: 16,
+    padding: SPACING.lg,
     borderWidth: 1,
     borderColor: COLORS.outlineVariant,
   },
@@ -343,8 +351,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 10,
+    gap: SPACING.sm,
+    marginBottom: SPACING.sm,
   },
   insightLeft: {
     flexDirection: 'row',
@@ -359,23 +367,23 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 10,
+    marginRight: SPACING.sm,
     flexShrink: 0,
   },
   insightTitle: {
-    fontSize: 14,
+    fontSize: TYPOGRAPHY.body,
     fontWeight: '800',
     color: COLORS.textPrimary,
     flex: 1,
   },
   insightParagraph: {
-    fontSize: 12.5,
-    lineHeight: 19,
+    fontSize: TYPOGRAPHY.bodySm,
+    lineHeight: TYPOGRAPHY.lineHeight.normal,
     color: COLORS.textSecondary,
-    marginBottom: 12,
+    marginBottom: SPACING.md,
   },
   insightTagsCol: {
-    gap: 8,
+    gap: SPACING.sm,
   },
 });
 

@@ -69,6 +69,7 @@ export const GRADIENTS = {
 };
 
 export const SPACING = {
+  xxs: 2,
   xs: 4,
   sm: 8,
   md: 12,
@@ -100,6 +101,17 @@ export const TYPOGRAPHY = {
     tight: 16,
     normal: 19,
     relaxed: 22,
+  },
+  size: {
+    xxs: 11,
+    xs: 12,
+    sm: 13,
+    md: 14,
+    base: 15,
+    lg: 17,
+    xl: 20,
+    xxl: 24,
+    hero: 28,
   },
 } as const;
 

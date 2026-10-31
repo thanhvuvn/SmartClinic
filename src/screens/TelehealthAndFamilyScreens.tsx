@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, GRADIENTS, RADIUS, SHADOWS } from '../theme';
+import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../theme';
 import { DOCTORS, PATIENT_PROFILE, PRESCRIPTION_DRUGS } from '../data/mockData';
 import {
   AppHeader,
@@ -23,6 +23,7 @@ import {
   SegmentedControl,
   ChatBottomInputBar,
   ActivePrescriptionCard,
+  ToastBanner,
 } from '../components';
 
 // ============================================================================
@@ -1047,6 +1048,7 @@ export const LabAndImagingResultsScreen: React.FC<{
   onOpenTeleconsult?: () => void;
 }> = ({ onBack, onDownloadPDF, onOpenTeleconsult }) => {
   const [tab, setTab] = useState('imaging');
+  const [pdfToast, setPdfToast] = useState(false);
   return (
     <View style={styles.screen}>
       <AppHeader
@@ -1083,14 +1085,7 @@ export const LabAndImagingResultsScreen: React.FC<{
               leftIcon="download-outline"
               fullWidth={false}
               style={{ flex: 1 }}
-              onPress={
-                onDownloadPDF ||
-                (() =>
-                  Alert.alert(
-                    'Lưu PDF Thành Công',
-                    'Đã tải phiếu kết quả cận lâm sàng #CLS-2024-9042 về máy.'
-                  ))
-              }
+              onPress={onDownloadPDF || (() => setPdfToast(true))}
             />
             <AppButton
               title="Gửi hỏi Bác sĩ"
@@ -1161,29 +1156,26 @@ export const LabAndImagingResultsScreen: React.FC<{
           ))}
         </View>
       </ScrollView>
+      <ToastBanner
+        visible={pdfToast}
+        title="Lưu PDF Thành Công"
+        message="Đã tải phiếu kết quả cận lâm sàng #CLS-2024-9042 về máy."
+        onDismiss={() => setPdfToast(false)}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: COLORS.background },
-  scrollPad: { padding: 16, paddingBottom: 32 },
+  scrollPad: { padding: SPACING.md, paddingBottom: 32 },
   card: {
-    backgroundColor: COLORS.surface,
-    borderRadius: RADIUS.lg,
-    padding: 16,
-    marginBottom: 14,
-    borderWidth: 1,
-    borderColor: '#EEF2FF',
+    ...LAYOUT.card,
   },
   cardCenter: {
-    backgroundColor: COLORS.surface,
-    borderRadius: RADIUS.lg,
+    ...LAYOUT.card,
     padding: 18,
-    marginBottom: 14,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#EEF2FF',
   },
   successCircle: {
     width: 72,
@@ -1195,13 +1187,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   heroTitle: {
-    fontSize: 19,
+    fontSize: TYPOGRAPHY.size.xl,
     fontWeight: '800',
     color: COLORS.textPrimary,
     textAlign: 'center',
   },
   heroSub: {
-    fontSize: 12.5,
+    fontSize: TYPOGRAPHY.size.sm,
     lineHeight: 18,
     color: COLORS.textSecondary,
     textAlign: 'center',
@@ -1215,20 +1207,20 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   capLabel: {
-    fontSize: 10.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.textSecondary,
   },
   ticketCode: {
-    fontSize: 17,
+    fontSize: TYPOGRAPHY.size.lg,
     fontWeight: '800',
     color: COLORS.primary,
     marginTop: 2,
   },
   divider: {
     height: 1,
-    backgroundColor: '#F1F5F9',
-    marginVertical: 12,
+    backgroundColor: COLORS.divider,
+    marginVertical: SPACING.sm,
   },
   docRow: {
     flexDirection: 'row',
@@ -1238,19 +1230,20 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
+    backgroundColor: COLORS.surfaceContainer,
   },
   docName: {
-    fontSize: 14.5,
+    fontSize: TYPOGRAPHY.size.base,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   docSub: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
   docHospital: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '600',
     color: COLORS.textPrimary,
     marginTop: 2,
@@ -1258,7 +1251,7 @@ const styles = StyleSheet.create({
   ticketGrid: {
     flexDirection: 'row',
     gap: 10,
-    marginTop: 12,
+    marginTop: SPACING.sm,
   },
   ticketBox: {
     flex: 1,
@@ -1267,7 +1260,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   ticketVal: {
-    fontSize: 14,
+    fontSize: TYPOGRAPHY.size.md,
     fontWeight: '800',
     color: COLORS.primary,
     marginVertical: 2,
@@ -1276,7 +1269,7 @@ const styles = StyleSheet.create({
     padding: 14,
     backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.lg,
-    marginVertical: 12,
+    marginVertical: SPACING.sm,
   },
   quickGrid3: {
     flexDirection: 'row',
@@ -1287,47 +1280,47 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.md,
-    paddingVertical: 12,
+    paddingVertical: SPACING.sm,
     alignItems: 'center',
     gap: 6,
   },
   quickBtnLabel: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.primary,
   },
   checkItemRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 8,
-    marginBottom: 8,
+    gap: SPACING.xs,
+    marginBottom: SPACING.xs,
   },
   checkItemText: {
     flex: 1,
-    fontSize: 12.5,
+    fontSize: TYPOGRAPHY.size.sm,
     lineHeight: 18,
     color: COLORS.textSecondary,
-    marginTop: 4,
+    marginTop: SPACING.xxs,
   },
   heroCard: {
     borderRadius: RADIUS.lg,
-    padding: 16,
-    marginBottom: 16,
+    padding: SPACING.md,
+    marginBottom: SPACING.md,
   },
   whiteTitle: {
-    fontSize: 16,
+    fontSize: TYPOGRAPHY.size.base,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: COLORS.textOnPrimary,
   },
   whiteSub: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     color: 'rgba(255,255,255,0.85)',
   },
   whiteBody: {
-    fontSize: 12.5,
+    fontSize: TYPOGRAPHY.size.sm,
     lineHeight: 18,
-    color: '#FFFFFF',
-    marginTop: 8,
+    color: COLORS.textOnPrimary,
+    marginTop: SPACING.xs,
   },
   memberNoteBox: {
     flexDirection: 'row',
@@ -1336,18 +1329,18 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md,
     padding: 10,
     marginTop: 10,
-    gap: 8,
+    gap: SPACING.xs,
   },
   memberNoteText: {
     flex: 1,
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     lineHeight: 17,
     color: COLORS.textPrimary,
   },
   vitals3Grid: {
     flexDirection: 'row',
-    gap: 8,
-    marginTop: 12,
+    gap: SPACING.xs,
+    marginTop: SPACING.sm,
   },
   vitalBox: {
     flex: 1,
@@ -1357,20 +1350,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   vitalBig: {
-    fontSize: 15,
+    fontSize: TYPOGRAPHY.size.base,
     fontWeight: '800',
     color: COLORS.primary,
     marginVertical: 2,
   },
   vitalTag: {
-    fontSize: 10.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.secondary,
   },
   chipsWrap: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: SPACING.xs,
     marginBottom: 14,
   },
   dropdownWrap: {
@@ -1385,7 +1378,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.md,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: COLORS.border,
   },
   dropdownTriggerActive: {
     borderColor: COLORS.primary,
@@ -1398,7 +1391,7 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   dropdownValueText: {
-    fontSize: 13.5,
+    fontSize: TYPOGRAPHY.size.md,
     fontWeight: '700',
     color: COLORS.textPrimary,
     flexShrink: 1,
@@ -1408,7 +1401,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.md,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: COLORS.border,
     overflow: 'hidden',
   },
   dropdownOptionRow: {
@@ -1416,15 +1409,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingVertical: SPACING.sm,
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: COLORS.divider,
   },
   dropdownOptionRowActive: {
     backgroundColor: COLORS.surfaceContainerLow,
   },
   dropdownOptionText: {
-    fontSize: 13,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '600',
     color: COLORS.textPrimary,
   },
@@ -1435,8 +1428,8 @@ const styles = StyleSheet.create({
   chatRow: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    marginBottom: 12,
-    gap: 8,
+    marginBottom: SPACING.sm,
+    gap: SPACING.xs,
   },
   chatRowLeft: {
     justifyContent: 'flex-start',
@@ -1448,6 +1441,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
+    backgroundColor: COLORS.surfaceContainer,
   },
   chatBubble: {
     maxWidth: '82%',
@@ -1460,60 +1454,60 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderBottomLeftRadius: 4,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: COLORS.border,
   },
   chatBubblePatient: {
     backgroundColor: COLORS.primary,
     borderBottomRightRadius: 4,
   },
   chatSenderName: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '800',
     color: COLORS.primary,
-    marginBottom: 4,
+    marginBottom: SPACING.xxs,
   },
   chatMsgText: {
-    fontSize: 13.5,
+    fontSize: TYPOGRAPHY.size.md,
     lineHeight: 19,
     color: COLORS.textPrimary,
   },
   chatAttachmentCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: SPACING.xs,
     backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.md,
     padding: 10,
-    marginTop: 8,
+    marginTop: SPACING.xs,
     borderWidth: 1,
-    borderColor: '#DCE6FF',
+    borderColor: COLORS.outlineVariant,
   },
   chatAttachmentTitle: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '800',
     color: COLORS.primary,
   },
   chatAttachmentSub: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
   chatTimeText: {
-    fontSize: 10.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginTop: 6,
     textAlign: 'right',
   },
   quickReplyChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: SPACING.xs,
     borderRadius: RADIUS.full,
     backgroundColor: COLORS.surface,
     borderWidth: 1,
-    borderColor: '#CBD5E1',
+    borderColor: COLORS.switchTrackOff,
   },
   quickReplyText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '600',
     color: COLORS.primary,
   },
@@ -1523,10 +1517,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 9,
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: COLORS.divider,
   },
   labVal: {
-    fontSize: 13.5,
+    fontSize: TYPOGRAPHY.size.md,
     fontWeight: '800',
     color: COLORS.primary,
   },

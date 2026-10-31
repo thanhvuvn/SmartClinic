@@ -8,13 +8,14 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, GRADIENTS, RADIUS, SHADOWS } from '../theme';
+import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../theme';
 import { PRESCRIPTION_DRUGS } from '../data/mockData';
 import {
   AppHeader,
   AppButton,
   Badge,
   SectionHeader,
+  ToastBanner,
 } from '../components';
 
 // ============================================================================
@@ -30,6 +31,7 @@ export const MedicationLogScreen: React.FC<{
     afternoon: true,
     evening: false,
   });
+  const [toastVisible, setToastVisible] = useState(false);
 
   return (
     <View style={styles.screen}>
@@ -191,15 +193,16 @@ export const MedicationLogScreen: React.FC<{
             leftIcon="notifications-outline"
             fullWidth={false}
             style={{ flex: 1 }}
-            onPress={() =>
-              Alert.alert(
-                'Đã bật thông báo nhắc thuốc',
-                'Ứng dụng sẽ gửi thông báo nhắc uống thuốc lúc 08:00, 14:00 và 21:00 hàng ngày.'
-              )
-            }
+            onPress={() => setToastVisible(true)}
           />
         </View>
       </ScrollView>
+      <ToastBanner
+        visible={toastVisible}
+        title="Đã bật thông báo nhắc thuốc"
+        message="Nhắc uống thuốc lúc 08:00, 14:00 và 21:00 hàng ngày."
+        onDismiss={() => setToastVisible(false)}
+      />
     </View>
   );
 };
@@ -386,20 +389,15 @@ export const FamilyMedicineCabinetScreen: React.FC<{
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: COLORS.background },
-  scrollPad: { padding: 16, paddingBottom: 32 },
+  scrollPad: { padding: SPACING.lg, paddingBottom: SPACING.xxxl },
   card: {
-    backgroundColor: COLORS.surface,
-    borderRadius: RADIUS.lg,
-    padding: 16,
-    marginBottom: 14,
-    borderWidth: 1,
-    borderColor: '#EEF2FF',
+    ...LAYOUT.card,
   },
   alertCard: {
-    backgroundColor: '#FFF5F5',
+    backgroundColor: COLORS.errorSurface,
     borderRadius: RADIUS.lg,
-    padding: 16,
-    marginBottom: 16,
+    padding: SPACING.lg,
+    marginBottom: SPACING.lg,
     borderWidth: 1,
     borderColor: COLORS.errorContainer,
   },
@@ -411,32 +409,32 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   cardTitle: {
-    fontSize: 14.5,
-    fontWeight: '800',
+    fontSize: TYPOGRAPHY.body,
+    fontWeight: '700',
     color: COLORS.textPrimary,
   },
   subText: {
-    fontSize: 12,
-    lineHeight: 18,
+    fontSize: TYPOGRAPHY.caption,
+    lineHeight: TYPOGRAPHY.lineHeight.normal,
     color: COLORS.textSecondary,
     marginTop: 3,
   },
   slotTime: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.caption,
     fontWeight: '800',
     color: COLORS.primary,
   },
   weekRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 4,
-    marginTop: 12,
+    gap: SPACING.xs,
+    marginTop: SPACING.md,
   },
   dayPill: {
     flex: 1,
     borderRadius: RADIUS.md,
     backgroundColor: COLORS.surfaceContainerLow,
-    paddingVertical: 8,
+    paddingVertical: SPACING.sm,
     alignItems: 'center',
     gap: 3,
   },
@@ -444,42 +442,42 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   dayPillText: {
-    fontSize: 10.5,
+    fontSize: TYPOGRAPHY.micro,
     fontWeight: '700',
     color: COLORS.textSecondary,
   },
   dayPillNum: {
-    fontSize: 14,
+    fontSize: TYPOGRAPHY.body,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   heroCard: {
     borderRadius: RADIUS.lg,
-    padding: 16,
-    marginBottom: 16,
+    padding: SPACING.lg,
+    marginBottom: SPACING.lg,
   },
   whiteSub: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.caption,
     color: 'rgba(255,255,255,0.85)',
   },
   whiteBody: {
-    fontSize: 12.5,
-    lineHeight: 18,
-    color: '#FFFFFF',
-    marginTop: 8,
+    fontSize: TYPOGRAPHY.bodySm,
+    lineHeight: TYPOGRAPHY.lineHeight.normal,
+    color: COLORS.textOnPrimary,
+    marginTop: SPACING.sm,
   },
   noteCallout: {
     flexDirection: 'row',
     backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.md,
-    padding: 10,
-    marginTop: 10,
-    gap: 8,
+    padding: SPACING.sm,
+    marginTop: SPACING.sm,
+    gap: SPACING.sm,
   },
   noteCalloutText: {
     flex: 1,
-    fontSize: 12,
-    lineHeight: 17,
+    fontSize: TYPOGRAPHY.caption,
+    lineHeight: TYPOGRAPHY.lineHeight.normal,
     color: COLORS.textPrimary,
   },
 });

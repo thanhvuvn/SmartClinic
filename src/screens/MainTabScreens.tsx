@@ -10,7 +10,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, RADIUS, SHADOWS } from '../theme';
+import { COLORS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../theme';
 import {
   DOCTORS,
   SPECIALTIES,
@@ -49,6 +49,7 @@ import {
   SettingToggleRow,
   SettingLinkRow,
   Badge,
+  ToastBanner,
 } from '../components';
 
 export interface HomeScreenProps {
@@ -254,6 +255,9 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
   onNavigate,
 }) => {
   const [filterKey, setFilterKey] = useState('all');
+  const [toastInfo, setToastInfo] = useState<{ title: string; msg: string } | null>(
+    null
+  );
 
   return (
     <View style={styles.screen}>
@@ -333,10 +337,10 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
             <LabImagingCard
               onViewDicom={() => onNavigate('labImagingResults')}
               onDownloadPdf={() =>
-                Alert.alert(
-                  'Tải PDF Kết Quả',
-                  'Đã lưu kết quả chụp MRI & xét nghiệm máu về máy.'
-                )
+                setToastInfo({
+                  title: 'Đã lưu PDF Kết Quả',
+                  msg: 'Kết quả chụp MRI & xét nghiệm máu đã được tải về máy.',
+                })
               }
               onVerifySignature={() => onNavigate('teleconsult')}
             />
@@ -377,14 +381,20 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
             leftIcon="camera-outline"
             fullWidth={false}
             onPress={() =>
-              Alert.alert(
-                'Tải lên hồ sơ',
-                'Chọn ảnh chụp toa thuốc hoặc kết quả xét nghiệm từ thư viện ảnh để lưu vào hồ sơ.'
-              )
+              setToastInfo({
+                title: 'Tải lên hồ sơ',
+                msg: 'Đã mở trình chọn ảnh toa thuốc & kết quả xét nghiệm.',
+              })
             }
           />
         </View>
       </ScrollView>
+      <ToastBanner
+        visible={!!toastInfo}
+        title={toastInfo?.title || ''}
+        message={toastInfo?.msg}
+        onDismiss={() => setToastInfo(null)}
+      />
     </View>
   );
 };
@@ -960,16 +970,16 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   scrollPad: {
-    padding: 16,
+    padding: SPACING.md,
     paddingBottom: 28,
   },
   quickServiceCard: {
     width: 118,
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.lg,
-    padding: 12,
+    padding: SPACING.sm,
     borderWidth: 1,
-    borderColor: '#EEF2FF',
+    borderColor: COLORS.borderSubtle,
   },
   quickServiceIcon: {
     width: 38,
@@ -977,15 +987,15 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 8,
+    marginBottom: SPACING.xs,
   },
   quickServiceTitle: {
-    fontSize: 12.5,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   quickServiceSub: {
-    fontSize: 10.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
@@ -993,7 +1003,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: SPACING.xs,
     backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.lg,
     padding: 14,
@@ -1011,12 +1021,12 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   ocrTitle: {
-    fontSize: 13,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   ocrSub: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
@@ -1027,16 +1037,16 @@ const styles = StyleSheet.create({
     gap: 10,
     backgroundColor: COLORS.surfaceContainer,
     borderRadius: RADIUS.lg,
-    padding: 16,
+    padding: SPACING.md,
     marginTop: 6,
   },
   moreConsultTitle: {
-    fontSize: 14,
+    fontSize: TYPOGRAPHY.size.md,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   moreConsultSub: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xs,
     color: COLORS.textSecondary,
     marginTop: 3,
   },
@@ -1053,15 +1063,15 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.lg,
     padding: 14,
     borderWidth: 1,
-    borderColor: '#EEF2FF',
+    borderColor: COLORS.borderSubtle,
   },
   statBoxTop: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
-    gap: 4,
-    marginBottom: 8,
+    gap: SPACING.xxs,
+    marginBottom: SPACING.xs,
   },
   statIconWrap: {
     width: 32,
@@ -1072,28 +1082,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   statBigNum: {
-    fontSize: 20,
+    fontSize: TYPOGRAPHY.size.xl,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   statBoxTitle: {
-    fontSize: 12.5,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '700',
     color: COLORS.textPrimary,
     marginTop: 2,
   },
   statBoxSub: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
   sectionCard: {
-    backgroundColor: COLORS.surface,
-    borderRadius: RADIUS.lg,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#EEF2FF',
+    ...LAYOUT.card,
+    marginBottom: SPACING.md,
   },
   sectionCardHeader: {
     flexDirection: 'row',
@@ -1110,19 +1116,19 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   sectionCardTitle: {
-    fontSize: 15,
+    fontSize: TYPOGRAPHY.size.base,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   sectionCardSub: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xs,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
   hotlineBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF5F5',
+    backgroundColor: COLORS.errorSurface,
     borderRadius: RADIUS.lg,
     padding: 14,
     borderWidth: 1,
@@ -1137,18 +1143,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   hotlineLabel: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   hotlineNumber: {
-    fontSize: 16,
+    fontSize: TYPOGRAPHY.size.base,
     fontWeight: '800',
     color: COLORS.error,
     marginTop: 2,
   },
   versionFooter: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     lineHeight: 16,
     color: COLORS.textMuted,
     textAlign: 'center',

@@ -259,7 +259,12 @@ export default function App() {
         return (
           <View style={styles.mainWrapper}>
             <View style={{ flex: 1 }}>
-              {activeTab === 'home' && (
+              <View
+                style={[
+                  styles.tabPane,
+                  activeTab !== 'home' && styles.tabPaneHidden,
+                ]}
+              >
                 <HomeScreen
                   onSelectDoctor={handleOpenDoctor}
                   onBookDoctor={handleOpenBooking}
@@ -267,24 +272,44 @@ export default function App() {
                   onOpenProfile={() => setActiveTab('profile')}
                   onNavigate={navigateTo}
                 />
-              )}
-              {activeTab === 'records' && (
+              </View>
+              <View
+                style={[
+                  styles.tabPane,
+                  activeTab !== 'records' && styles.tabPaneHidden,
+                ]}
+              >
                 <EHRScreen
                   onAskAI={() => setActiveTab('ai')}
                   onNavigate={navigateTo}
                 />
-              )}
-              {activeTab === 'appointments' && (
+              </View>
+              <View
+                style={[
+                  styles.tabPane,
+                  activeTab !== 'appointments' && styles.tabPaneHidden,
+                ]}
+              >
                 <AppointmentsScreen
                   onSelectDoctor={handleOpenDoctor}
                   onBookNew={() => handleOpenBooking(DOCTORS[0])}
                   onNavigate={navigateTo}
                 />
-              )}
-              {activeTab === 'ai' && (
+              </View>
+              <View
+                style={[
+                  styles.tabPane,
+                  activeTab !== 'ai' && styles.tabPaneHidden,
+                ]}
+              >
                 <AIAssistantScreen onBookDoctor={handleOpenBooking} />
-              )}
-              {activeTab === 'profile' && (
+              </View>
+              <View
+                style={[
+                  styles.tabPane,
+                  activeTab !== 'profile' && styles.tabPaneHidden,
+                ]}
+              >
                 <ProfileSettingsScreen
                   onLogout={() => {
                     setRouteHistory([]);
@@ -293,7 +318,7 @@ export default function App() {
                   onNavigate={navigateTo}
                   onSwitchTab={setActiveTab}
                 />
-              )}
+              </View>
             </View>
             <BottomTabBar
               activeTab={activeTab}
@@ -332,5 +357,11 @@ const styles = StyleSheet.create({
   mainWrapper: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  tabPane: {
+    flex: 1,
+  },
+  tabPaneHidden: {
+    display: 'none',
   },
 });

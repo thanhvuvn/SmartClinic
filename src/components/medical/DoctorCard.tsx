@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, RADIUS, SHADOWS } from '../../theme';
+import { COLORS, RADIUS, SHADOWS, TYPOGRAPHY } from '../../theme';
 import { DoctorItem } from '../../data/mockData';
 import { AppButton } from '../common/AppButton';
 import { Badge } from '../common/Badge';
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     padding: 14,
     marginRight: 12,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: COLORS.divider,
     justifyContent: 'space-between',
   },
   featuredTopRow: {
@@ -296,13 +296,13 @@ const styles = StyleSheet.create({
     width: 54,
     height: 54,
     borderRadius: RADIUS.md,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: COLORS.surfaceContainer,
   },
   verifiedBadgeSm: {
     position: 'absolute',
     bottom: -2,
     right: -2,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.surface,
     borderRadius: 10,
   },
   featuredInfo: {
@@ -311,18 +311,18 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   specialtyMeta: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.primary,
   },
   doctorNameSm: {
-    fontSize: 14,
+    fontSize: TYPOGRAPHY.size.md,
     fontWeight: '800',
     color: COLORS.textPrimary,
     marginTop: 2,
   },
   hospitalSm: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xs,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
@@ -343,18 +343,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   ratingScore: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '800',
     color: COLORS.textPrimary,
     marginLeft: 4,
   },
   ratingCount: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginLeft: 3,
   },
   availableTag: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.secondary,
   },
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.lg,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: COLORS.divider,
   },
   profileTopRow: {
     flexDirection: 'row',
@@ -377,13 +377,13 @@ const styles = StyleSheet.create({
     width: 78,
     height: 92,
     borderRadius: RADIUS.md,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: COLORS.surfaceContainer,
   },
   verifiedBadgeLg: {
     position: 'absolute',
     bottom: -4,
     right: -4,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.surface,
     borderRadius: 12,
     padding: 1,
   },
@@ -398,24 +398,24 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   doctorNameLg: {
-    fontSize: 16,
+    fontSize: TYPOGRAPHY.size.base,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   degreeText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
   degreeHospitalText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '600',
     color: COLORS.textSecondary,
     marginTop: 2,
     lineHeight: 17,
   },
   subSpecialtyText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.primary,
     marginTop: 4,
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   statVal: {
-    fontSize: 13.5,
+    fontSize: TYPOGRAPHY.size.md,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexWrap: 'wrap',
     gap: 8,
-    backgroundColor: '#E8F3FF',
+    backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.md,
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -475,17 +475,17 @@ const styles = StyleSheet.create({
     minWidth: 160,
   },
   feeTitle: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   feeSub: {
-    fontSize: 10.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '600',
     color: COLORS.secondary,
   },
   feePrice: {
-    fontSize: 16,
+    fontSize: TYPOGRAPHY.size.base,
     fontWeight: '800',
     color: COLORS.primary,
     flexShrink: 0,
@@ -495,18 +495,19 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.lg,
     padding: 14,
     borderWidth: 1,
-    borderColor: '#EEF2FF',
+    borderColor: COLORS.borderSubtle,
   },
   summaryTop: {
     flexDirection: 'row',
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: COLORS.divider,
   },
   avatarMd: {
     width: 62,
     height: 62,
     borderRadius: RADIUS.md,
+    backgroundColor: COLORS.surfaceContainer,
   },
   summaryPillsRow: {
     flexDirection: 'row',
@@ -530,7 +531,7 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   summaryLocationText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     color: COLORS.textSecondary,
     fontWeight: '600',
     flexShrink: 1,
@@ -555,17 +556,17 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   initialsText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   reviewAuthor: {
-    fontSize: 12.5,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   reviewMeta: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginTop: 1,
   },
@@ -575,7 +576,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   reviewComment: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     lineHeight: 18,
     color: COLORS.textPrimary,
   },

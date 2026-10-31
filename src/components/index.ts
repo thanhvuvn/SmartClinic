@@ -5,6 +5,7 @@ export * from './common/Badge';
 export * from './common/SegmentedControl';
 export * from './common/SectionHeader';
 export * from './common/SettingRow';
+export * from './common/Feedback';
 
 // Navigation & Layout Components
 export * from './navigation/AppHeader';

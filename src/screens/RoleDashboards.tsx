@@ -6,11 +6,13 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, GRADIENTS, RADIUS, SHADOWS } from '../theme';
+import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../theme';
 import {
   DOCTORS,
   PATIENT_PROFILE,
@@ -25,6 +27,7 @@ import {
   SectionHeader,
   SegmentedControl,
   SettingToggleRow,
+  ToastBanner,
 } from '../components';
 
 // ==========================================
@@ -479,6 +482,7 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
     '2': 'Chờ tới lượt',
     '3': 'Chat trực tuyến (14:00)',
   });
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const renderSchedule = () => (
     <ScrollView
@@ -593,7 +597,7 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
                   ...prev,
                   [pt.id]: 'Đang khám tại P.302',
                 }));
-                Alert.alert('Gọi bệnh nhân', `Đã phát loa gọi ${pt.stt} - ${pt.name} vào Phòng 302.`);
+                setToastMessage(`Đã phát loa gọi ${pt.stt} - ${pt.name} vào Phòng 302.`);
               }}
             />
             <AppButton
@@ -661,57 +665,62 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
   );
 
   const renderPrescribe = () => (
-    <ScrollView
-      contentContainerStyle={styles.scrollPad}
-      showsVerticalScrollIndicator={false}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <SectionHeader
-        title="Kê đơn thuốc điện tử"
-        subtitle="BN: Nguyễn Văn Vũ (#BN-882910) • Toa #DT-241029-01"
-      />
-
-      <View style={[styles.card, SHADOWS.sm]}>
-        <AppInput
-          label="Chẩn đoán lâm sàng (ICD-10: G44.2)"
-          leftIcon="medkit-outline"
-          value={diagnosisNote}
-          onChangeText={setDiagnosisNote}
+      <ScrollView
+        contentContainerStyle={styles.scrollPad}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <SectionHeader
+          title="Kê đơn thuốc điện tử"
+          subtitle="BN: Nguyễn Văn Vũ (#BN-882910) • Toa #DT-241029-01"
         />
 
-        <Text style={styles.rxSectionLabel}>Danh mục thuốc chỉ định:</Text>
-        {PRESCRIPTION_DRUGS.map((d) => (
-          <View key={d.id} style={styles.rxItemRow}>
-            <View style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
-              <Text style={styles.docName} numberOfLines={1}>
-                {d.name}
-              </Text>
-              <Text style={styles.docSub} numberOfLines={1}>
-                {d.dosageTag} • {d.instructionTag}
-              </Text>
+        <View style={[styles.card, SHADOWS.sm]}>
+          <AppInput
+            label="Chẩn đoán lâm sàng (ICD-10: G44.2)"
+            leftIcon="medkit-outline"
+            value={diagnosisNote}
+            onChangeText={setDiagnosisNote}
+          />
+
+          <Text style={styles.rxSectionLabel}>Danh mục thuốc chỉ định:</Text>
+          {PRESCRIPTION_DRUGS.map((d) => (
+            <View key={d.id} style={styles.rxItemRow}>
+              <View style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
+                <Text style={styles.docName} numberOfLines={1}>
+                  {d.name}
+                </Text>
+                <Text style={styles.docSub} numberOfLines={1}>
+                  {d.dosageTag} • {d.instructionTag}
+                </Text>
+              </View>
+              <Badge label={d.quantity} variant="blue" />
             </View>
-            <Badge label={d.quantity} variant="blue" />
-          </View>
-        ))}
+          ))}
 
-        <AppButton
-          title="Lưu & Phát hành đơn thuốc"
-          variant="gradient"
-          size="lg"
-          leftIcon="checkmark-circle-outline"
-          style={{ marginTop: 14 }}
-          onPress={() => {
-            if (onNavigate) {
-              onNavigate('postConsultSummary');
-            } else {
-              Alert.alert(
-                'Đã phát hành đơn thuốc!',
-                'Đơn thuốc #DT-241029-01 đã được lưu và đồng bộ sang ứng dụng của bệnh nhân Nguyễn Văn Vũ.'
-              );
-            }
-          }}
-        />
-      </View>
-    </ScrollView>
+          <AppButton
+            title="Lưu & Phát hành đơn thuốc"
+            variant="gradient"
+            size="lg"
+            leftIcon="checkmark-circle-outline"
+            style={{ marginTop: 14 }}
+            onPress={() => {
+              if (onNavigate) {
+                onNavigate('postConsultSummary');
+              } else {
+                setToastMessage(
+                  'Đơn thuốc #DT-241029-01 đã được lưu và đồng bộ sang ứng dụng của bệnh nhân Nguyễn Văn Vũ.'
+                );
+              }
+            }}
+          />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 
   const renderDoctorProfile = () => (
@@ -746,6 +755,13 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
         rightActions={[
           { icon: 'log-out-outline', label: 'Đăng xuất Bác sĩ', onPress: onLogout },
         ]}
+      />
+
+      <ToastBanner
+        visible={!!toastMessage}
+        title="Thông Báo"
+        message={toastMessage ?? ''}
+        onDismiss={() => setToastMessage(null)}
       />
 
       <View style={{ flex: 1 }}>
@@ -803,12 +819,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   scrollPad: {
-    padding: 16,
+    padding: SPACING.md,
     paddingBottom: 28,
   },
   heroBanner: {
     borderRadius: RADIUS.lg,
-    padding: 16,
+    padding: SPACING.md,
     marginBottom: 18,
   },
   heroTop: {
@@ -834,15 +850,16 @@ const styles = StyleSheet.create({
     height: 54,
     borderRadius: 27,
     borderWidth: 2,
-    borderColor: '#FFFFFF',
+    borderColor: COLORS.textOnPrimary,
+    backgroundColor: COLORS.surfaceContainer,
   },
   heroName: {
-    fontSize: 17,
+    fontSize: TYPOGRAPHY.size.lg,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: COLORS.textOnPrimary,
   },
   heroEmail: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xs,
     color: 'rgba(255,255,255,0.8)',
     marginTop: 2,
   },
@@ -851,7 +868,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.2)',
     borderRadius: RADIUS.md,
     paddingVertical: 10,
-    paddingHorizontal: 8,
+    paddingHorizontal: SPACING.xs,
   },
   heroMetricItem: {
     flex: 1,
@@ -862,12 +879,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.2)',
   },
   heroMetricVal: {
-    fontSize: 14,
+    fontSize: TYPOGRAPHY.size.md,
     fontWeight: '800',
     color: '#86F2E4',
   },
   heroMetricLabel: {
-    fontSize: 10.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: 'rgba(255,255,255,0.8)',
     marginTop: 2,
   },
@@ -884,13 +901,13 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.lg,
     padding: 14,
     borderWidth: 1,
-    borderColor: '#EEF2FF',
+    borderColor: COLORS.borderSubtle,
   },
   kpiTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: SPACING.xs,
   },
   kpiIconBlue: {
     width: 34,
@@ -909,31 +926,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   kpiValue: {
-    fontSize: 19,
+    fontSize: TYPOGRAPHY.size.xl,
     fontWeight: '800',
     color: COLORS.primary,
   },
   kpiTitle: {
-    fontSize: 12.5,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '700',
     color: COLORS.textPrimary,
     marginTop: 2,
   },
   kpiSub: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
   card: {
-    backgroundColor: COLORS.surface,
-    borderRadius: RADIUS.lg,
-    padding: 16,
-    marginBottom: 14,
-    borderWidth: 1,
-    borderColor: '#EEF2FF',
+    ...LAYOUT.card,
   },
   barRow: {
-    marginBottom: 12,
+    marginBottom: SPACING.sm,
   },
   barLabelRow: {
     flexDirection: 'row',
@@ -941,14 +953,14 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   barName: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '600',
     color: COLORS.textPrimary,
     flex: 1,
-    marginRight: 8,
+    marginRight: SPACING.xs,
   },
   barCount: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.primary,
   },
@@ -967,27 +979,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.md,
-    padding: 12,
+    padding: SPACING.sm,
   },
   auditTitle: {
-    fontSize: 12.5,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   auditSub: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
   docManageRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 12,
+    marginBottom: SPACING.sm,
   },
   docManageInfoCol: {
     flex: 1,
     minWidth: 0,
-    marginLeft: 12,
+    marginLeft: SPACING.sm,
   },
   docNameBadgeRow: {
     flexDirection: 'row',
@@ -1000,29 +1012,30 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
+    backgroundColor: COLORS.surfaceContainer,
   },
   docName: {
-    fontSize: 14.5,
+    fontSize: TYPOGRAPHY.size.base,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   docSub: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     color: COLORS.textSecondary,
     marginTop: 3,
   },
   docHospitalLine: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '600',
     color: COLORS.textPrimary,
     marginTop: 2,
     lineHeight: 17,
   },
   docMeta: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.primary,
-    marginTop: 4,
+    marginTop: SPACING.xxs,
   },
   docActionRow: {
     flexDirection: 'row',
@@ -1034,28 +1047,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
     gap: 6,
-    marginBottom: 8,
+    marginBottom: SPACING.xs,
   },
   aptCode: {
-    fontSize: 13,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '800',
     color: COLORS.primary,
   },
   aptPatient: {
-    fontSize: 13.5,
+    fontSize: TYPOGRAPHY.size.md,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   aptDoc: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
   aptTime: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '600',
     color: COLORS.secondary,
-    marginTop: 4,
+    marginTop: SPACING.xxs,
   },
   symptomBox: {
     backgroundColor: COLORS.surfaceContainerLow,
@@ -1064,12 +1077,12 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   symptomLabel: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.primary,
   },
   symptomText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     color: COLORS.textPrimary,
     marginTop: 2,
     lineHeight: 17,
@@ -1079,7 +1092,7 @@ const styles = StyleSheet.create({
     flexBasis: '46%',
     backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.sm,
-    padding: 8,
+    padding: SPACING.xs,
     alignItems: 'center',
   },
   vitalMiniLabel: {
@@ -1087,16 +1100,16 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
   },
   vitalMiniVal: {
-    fontSize: 13,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '800',
     color: COLORS.primary,
     marginTop: 2,
   },
   rxSectionLabel: {
-    fontSize: 12.5,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '700',
     color: COLORS.textPrimary,
-    marginBottom: 8,
+    marginBottom: SPACING.xs,
   },
   rxItemRow: {
     flexDirection: 'row',
@@ -1104,13 +1117,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.md,
     padding: 10,
-    marginBottom: 8,
+    marginBottom: SPACING.xs,
   },
   roleTabBar: {
     height: 62,
     backgroundColor: COLORS.surface,
     borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
+    borderTopColor: COLORS.border,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
@@ -1121,7 +1134,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   roleTabLabel: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginTop: 3,
     fontWeight: '500',

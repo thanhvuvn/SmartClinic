@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, RADIUS, SHADOWS } from '../theme';
+import { COLORS, LAYOUT, RADIUS, SHADOWS, SPACING, TOUCH, TYPOGRAPHY } from '../theme';
 import {
   DoctorItem,
   DOCTORS,
@@ -95,7 +95,12 @@ export const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = ({
                 {doctor.address}
               </Text>
             </View>
-            <TouchableOpacity style={styles.mapCircleBtn}>
+            <TouchableOpacity
+              style={styles.mapCircleBtn}
+              accessibilityRole="button"
+              accessibilityLabel={`Xem bản đồ ${doctor.hospital}`}
+              hitSlop={TOUCH.hitSlopSm}
+            >
               <Ionicons
                 name="navigate-outline"
                 size={16}
@@ -365,16 +370,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   scrollPad: {
-    padding: 16,
-    paddingBottom: 28,
+    padding: SPACING.lg,
+    paddingBottom: SPACING.xxxl,
   },
   card: {
-    backgroundColor: COLORS.surface,
-    borderRadius: RADIUS.lg,
-    padding: 16,
-    marginBottom: 14,
-    borderWidth: 1,
-    borderColor: '#EEF2FF',
+    ...LAYOUT.card,
   },
   locationRow: {
     flexDirection: 'row',
@@ -383,40 +383,40 @@ const styles = StyleSheet.create({
   locationIconBox: {
     width: 40,
     height: 40,
-    borderRadius: 12,
+    borderRadius: RADIUS.md,
     backgroundColor: COLORS.surfaceContainerLow,
     alignItems: 'center',
     justifyContent: 'center',
   },
   locationTitle: {
-    fontSize: 13.5,
-    fontWeight: '800',
+    fontSize: TYPOGRAPHY.body,
+    fontWeight: '700',
     color: COLORS.textPrimary,
   },
   locationSub: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.caption,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
   mapCircleBtn: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: COLORS.surfaceContainer,
     alignItems: 'center',
     justifyContent: 'center',
   },
   bioText: {
-    fontSize: 12.5,
-    lineHeight: 19,
+    fontSize: TYPOGRAPHY.bodySm,
+    lineHeight: TYPOGRAPHY.lineHeight.normal,
     color: COLORS.textSecondary,
-    marginBottom: 12,
+    marginBottom: SPACING.md,
   },
   strengthHeader: {
-    fontSize: 12.5,
+    fontSize: TYPOGRAPHY.bodySm,
     fontWeight: '700',
     color: COLORS.textPrimary,
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
   },
   strengthList: {
     flexDirection: 'column',
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
   shiftBox: {
     backgroundColor: COLORS.surfaceContainerLow,
     borderRadius: RADIUS.md,
-    padding: 12,
+    padding: SPACING.md,
   },
   shiftHeader: {
     flexDirection: 'row',
@@ -432,7 +432,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexWrap: 'wrap',
     gap: 6,
-    marginBottom: 10,
+    marginBottom: SPACING.sm,
   },
   shiftHeaderLeft: {
     flexDirection: 'row',
@@ -442,19 +442,19 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   shiftHeaderTitle: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.caption,
     fontWeight: '700',
     color: COLORS.textPrimary,
     flexShrink: 1,
   },
   shiftHeaderRight: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.micro,
     fontWeight: '700',
     color: COLORS.secondary,
   },
   shiftsGrid: {
     flexDirection: 'row',
-    gap: 10,
+    gap: SPACING.sm,
   },
   shiftCardItem: {
     flex: 1,
@@ -463,15 +463,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.sm,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
   },
   shiftPeriod: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.micro,
     color: COLORS.textSecondary,
   },
   shiftHours: {
-    fontSize: 13,
+    fontSize: TYPOGRAPHY.bodySm,
     fontWeight: '800',
     color: COLORS.textPrimary,
     marginTop: 2,
@@ -487,11 +487,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 6,
-    marginVertical: 6,
-    paddingHorizontal: 12,
+    marginVertical: SPACING.sm,
+    paddingHorizontal: SPACING.md,
   },
   guaranteeText: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.caption,
     color: COLORS.textSecondary,
     flex: 1,
   },
@@ -499,17 +499,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: COLORS.surfaceContainer,
     borderRadius: RADIUS.lg,
-    padding: 14,
+    padding: SPACING.lg,
   },
   insuranceNoteTitle: {
-    fontSize: 12.5,
-    fontWeight: '800',
+    fontSize: TYPOGRAPHY.bodySm,
+    fontWeight: '700',
     color: COLORS.textPrimary,
-    marginBottom: 4,
+    marginBottom: SPACING.xs,
   },
   insuranceNoteDesc: {
-    fontSize: 11.5,
-    lineHeight: 17,
+    fontSize: TYPOGRAPHY.caption,
+    lineHeight: TYPOGRAPHY.lineHeight.normal,
     color: COLORS.textSecondary,
   },
 });

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, GRADIENTS, RADIUS, SHADOWS } from '../theme';
+import { COLORS, GRADIENTS, RADIUS, SHADOWS, TYPOGRAPHY } from '../theme';
 import {
   AppButton,
   AppHeader,
@@ -603,7 +603,7 @@ const styles = StyleSheet.create({
   splashTopPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.surface,
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: RADIUS.full,
@@ -616,7 +616,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.secondary,
   },
   splashTopPillText: {
-    fontSize: 10.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '800',
     color: COLORS.secondary,
     letterSpacing: 0.4,
@@ -628,7 +628,7 @@ const styles = StyleSheet.create({
     width: 108,
     height: 108,
     borderRadius: 54,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.surface,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
@@ -645,15 +645,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,
-    borderColor: '#FFFFFF',
+    borderColor: COLORS.surface,
   },
   brandName: {
-    fontSize: 28,
+    fontSize: TYPOGRAPHY.size.hero,
     fontWeight: '800',
     color: COLORS.primary,
   },
   tagline: {
-    fontSize: 13.5,
+    fontSize: TYPOGRAPHY.size.md,
     lineHeight: 20,
     color: COLORS.textSecondary,
     textAlign: 'center',
@@ -671,7 +671,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   trustText: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '600',
     color: COLORS.textSecondary,
   },
@@ -679,7 +679,7 @@ const styles = StyleSheet.create({
     width: 4,
     height: 4,
     borderRadius: 2,
-    backgroundColor: '#CBD5E1',
+    backgroundColor: COLORS.switchTrackOff,
   },
   splashBottom: {
     width: '100%',
@@ -689,7 +689,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: COLORS.border,
     overflow: 'hidden',
     marginBottom: 8,
   },
@@ -699,7 +699,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   loadingText: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.primary,
     marginBottom: 14,
@@ -712,8 +712,8 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   enterBtnText: {
-    color: '#FFFFFF',
-    fontSize: 12.5,
+    color: COLORS.textOnPrimary,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '700',
   },
   compliancePill: {
@@ -726,7 +726,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   complianceText: {
-    fontSize: 10.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
   },
   screenBg: {
@@ -745,19 +745,19 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.surface,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 12,
   },
   authTitle: {
-    fontSize: 22,
+    fontSize: TYPOGRAPHY.size.xxl,
     fontWeight: '800',
     color: COLORS.textPrimary,
     textAlign: 'center',
   },
   authSub: {
-    fontSize: 13,
+    fontSize: TYPOGRAPHY.size.sm,
     lineHeight: 19,
     color: COLORS.textSecondary,
     textAlign: 'center',
@@ -772,7 +772,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.outlineVariant,
   },
   roleQuickTitle: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.textSecondary,
     marginBottom: 8,
@@ -791,7 +791,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 6,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: COLORS.border,
     gap: 4,
   },
   roleChipActive: {
@@ -799,12 +799,12 @@ const styles = StyleSheet.create({
     borderColor: COLORS.primary,
   },
   roleChipText: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   roleChipTextActive: {
-    color: '#FFFFFF',
+    color: COLORS.textOnPrimary,
   },
   rememberRow: {
     flexDirection: 'row',
@@ -822,7 +822,7 @@ const styles = StyleSheet.create({
     height: 18,
     borderRadius: 5,
     borderWidth: 1.5,
-    borderColor: '#CBD5E1',
+    borderColor: COLORS.switchTrackOff,
     backgroundColor: COLORS.surfaceContainer,
     alignItems: 'center',
     justifyContent: 'center',
@@ -832,12 +832,12 @@ const styles = StyleSheet.create({
     borderColor: COLORS.primary,
   },
   rememberLabel: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '600',
     color: COLORS.textSecondary,
   },
   forgotText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.primary,
   },
@@ -849,10 +849,10 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: COLORS.border,
   },
   dividerText: {
-    fontSize: 10.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.textMuted,
     marginHorizontal: 10,
@@ -863,11 +863,11 @@ const styles = StyleSheet.create({
     marginTop: 18,
   },
   switchAuthLabel: {
-    fontSize: 13,
+    fontSize: TYPOGRAPHY.size.sm,
     color: COLORS.textSecondary,
   },
   switchAuthLink: {
-    fontSize: 13,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '800',
     color: COLORS.primary,
   },
@@ -883,7 +883,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   securityText: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '600',
     color: COLORS.secondary,
   },
@@ -907,12 +907,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   ehrBannerTitle: {
-    fontSize: 12.5,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   ehrBannerSub: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
@@ -921,7 +921,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   inputLabel: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.textPrimary,
     marginBottom: 6,
@@ -934,7 +934,7 @@ const styles = StyleSheet.create({
   },
   termsText: {
     flex: 1,
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xs,
     lineHeight: 17,
     color: COLORS.textSecondary,
   },
