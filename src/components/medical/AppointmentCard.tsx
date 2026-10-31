@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, RADIUS, SHADOWS } from '../../theme';
+import { COLORS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../../theme';
 import { AppointmentItem } from '../../data/mockData';
 import { Badge } from '../common/Badge';
 import { AppButton } from '../common/AppButton';
@@ -192,12 +192,8 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: COLORS.surface,
-    borderRadius: RADIUS.lg,
-    padding: 16,
+    ...LAYOUT.card,
     marginBottom: 14,
-    borderWidth: 1,
-    borderColor: '#EEF2FF',
   },
   topRow: {
     flexDirection: 'row',
@@ -205,12 +201,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
     gap: 6,
-    marginBottom: 12,
+    marginBottom: SPACING.md,
   },
   doctorRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: SPACING.md,
   },
   avatarWrap: {
     position: 'relative',
@@ -219,27 +215,28 @@ const styles = StyleSheet.create({
     width: 54,
     height: 54,
     borderRadius: 27,
+    backgroundColor: COLORS.surfaceContainer,
   },
   verifiedOverlay: {
     position: 'absolute',
     bottom: -2,
     right: -2,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.surface,
     borderRadius: 10,
   },
   doctorName: {
-    fontSize: 15,
+    fontSize: TYPOGRAPHY.size.base,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   specialty: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.primary,
     marginTop: 2,
   },
   hospital: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xs,
     color: COLORS.textSecondary,
     marginTop: 1,
   },
@@ -262,11 +259,11 @@ const styles = StyleSheet.create({
     minWidth: 150,
   },
   timeBoxLabel: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
   },
   timeBoxValue: {
-    fontSize: 12.5,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '700',
     color: COLORS.textPrimary,
     marginTop: 1,
@@ -277,7 +274,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   queueNumber: {
-    fontSize: 15,
+    fontSize: TYPOGRAPHY.size.base,
     fontWeight: '800',
     color: COLORS.secondary,
   },
@@ -292,9 +289,9 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   waitingRoomText: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: COLORS.textOnPrimary,
   },
   roomRow: {
     flexDirection: 'row',
@@ -303,7 +300,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   roomText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     color: COLORS.textPrimary,
     fontWeight: '600',
     flex: 1,
@@ -326,7 +323,7 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
   },
   codeValue: {
-    fontSize: 13.5,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '800',
     color: COLORS.textPrimary,
     marginTop: 2,
@@ -342,7 +339,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   qrBtnText: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.primary,
   },
@@ -364,7 +361,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   cancelText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.error,
   },
@@ -374,7 +371,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   detailText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.primary,
   },

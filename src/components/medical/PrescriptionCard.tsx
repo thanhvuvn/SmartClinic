@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, RADIUS, SHADOWS } from '../../theme';
+import { COLORS, RADIUS, SHADOWS, TYPOGRAPHY } from '../../theme';
 import { DoctorItem, PrescriptionDrug } from '../../data/mockData';
 import { Badge } from '../common/Badge';
 import { AppButton } from '../common/AppButton';
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.lg,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#EEF2FF',
+    borderColor: COLORS.borderSubtle,
     marginBottom: 14,
   },
   headerRow: {
@@ -317,24 +317,25 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
+    backgroundColor: COLORS.surfaceContainer,
   },
   docName: {
-    fontSize: 14,
+    fontSize: TYPOGRAPHY.size.md,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   docSub: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
   rxCode: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '800',
     color: COLORS.primary,
   },
   rxDate: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
@@ -359,17 +360,17 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   drugName: {
-    fontSize: 13.5,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   drugIndication: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginTop: 1,
   },
   drugQty: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.textSecondary,
     flexShrink: 0,
@@ -386,7 +387,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.xs,
   },
   dosageChipText: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.primary,
   },
@@ -399,7 +400,7 @@ const styles = StyleSheet.create({
     maxWidth: '100%',
   },
   instructionChipText: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     fontWeight: '600',
   },
@@ -422,12 +423,12 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   reminderTitle: {
-    fontSize: 12.5,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   reminderSub: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
   },
   actionRow: {
@@ -455,7 +456,7 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   labTitle: {
-    fontSize: 14,
+    fontSize: TYPOGRAPHY.size.md,
     fontWeight: '800',
     color: COLORS.textPrimary,
     marginTop: 6,
@@ -467,13 +468,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   conclusionHeader: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.textPrimary,
     marginBottom: 4,
   },
   conclusionBody: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     lineHeight: 17,
     color: COLORS.textSecondary,
   },
@@ -491,7 +492,7 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   signatureText: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     fontWeight: '600',
   },
@@ -510,7 +511,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   dicomBtnText: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.primary,
   },
@@ -524,9 +525,9 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   pdfBtnText: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: COLORS.textOnPrimary,
   },
   timelineRow: {
     flexDirection: 'row',
@@ -543,12 +544,12 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   timelineDotActive: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.surface,
     borderColor: COLORS.primary,
   },
   timelineDotMuted: {
-    backgroundColor: '#CBD5E1',
-    borderColor: '#E2E8F0',
+    backgroundColor: COLORS.switchTrackOff,
+    borderColor: COLORS.border,
   },
   timelineLine: {
     flex: 1,
@@ -565,7 +566,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
     marginLeft: 6,
     borderWidth: 1,
-    borderColor: '#EEF2FF',
+    borderColor: COLORS.borderSubtle,
   },
   timelineHeader: {
     flexDirection: 'row',
@@ -576,17 +577,17 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   timelineDate: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '800',
     color: COLORS.primary,
   },
   timelineTitle: {
-    fontSize: 14,
+    fontSize: TYPOGRAPHY.size.md,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
   timelineDoc: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginTop: 2,
     marginBottom: 8,
@@ -597,11 +598,11 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   timelineSummaryLabel: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
   },
   timelineSummaryVal: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.textPrimary,
     marginTop: 2,

@@ -50,6 +50,7 @@ import {
   SettingLinkRow,
   Badge,
   ToastBanner,
+  EmptyState,
 } from '../components';
 
 export interface HomeScreenProps {
@@ -447,46 +448,56 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
           <>
             <AIReminderCard style={{ marginBottom: 14 }} />
 
-            {APPOINTMENTS.map((apt) => (
-              <AppointmentCard
-                key={apt.id}
-                appointment={apt}
-                onPrimaryPress={(item) => {
-                  if (item.mode === 'video') {
-                    onNavigate('teleconsult');
-                  } else {
-                    onNavigate('bookingSuccess');
-                  }
-                }}
-                onSecondaryPress={(item) => {
-                  if (item.mode === 'clinic') {
-                    Alert.alert(
-                      'Chỉ đường đến phòng khám',
-                      `${item.doctor.hospital}\n${item.room}`,
-                      [
-                        { text: 'Đóng', style: 'cancel' },
-                        {
-                          text: 'Xem chi tiết Bác sĩ',
-                          onPress: () => onSelectDoctor(item.doctor),
-                        },
-                      ]
-                    );
-                  } else {
-                    Alert.alert(
-                      'Đổi / Hủy lịch hẹn',
-                      `Bạn muốn đổi lịch tư vấn Video với ${item.doctor.name}?`,
-                      [
-                        { text: 'Giữ lịch', style: 'cancel' },
-                        {
-                          text: 'Chọn khung giờ khác',
-                          onPress: () => onBookNew(),
-                        },
-                      ]
-                    );
-                  }
-                }}
+            {APPOINTMENTS.length > 0 ? (
+              APPOINTMENTS.map((apt) => (
+                <AppointmentCard
+                  key={apt.id}
+                  appointment={apt}
+                  onPrimaryPress={(item) => {
+                    if (item.mode === 'video') {
+                      onNavigate('teleconsult');
+                    } else {
+                      onNavigate('bookingSuccess');
+                    }
+                  }}
+                  onSecondaryPress={(item) => {
+                    if (item.mode === 'clinic') {
+                      Alert.alert(
+                        'Chỉ đường đến phòng khám',
+                        `${item.doctor.hospital}\n${item.room}`,
+                        [
+                          { text: 'Đóng', style: 'cancel' },
+                          {
+                            text: 'Xem chi tiết Bác sĩ',
+                            onPress: () => onSelectDoctor(item.doctor),
+                          },
+                        ]
+                      );
+                    } else {
+                      Alert.alert(
+                        'Đổi / Hủy lịch hẹn',
+                        `Bạn muốn đổi lịch tư vấn Video với ${item.doctor.name}?`,
+                        [
+                          { text: 'Giữ lịch', style: 'cancel' },
+                          {
+                            text: 'Chọn khung giờ khác',
+                            onPress: () => onBookNew(),
+                          },
+                        ]
+                      );
+                    }
+                  }}
+                />
+              ))
+            ) : (
+              <EmptyState
+                icon="calendar-outline"
+                title="Chưa Có Lịch Khám Sắp Tới"
+                description="Bạn chưa có cuộc hẹn khám bệnh nào sắp diễn ra. Hãy đặt lịch hẹn để được phục vụ chu đáo."
+                actionTitle="Đặt Lịch Khám Ngay"
+                onActionPress={onBookNew}
               />
-            ))}
+            )}
           </>
         )}
 

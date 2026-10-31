@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, RADIUS, SHADOWS, TOUCH } from '../../theme';
+import { COLORS, RADIUS, SHADOWS, TOUCH, TYPOGRAPHY } from '../../theme';
 import { HospitalItem } from '../../data/mockData';
 
 export interface HospitalCardProps {
@@ -88,14 +88,14 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: COLORS.divider,
   },
   thumb: {
     width: 60,
     height: 60,
     borderRadius: RADIUS.md,
     marginRight: 12,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: COLORS.surfaceContainer,
   },
   infoCol: {
     flex: 1,
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   name: {
-    fontSize: 14,
+    fontSize: TYPOGRAPHY.size.md,
     fontWeight: '700',
     color: COLORS.textPrimary,
     flex: 1,
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   rating: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.warning,
     marginLeft: 3,
@@ -126,15 +126,15 @@ const styles = StyleSheet.create({
   dot: {
     marginHorizontal: 5,
     color: COLORS.textMuted,
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
   },
   distance: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.primary,
   },
   tag: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     flexShrink: 1,
   },
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   mapBtnText: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.primary,
   },

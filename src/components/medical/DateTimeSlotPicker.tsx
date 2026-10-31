@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, RADIUS, SHADOWS } from '../../theme';
+import { COLORS, RADIUS, SHADOWS, TYPOGRAPHY } from '../../theme';
 import { DaySlotItem, TimeSlotItem } from '../../data/mockData';
 
 export interface HorizontalDateSelectorProps {
@@ -220,14 +220,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 6,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: COLORS.border,
   },
   dayCardSelected: {
     backgroundColor: COLORS.primary,
     borderColor: COLORS.primary,
   },
   dayCardFull: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: COLORS.surfaceContainerLow,
     opacity: 0.7,
   },
   todayPill: {
@@ -238,12 +238,12 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   todayPillText: {
-    fontSize: 8.5,
+    fontSize: 9,
     fontWeight: '800',
     color: COLORS.onSecondaryContainer,
   },
   dayLabel: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '600',
     color: COLORS.textSecondary,
   },
@@ -251,16 +251,16 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.9)',
   },
   dateNum: {
-    fontSize: 20,
+    fontSize: TYPOGRAPHY.size.xl,
     fontWeight: '800',
     color: COLORS.textPrimary,
     marginVertical: 3,
   },
   dateNumSelected: {
-    color: '#FFFFFF',
+    color: COLORS.textOnPrimary,
   },
   dayTextDisabled: {
-    color: '#94A3B8',
+    color: COLORS.textMuted,
   },
   slotsStatus: {
     fontSize: 10,
@@ -278,10 +278,10 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.lg,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#EEF2FF',
+    borderColor: COLORS.borderSubtle,
   },
   gridMainTitle: {
-    fontSize: 15,
+    fontSize: TYPOGRAPHY.size.base,
     fontWeight: '800',
     color: COLORS.textPrimary,
   },
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   noteText: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
   },
   periodHeader: {
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   periodTitle: {
-    fontSize: 12.5,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   slotBooked: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: COLORS.surfaceContainerLow,
   },
   slotSelected: {
     backgroundColor: COLORS.primary,
@@ -332,16 +332,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#CCFBF1',
   },
   slotTimeText: {
-    fontSize: 12.5,
+    fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   slotTimeBooked: {
-    color: '#CBD5E1',
+    color: COLORS.switchTrackOff,
     textDecorationLine: 'line-through',
   },
   slotTimeSelected: {
-    color: '#FFFFFF',
+    color: COLORS.textOnPrimary,
   },
   slotTimeFast: {
     color: COLORS.secondaryDark,
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
+    borderTopColor: COLORS.divider,
   },
   legendItem: {
     flexDirection: 'row',
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   legendLabel: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     fontWeight: '600',
   },

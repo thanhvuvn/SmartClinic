@@ -7,7 +7,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, RADIUS, SHADOWS } from '../../theme';
+import { COLORS, RADIUS, SHADOWS, TYPOGRAPHY } from '../../theme';
 import { SpecialtyItem } from '../../data/mockData';
 
 export interface SpecialtyGridProps {
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: COLORS.divider,
   },
   cardSelected: {
     borderColor: COLORS.primary,
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   name: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.textPrimary,
     textAlign: 'center',

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, GRADIENTS, RADIUS, SHADOWS } from '../../theme';
+import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, TYPOGRAPHY } from '../../theme';
 import { PATIENT_PROFILE } from '../../data/mockData';
 import { Badge } from '../common/Badge';
 import { AppButton } from '../common/AppButton';
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.lg,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#EEF2FF',
+    borderColor: COLORS.borderSubtle,
   },
   topRow: {
     flexDirection: 'row',
@@ -282,17 +282,19 @@ const styles = StyleSheet.create({
     width: 58,
     height: 58,
     borderRadius: 29,
+    backgroundColor: COLORS.surfaceContainer,
   },
   avatarLg: {
     width: 68,
     height: 68,
     borderRadius: 34,
+    backgroundColor: COLORS.surfaceContainer,
   },
   verifiedBadge: {
     position: 'absolute',
     bottom: 0,
     right: 0,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.surface,
     borderRadius: 10,
   },
   identityCol: {
@@ -308,19 +310,19 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   name: {
-    fontSize: 15,
+    fontSize: TYPOGRAPHY.size.base,
     fontWeight: '800',
     color: COLORS.textPrimary,
     flexShrink: 1,
   },
   nameLg: {
-    fontSize: 16,
+    fontSize: TYPOGRAPHY.size.lg,
     fontWeight: '800',
     color: COLORS.textPrimary,
     flexShrink: 1,
   },
   patientCode: {
-    fontSize: 11.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.primary,
     marginTop: 2,
@@ -332,7 +334,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   qrBox: {
-    backgroundColor: '#E0F2FE',
+    backgroundColor: COLORS.primaryContainer,
     borderRadius: RADIUS.md,
     paddingHorizontal: 10,
     paddingVertical: 8,
@@ -368,7 +370,7 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   vitalsTitle: {
-    fontSize: 10.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '800',
     color: COLORS.textSecondary,
     flexShrink: 1,
@@ -386,7 +388,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.secondary,
   },
   stableText: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.secondary,
   },
@@ -406,11 +408,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   vitalLabel: {
-    fontSize: 10.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
   },
   vitalValue: {
-    fontSize: 14.5,
+    fontSize: TYPOGRAPHY.size.base,
     fontWeight: '800',
     color: COLORS.textPrimary,
     marginVertical: 2,
@@ -455,16 +457,16 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.8)',
   },
   vssidSync: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: '#FFFFFF',
   },
   vssidCodeLabel: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: 'rgba(255,255,255,0.75)',
   },
   vssidCodeValue: {
-    fontSize: 18,
+    fontSize: TYPOGRAPHY.size.lg,
     fontWeight: '800',
     color: '#FFFFFF',
     letterSpacing: 0.8,
@@ -484,11 +486,11 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   vssidMetaKey: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     color: 'rgba(255,255,255,0.75)',
   },
   vssidMetaVal: {
-    fontSize: 11,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: '#FFFFFF',
     flexShrink: 1,
@@ -503,12 +505,12 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   vssidBtnText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: '#FFFFFF',
   },
   metaText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     color: COLORS.textSecondary,
     marginTop: 3,
   },
@@ -524,7 +526,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   codeCopyText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
@@ -544,7 +546,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tierText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.primary,
   },
@@ -556,19 +558,19 @@ const styles = StyleSheet.create({
   emergencyStrip: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFF5F5',
+    backgroundColor: COLORS.errorSurface,
     borderRadius: RADIUS.md,
     paddingHorizontal: 12,
     paddingVertical: 9,
     gap: 10,
   },
   emergencyLabel: {
-    fontSize: 10.5,
+    fontSize: TYPOGRAPHY.size.xxs,
     fontWeight: '700',
     color: COLORS.error,
   },
   emergencyText: {
-    fontSize: 12,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.textPrimary,
     marginTop: 1,
