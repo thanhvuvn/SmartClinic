@@ -275,48 +275,50 @@ export const PatientReviewCard: React.FC<PatientReviewCardProps> = ({
 
 const styles = StyleSheet.create({
   featuredCard: {
-    width: 260,
+    width: 275,
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.lg,
-    padding: 14,
+    padding: 16,
     marginRight: 12,
     borderWidth: 1,
-    borderColor: COLORS.divider,
+    borderColor: COLORS.borderSubtle,
     justifyContent: 'space-between',
   },
   featuredTopRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 10,
+    alignItems: 'center',
+    marginBottom: 12,
   },
   avatarContainer: {
     position: 'relative',
   },
   avatarSm: {
-    width: 54,
-    height: 54,
+    width: 68,
+    height: 68,
     borderRadius: RADIUS.md,
     backgroundColor: COLORS.surfaceContainer,
+    borderWidth: 2,
+    borderColor: COLORS.primaryContainer,
   },
   verifiedBadgeSm: {
     position: 'absolute',
-    bottom: -2,
-    right: -2,
+    bottom: -3,
+    right: -3,
     backgroundColor: COLORS.surface,
     borderRadius: 10,
   },
   featuredInfo: {
     flex: 1,
     minWidth: 0,
-    marginLeft: 10,
+    marginLeft: 12,
   },
   specialtyMeta: {
-    fontSize: TYPOGRAPHY.size.xxs,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.primary,
   },
   doctorNameSm: {
-    fontSize: TYPOGRAPHY.size.md,
+    fontSize: TYPOGRAPHY.size.base,
     fontWeight: '800',
     color: COLORS.textPrimary,
     marginTop: 2,
@@ -324,7 +326,7 @@ const styles = StyleSheet.create({
   hospitalSm: {
     fontSize: TYPOGRAPHY.size.xs,
     color: COLORS.textSecondary,
-    marginTop: 2,
+    marginTop: 3,
   },
   ratingStrip: {
     flexDirection: 'row',

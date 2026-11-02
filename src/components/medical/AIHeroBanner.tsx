@@ -23,18 +23,27 @@ export const AIHeroBanner: React.FC<AIHeroBannerProps> = ({
 }) => {
   return (
     <LinearGradient
-      colors={GRADIENTS.heroCard}
+      colors={['#00476E', '#006194', '#006A61']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={[styles.heroCard, SHADOWS.md, style]}
     >
+      {/* Subtle decorative glow circle in corner */}
+      <View style={styles.glowCircle} pointerEvents="none" />
+      <View style={styles.watermarkIcon} pointerEvents="none">
+        <Ionicons name="sparkles" size={110} color="rgba(255,255,255,0.06)" />
+      </View>
+
       <View style={styles.heroTopRow}>
         <Badge
           label="AI Powered • Chẩn đoán sơ bộ"
           variant="glass"
           icon="sparkles"
         />
-        <Text style={styles.readyText}>24/7 Sẵn sàng</Text>
+        <View style={styles.readyBadge}>
+          <View style={styles.onlinePulseDot} />
+          <Text style={styles.readyText}>24/7 Sẵn sàng</Text>
+        </View>
       </View>
 
       <Text style={styles.heroTitle}>Bạn đang gặp vấn đề sức khỏe gì?</Text>
@@ -55,7 +64,7 @@ export const AIHeroBanner: React.FC<AIHeroBannerProps> = ({
           style={styles.askBtn}
         />
         <View style={styles.accuracyRow}>
-          <Ionicons name="checkmark-circle-outline" size={16} color="#86F2E4" />
+          <Ionicons name="checkmark-circle" size={16} color="#86F2E4" />
           <Text style={styles.accuracyText}>Độ chính xác 98%</Text>
         </View>
       </View>
@@ -187,6 +196,24 @@ const styles = StyleSheet.create({
   heroCard: {
     borderRadius: RADIUS.lg,
     padding: SPACING.lg,
+    overflow: 'hidden',
+    position: 'relative',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.18)',
+  },
+  glowCircle: {
+    position: 'absolute',
+    top: -40,
+    right: -40,
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    backgroundColor: 'rgba(134, 242, 228, 0.15)',
+  },
+  watermarkIcon: {
+    position: 'absolute',
+    right: -15,
+    bottom: -20,
   },
   heroTopRow: {
     flexDirection: 'row',
@@ -196,10 +223,25 @@ const styles = StyleSheet.create({
     gap: 6,
     marginBottom: SPACING.md,
   },
+  readyBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: RADIUS.full,
+    gap: 5,
+  },
+  onlinePulseDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#86F2E4',
+  },
   readyText: {
     fontSize: TYPOGRAPHY.micro,
-    color: 'rgba(255,255,255,0.85)',
-    fontWeight: '600',
+    color: '#FFFFFF',
+    fontWeight: '700',
   },
   heroTitle: {
     fontSize: TYPOGRAPHY.h2,

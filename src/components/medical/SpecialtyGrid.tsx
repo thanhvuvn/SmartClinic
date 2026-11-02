@@ -30,32 +30,35 @@ export const SpecialtyGrid: React.FC<SpecialtyGridProps> = ({
         return (
           <TouchableOpacity
             key={item.id}
-            activeOpacity={0.8}
+            activeOpacity={0.75}
             onPress={() => onSelect?.(item)}
             accessibilityRole="button"
             accessibilityLabel={`Chuyên khoa ${item.name}`}
             accessibilityState={{ selected: isSelected }}
             style={[
-              styles.card,
-              SHADOWS.sm,
-              isSelected && styles.cardSelected,
+              styles.itemContainer,
+              isSelected && styles.itemContainerSelected,
             ]}
           >
             <View
               style={[
                 styles.iconCircle,
                 { backgroundColor: item.bgColor },
+                isSelected && styles.iconCircleSelected,
               ]}
               importantForAccessibility="no-hide-descendants"
             >
               <Ionicons
                 name={item.icon as keyof typeof Ionicons.glyphMap}
-                size={21}
+                size={22}
                 color={item.iconColor}
               />
             </View>
             <Text
-              style={styles.name}
+              style={[
+                styles.name,
+                isSelected && styles.nameSelected,
+              ]}
               numberOfLines={1}
               maxFontSizeMultiplier={1.2}
             >
@@ -73,35 +76,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    rowGap: 10,
+    rowGap: 14,
   },
-  card: {
-    width: '23.2%',
-    backgroundColor: COLORS.surface,
-    borderRadius: RADIUS.md,
-    paddingVertical: 12,
-    paddingHorizontal: 6,
+  itemContainer: {
+    width: '23.5%',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.divider,
+    paddingVertical: 4,
   },
-  cardSelected: {
-    borderColor: COLORS.primary,
-    backgroundColor: COLORS.surfaceContainerLow,
-  },
+  itemContainerSelected: {},
   iconCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
+  },
+  iconCircleSelected: {
+    borderWidth: 2.5,
+    borderColor: COLORS.primary,
   },
   name: {
-    fontSize: TYPOGRAPHY.size.xxs,
-    fontWeight: '700',
-    color: COLORS.textPrimary,
+    fontSize: TYPOGRAPHY.size.xs,
+    fontWeight: '600',
+    color: COLORS.textSecondary,
     textAlign: 'center',
+  },
+  nameSelected: {
+    fontWeight: '800',
+    color: COLORS.primary,
   },
 });
 

@@ -30,7 +30,14 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
   const isClinic = appointment.mode === 'clinic';
 
   return (
-    <View style={[styles.card, SHADOWS.sm, style]}>
+    <View
+      style={[
+        styles.card,
+        isClinic ? styles.cardClinic : styles.cardTele,
+        SHADOWS.sm,
+        style,
+      ]}
+    >
       {/* Top Status Badges */}
       <View style={styles.topRow}>
         <Badge
@@ -193,7 +200,16 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
 const styles = StyleSheet.create({
   card: {
     ...LAYOUT.card,
+    backgroundColor: COLORS.surface,
     marginBottom: 14,
+    borderLeftWidth: 4,
+    borderColor: COLORS.borderSubtle,
+  },
+  cardClinic: {
+    borderLeftColor: COLORS.secondary,
+  },
+  cardTele: {
+    borderLeftColor: COLORS.primary,
   },
   topRow: {
     flexDirection: 'row',

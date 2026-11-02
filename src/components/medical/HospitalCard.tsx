@@ -30,30 +30,22 @@ export const HospitalCard: React.FC<HospitalCardProps> = ({
         accessibilityLabel={`Ảnh ${hospital.name}`}
       />
       <View style={styles.infoCol}>
-        <View style={styles.titleRow}>
-          <Ionicons
-            name="add-circle-outline"
-            size={15}
-            color={COLORS.primary}
-            style={{ marginRight: 4 }}
-            importantForAccessibility="no"
-          />
-          <Text style={styles.name} numberOfLines={1}>
-            {hospital.name}
-          </Text>
-        </View>
+        <Text style={styles.name} numberOfLines={1}>
+          {hospital.name}
+        </Text>
+        <Text style={styles.address} numberOfLines={1}>
+          {hospital.address}
+        </Text>
         <View style={styles.metaRow}>
-          <Ionicons
-            name="star"
-            size={13}
-            color={COLORS.warning}
-            importantForAccessibility="no"
-          />
-          <Text style={styles.rating}>{hospital.rating}</Text>
-          <Text style={styles.dot}>•</Text>
-          <Text style={styles.distance}>{hospital.distance}</Text>
-          <Text style={styles.dot}>•</Text>
-          <Text style={styles.tag} numberOfLines={1}>
+          <View style={styles.distanceBadge}>
+            <Ionicons name="navigate" size={10} color={COLORS.primary} />
+            <Text style={styles.distanceText}>{hospital.distance}</Text>
+          </View>
+          <View style={styles.ratingBadge}>
+            <Ionicons name="star" size={10} color="#B45309" />
+            <Text style={styles.ratingText}>{hospital.rating}</Text>
+          </View>
+          <Text style={styles.tagText} numberOfLines={1}>
             {hospital.tag}
           </Text>
         </View>
@@ -69,7 +61,7 @@ export const HospitalCard: React.FC<HospitalCardProps> = ({
       >
         <Ionicons
           name="navigate-outline"
-          size={14}
+          size={16}
           color={COLORS.primary}
           importantForAccessibility="no"
         />
@@ -88,11 +80,11 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: COLORS.divider,
+    borderColor: COLORS.borderSubtle,
   },
   thumb: {
-    width: 60,
-    height: 60,
+    width: 76,
+    height: 76,
     borderRadius: RADIUS.md,
     marginRight: 12,
     backgroundColor: COLORS.surfaceContainer,
@@ -100,52 +92,67 @@ const styles = StyleSheet.create({
   infoCol: {
     flex: 1,
     paddingRight: 8,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
+    justifyContent: 'center',
   },
   name: {
-    fontSize: TYPOGRAPHY.size.md,
-    fontWeight: '700',
+    fontSize: TYPOGRAPHY.size.base,
+    fontWeight: '800',
     color: COLORS.textPrimary,
-    flex: 1,
+    marginBottom: 3,
+  },
+  address: {
+    fontSize: TYPOGRAPHY.size.xs,
+    color: COLORS.textSecondary,
+    marginBottom: 6,
   },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
+    gap: 6,
   },
-  rating: {
-    fontSize: TYPOGRAPHY.size.xs,
-    fontWeight: '700',
-    color: COLORS.warning,
-    marginLeft: 3,
+  distanceBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.primaryContainer,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: RADIUS.xs,
+    gap: 3,
   },
-  dot: {
-    marginHorizontal: 5,
-    color: COLORS.textMuted,
+  distanceText: {
     fontSize: TYPOGRAPHY.size.xxs,
-  },
-  distance: {
-    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.primary,
   },
-  tag: {
+  ratingBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FEF3C7',
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: RADIUS.xs,
+    gap: 2,
+  },
+  ratingText: {
     fontSize: TYPOGRAPHY.size.xxs,
-    color: COLORS.textSecondary,
+    fontWeight: '800',
+    color: '#B45309',
+  },
+  tagText: {
+    fontSize: TYPOGRAPHY.size.xxs,
+    color: COLORS.textMuted,
     flexShrink: 1,
   },
   mapBtn: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: COLORS.surfaceContainer,
+    justifyContent: 'center',
+    backgroundColor: COLORS.surfaceContainerLow,
     paddingHorizontal: 10,
-    paddingVertical: 7,
-    borderRadius: RADIUS.full,
-    gap: 4,
+    paddingVertical: 8,
+    borderRadius: RADIUS.md,
+    gap: 2,
   },
   mapBtnText: {
     fontSize: TYPOGRAPHY.size.xxs,
