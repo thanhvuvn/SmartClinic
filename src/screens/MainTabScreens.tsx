@@ -9,6 +9,7 @@ import {
   Alert,
   StyleSheet,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../theme';
 import {
@@ -69,96 +70,140 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onNavigate,
 }) => {
   const [search, setSearch] = useState('');
-  const [selectedSpecialty, setSelectedSpecialty] = useState<string>('cardio');
+  const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
+  const insets = useSafeAreaInsets();
+
+  // Filter upcoming appointments to show on Home
+  const upcomingAppointments = APPOINTMENTS.filter(
+    (a) => a.status === 'upcoming'
+  ).slice(0, 2);
+
+  const selectedSpecialtyObj = SPECIALTIES.find((s) => s.id === selectedSpecialty);
+
+  const filteredDoctors = DOCTORS.filter((doc) => {
+    const matchesSearch =
+      !search.trim() ||
+      doc.name.toLowerCase().includes(search.toLowerCase()) ||
+      doc.specialty.toLowerCase().includes(search.toLowerCase()) ||
+      doc.hospital.toLowerCase().includes(search.toLowerCase()) ||
+      doc.subSpecialty.toLowerCase().includes(search.toLowerCase());
+
+    const matchesSpecialty =
+      !selectedSpecialty ||
+      (selectedSpecialtyObj &&
+        (doc.specialty.toLowerCase().includes(selectedSpecialtyObj.name.toLowerCase()) ||
+          doc.subSpecialty.toLowerCase().includes(selectedSpecialtyObj.name.toLowerCase())));
+
+    return matchesSearch && matchesSpecialty;
+  });
+
+  const filteredHospitals = HOSPITALS.filter((h) => {
+    if (!search.trim()) return true;
+    return (
+      h.name.toLowerCase().includes(search.toLowerCase()) ||
+      h.address.toLowerCase().includes(search.toLowerCase()) ||
+      h.tag.toLowerCase().includes(search.toLowerCase())
+    );
+  });
+
+  // Quick Services data — 6 items for 2×3 grid
+  const quickServices = [
+    {
+      icon: 'calendar-outline' as const,
+      title: 'Đặt lịch khám',
+      sub: 'Đặt khám nhanh',
+      route: 'booking',
+      color: COLORS.textOnPrimary,
+      bg: COLORS.primary,
+    },
+    {
+      icon: 'chatbubbles-outline' as const,
+      title: 'Chat Bác sĩ',
+      sub: 'Tư vấn trực tuyến',
+      route: 'teleconsult',
+      color: COLORS.primary,
+      bg: COLORS.primaryContainer,
+    },
+    {
+      icon: 'alarm-outline' as const,
+      title: 'Nhật ký thuốc',
+      sub: 'Nhắc cữ uống',
+      route: 'medLog',
+      color: COLORS.secondary,
+      bg: COLORS.tintTeal,
+    },
+    {
+      icon: 'medkit-outline' as const,
+      title: 'Tủ thuốc nhà',
+      sub: 'Theo dõi số lượng',
+      route: 'medicineCabinet',
+      color: COLORS.primary,
+      bg: COLORS.primaryContainer,
+    },
+    {
+      icon: 'people-outline' as const,
+      title: 'Hồ sơ Gia đình',
+      sub: 'Mẹ, Vợ & Bé',
+      route: 'familyProfiles',
+      color: COLORS.secondary,
+      bg: COLORS.tintTeal,
+    },
+    {
+      icon: 'flask-outline' as const,
+      title: 'Kết quả CĐHA',
+      sub: 'MRI & Xét nghiệm',
+      route: 'labImagingResults',
+      color: COLORS.primary,
+      bg: COLORS.primaryContainer,
+    },
+  ];
 
   return (
     <View style={styles.screen}>
-      <HomeGreetingHeader
-        userName="Vũ"
-        avatarUrl={PATIENT_PROFILE.avatar}
-        onChatPress={onAskAI}
-        onNotificationPress={() => onNavigate('medLog')}
-        onAvatarPress={onOpenProfile}
-      />
+      {/* SafeArea padding for top header */}
+      <View style={{ paddingTop: insets.top }}>
+        <HomeGreetingHeader
+          userName="Vũ"
+          avatarUrl={PATIENT_PROFILE.avatar}
+          onChatPress={onAskAI}
+          onNotificationPress={() => onNavigate('medLog')}
+          onAvatarPress={onOpenProfile}
+        />
+      </View>
 
       <ScrollView
         contentContainerStyle={styles.scrollPad}
         showsVerticalScrollIndicator={false}
       >
+        {/* SearchBar with interactive search & clear */}
         <SearchBar
           value={search}
           onChangeText={setSearch}
-          onFilterPress={() => onSelectDoctor(DOCTORS[0])}
-          style={{ marginBottom: 16 }}
+          placeholder="Tìm bác sĩ, chuyên khoa, bệnh viện..."
+          style={{ marginBottom: SPACING.lg }}
         />
 
-        <AIHeroBanner
-          onAskAIPress={onAskAI}
-          style={{ marginBottom: 18 }}
-        />
-
-        {/* Quick Smart Healthcare Services Strip */}
+        {/* Quick Services ABOVE AI Banner — 2×3 grid */}
         <SectionHeader
           title="Tiện ích Y tế thông minh"
           subtitle="Truy cập nhanh tư vấn bác sĩ, nhắc thuốc & hồ sơ gia đình"
         />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 10, paddingBottom: 6, marginBottom: 18 }}
-        >
-          {[
-            {
-              icon: 'chatbubbles-outline',
-              title: 'Chat Bác sĩ',
-              sub: 'Tư vấn trực tuyến',
-              route: 'teleconsult',
-              color: COLORS.primary,
-              bg: COLORS.primaryContainer,
-            },
-            {
-              icon: 'alarm-outline',
-              title: 'Nhật ký thuốc',
-              sub: 'Nhắc cữ uống',
-              route: 'medLog',
-              color: COLORS.secondary,
-              bg: COLORS.tintTeal,
-            },
-            {
-              icon: 'medkit-outline',
-              title: 'Tủ thuốc nhà',
-              sub: 'Theo dõi số lượng',
-              route: 'medicineCabinet',
-              color: COLORS.primary,
-              bg: COLORS.primaryContainer,
-            },
-            {
-              icon: 'people-outline',
-              title: 'Hồ sơ Gia đình',
-              sub: 'Mẹ, Vợ & Bé',
-              route: 'familyProfiles',
-              color: COLORS.secondary,
-              bg: COLORS.tintTeal,
-            },
-            {
-              icon: 'flask-outline',
-              title: 'Kết quả CĐHA',
-              sub: 'MRI & Xét nghiệm',
-              route: 'labImagingResults',
-              color: COLORS.primary,
-              bg: COLORS.primaryContainer,
-            },
-          ].map((srv) => (
+        <View style={styles.quickServiceGrid}>
+          {quickServices.map((srv) => (
             <TouchableOpacity
               key={srv.route}
               activeOpacity={0.85}
-              onPress={() => onNavigate(srv.route)}
+              onPress={() =>
+                srv.route === 'booking'
+                  ? onBookDoctor(DOCTORS[0])
+                  : onNavigate(srv.route)
+              }
               accessibilityRole="button"
               accessibilityLabel={`${srv.title}, ${srv.sub}`}
               style={[styles.quickServiceCard, SHADOWS.sm]}
             >
               <View style={[styles.quickServiceIcon, { backgroundColor: srv.bg }]}>
-                <Ionicons name={srv.icon as any} size={20} color={srv.color} />
+                <Ionicons name={srv.icon} size={20} color={srv.color} />
               </View>
               <Text style={styles.quickServiceTitle} numberOfLines={1}>
                 {srv.title}
@@ -168,47 +213,109 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </Text>
             </TouchableOpacity>
           ))}
-        </ScrollView>
+        </View>
 
+        {/* AI Hero Banner */}
+        <AIHeroBanner
+          onAskAIPress={onAskAI}
+          style={{ marginBottom: SPACING.lg }}
+        />
+
+        {/* Upcoming appointments section */}
+        {upcomingAppointments.length > 0 && (
+          <>
+            <SectionHeader
+              title="Lịch hẹn sắp tới"
+              subtitle="Cuộc hẹn đã xác nhận của bạn"
+              leftIcon="calendar-outline"
+              actionText="Xem tất cả"
+              onActionPress={() => onNavigate('appointments')}
+            />
+            {upcomingAppointments.map((apt) => (
+              <AppointmentCard
+                key={apt.id}
+                appointment={apt}
+                onPrimaryPress={() => onSelectDoctor(apt.doctor)}
+              />
+            ))}
+          </>
+        )}
+
+        {/* Specialty Grid with interactive filtering */}
         <SectionHeader
           title="Chuyên khoa"
-          subtitle="Chọn khoa để đặt khám theo nhu cầu"
-          actionText="Xem tất cả"
-          onActionPress={() => onSelectDoctor(DOCTORS[0])}
+          subtitle="Chọn khoa để lọc bác sĩ theo nhu cầu"
+          actionText={selectedSpecialty ? 'Bỏ lọc' : undefined}
+          onActionPress={() => setSelectedSpecialty(null)}
         />
         <SpecialtyGrid
           items={SPECIALTIES}
-          selectedId={selectedSpecialty}
-          onSelect={(item) => setSelectedSpecialty(item.id)}
-          style={{ marginBottom: 18 }}
+          selectedId={selectedSpecialty ?? undefined}
+          onSelect={(item) =>
+            setSelectedSpecialty((prev) => (prev === item.id ? null : item.id))
+          }
+          style={{ marginBottom: SPACING.lg }}
         />
 
+        {/* Featured Doctors filtered by search & specialty */}
+        <SectionHeader
+          title={
+            selectedSpecialtyObj
+              ? `Bác sĩ ${selectedSpecialtyObj.name}`
+              : 'Bác sĩ nổi bật'
+          }
+          subtitle={
+            selectedSpecialtyObj
+              ? `Tìm thấy ${filteredDoctors.length} bác sĩ chuyên khoa`
+              : 'Chuyên gia đầu ngành sẵn sàng tư vấn'
+          }
+          actionText={selectedSpecialty ? 'Xem tất cả' : undefined}
+          onActionPress={() => setSelectedSpecialty(null)}
+        />
+        {filteredDoctors.length > 0 ? (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingBottom: SPACING.sm,
+              marginBottom: SPACING.lg,
+            }}
+          >
+            {filteredDoctors.map((doc) => (
+              <FeaturedDoctorCard
+                key={doc.id}
+                doctor={doc}
+                onPress={onSelectDoctor}
+                onBookPress={onBookDoctor}
+              />
+            ))}
+          </ScrollView>
+        ) : (
+          <View style={styles.emptyDoctorFilter}>
+            <Text style={styles.emptyDoctorText}>
+              Không tìm thấy bác sĩ phù hợp với tiêu chí tìm kiếm.
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedSpecialty(null);
+                setSearch('');
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Xóa bộ lọc tìm kiếm"
+              style={styles.clearFilterBtn}
+            >
+              <Text style={styles.clearFilterText}>Xóa bộ lọc</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Promo Banner placed below Doctors for organic reading flow */}
         <SmartPromoBanner
           onPress={() => onBookDoctor(DOCTORS[0])}
-          style={{ marginBottom: 20 }}
+          style={{ marginBottom: SPACING.lg }}
         />
 
-        <SectionHeader
-          title="Bác sĩ nổi bật"
-          subtitle="Chuyên gia đầu ngành sẵn sàng tư vấn"
-          actionText="Xem thêm"
-          onActionPress={() => onSelectDoctor(DOCTORS[0])}
-        />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 8, marginBottom: 16 }}
-        >
-          {DOCTORS.map((doc) => (
-            <FeaturedDoctorCard
-              key={doc.id}
-              doctor={doc}
-              onPress={onSelectDoctor}
-              onBookPress={onBookDoctor}
-            />
-          ))}
-        </ScrollView>
-
+        {/* Hospitals near you */}
         <SectionHeader
           title="Bệnh viện gần bạn"
           badgeText="TP. Hồ Chí Minh"
@@ -222,7 +329,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             )
           }
         />
-        {HOSPITALS.map((h) => (
+        {filteredHospitals.map((h) => (
           <HospitalCard
             key={h.id}
             hospital={h}
@@ -984,13 +1091,21 @@ const styles = StyleSheet.create({
     padding: SPACING.md,
     paddingBottom: 28,
   },
+  quickServiceGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    rowGap: SPACING.sm,
+    marginBottom: SPACING.lg,
+  },
   quickServiceCard: {
-    width: 118,
+    width: '31.5%',
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.lg,
     padding: SPACING.sm,
     borderWidth: 1,
     borderColor: COLORS.borderSubtle,
+    alignItems: 'center',
   },
   quickServiceIcon: {
     width: 38,
@@ -1004,11 +1119,39 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.size.sm,
     fontWeight: '800',
     color: COLORS.textPrimary,
+    textAlign: 'center',
   },
   quickServiceSub: {
     fontSize: TYPOGRAPHY.size.xxs,
     color: COLORS.textSecondary,
     marginTop: 2,
+    textAlign: 'center',
+  },
+  emptyDoctorFilter: {
+    padding: SPACING.lg,
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.lg,
+    alignItems: 'center',
+    marginBottom: SPACING.lg,
+    borderWidth: 1,
+    borderColor: COLORS.borderSubtle,
+  },
+  emptyDoctorText: {
+    fontSize: TYPOGRAPHY.size.sm,
+    color: COLORS.textSecondary,
+    textAlign: 'center',
+    marginBottom: SPACING.sm,
+  },
+  clearFilterBtn: {
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.xs,
+    backgroundColor: COLORS.primaryContainer,
+    borderRadius: RADIUS.full,
+  },
+  clearFilterText: {
+    fontSize: TYPOGRAPHY.size.xs,
+    fontWeight: '700',
+    color: COLORS.primary,
   },
   ocrCard: {
     flexDirection: 'row',

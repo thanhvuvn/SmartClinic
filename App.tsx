@@ -55,6 +55,11 @@ export default function App() {
   const isTablet = width > 700;
 
   const navigateTo = (nextRoute: string) => {
+    if (['home', 'records', 'appointments', 'ai', 'profile'].includes(nextRoute)) {
+      setRoute('main');
+      setActiveTab(nextRoute as MainTabKey);
+      return;
+    }
     if (nextRoute === route) return;
     setRouteHistory((prev) => [...prev, route]);
     setRoute(nextRoute);

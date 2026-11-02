@@ -128,16 +128,29 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         returnKeyType="search"
         style={styles.searchInput}
       />
-      <TouchableOpacity
-        style={styles.filterBtn}
-        onPress={onFilterPress}
-        activeOpacity={0.75}
-        accessibilityRole="button"
-        accessibilityLabel="Bộ lọc tìm kiếm"
-        hitSlop={TOUCH.hitSlopSm}
-      >
-        <Ionicons name="options-outline" size={18} color={COLORS.primary} />
-      </TouchableOpacity>
+      {onFilterPress ? (
+        <TouchableOpacity
+          style={styles.filterBtn}
+          onPress={onFilterPress}
+          activeOpacity={0.75}
+          accessibilityRole="button"
+          accessibilityLabel="Bộ lọc tìm kiếm"
+          hitSlop={TOUCH.hitSlopSm}
+        >
+          <Ionicons name="options-outline" size={18} color={COLORS.primary} />
+        </TouchableOpacity>
+      ) : value.length > 0 ? (
+        <TouchableOpacity
+          style={styles.filterBtn}
+          onPress={() => onChangeText('')}
+          activeOpacity={0.75}
+          accessibilityRole="button"
+          accessibilityLabel="Xóa nội dung tìm kiếm"
+          hitSlop={TOUCH.hitSlopSm}
+        >
+          <Ionicons name="close-circle" size={18} color={COLORS.textMuted} />
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 };
