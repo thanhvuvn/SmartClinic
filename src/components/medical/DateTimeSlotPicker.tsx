@@ -10,6 +10,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, RADIUS, SHADOWS, TYPOGRAPHY } from '../../theme';
 import { DaySlotItem, TimeSlotItem } from '../../data/mockData';
+import { PressableScale } from '../common/Animations';
 
 export interface HorizontalDateSelectorProps {
   days: DaySlotItem[];
@@ -33,56 +34,64 @@ export const HorizontalDateSelector: React.FC<HorizontalDateSelectorProps> = ({
       {days.map((day) => {
         const isSelected = day.id === selectedDayId;
         const isFull = day.isFull;
+        if (isFull) {
+          return (
+            <View
+              key={day.id}
+              style={[styles.dayCard, styles.dayCardFull]}
+              accessibilityState={{ disabled: true }}
+            >
+              <Text style={[styles.dayLabel, styles.dayTextDisabled]}>{day.dayLabel}</Text>
+              <Text style={[styles.dateNum, styles.dayTextDisabled]}>{day.dateNumber}</Text>
+              <Text style={[styles.slotsStatus, styles.slotsStatusFull]}>Kín lịch</Text>
+            </View>
+          );
+        }
         return (
-          <TouchableOpacity
+          <PressableScale
             key={day.id}
-            activeOpacity={0.8}
-            disabled={isFull}
+            activeScale={0.94}
             onPress={() => onSelectDay(day.id)}
             accessibilityRole="button"
-            accessibilityLabel={`${day.dayLabel}, ngày ${day.dateNumber}, ${
-              isFull ? 'Kín lịch' : `Còn ${day.slotsAvailable} chỗ`
-            }`}
-            accessibilityState={{ selected: isSelected, disabled: !!isFull }}
-            style={[
-              styles.dayCard,
-              isSelected && [styles.dayCardSelected, SHADOWS.md],
-              isFull && styles.dayCardFull,
-            ]}
+            accessibilityLabel={`${day.dayLabel}, ngày ${day.dateNumber}, Còn ${day.slotsAvailable} chỗ`}
           >
-            {day.badge && (
-              <View style={styles.todayPill}>
-                <Text style={styles.todayPillText}>{day.badge}</Text>
-              </View>
-            )}
-            <Text
+            <View
               style={[
-                styles.dayLabel,
-                isSelected && styles.dayLabelSelected,
-                isFull && styles.dayTextDisabled,
+                styles.dayCard,
+                isSelected && [styles.dayCardSelected, SHADOWS.md],
               ]}
             >
-              {day.dayLabel}
-            </Text>
-            <Text
-              style={[
-                styles.dateNum,
-                isSelected && styles.dateNumSelected,
-                isFull && styles.dayTextDisabled,
-              ]}
-            >
-              {day.dateNumber}
-            </Text>
-            <Text
-              style={[
-                styles.slotsStatus,
-                isSelected && styles.slotsStatusSelected,
-                isFull && styles.slotsStatusFull,
-              ]}
-            >
-              {isFull ? 'Kín lịch' : `Còn ${day.slotsAvailable} chỗ`}
-            </Text>
-          </TouchableOpacity>
+              {day.badge && (
+                <View style={styles.todayPill}>
+                  <Text style={styles.todayPillText}>{day.badge}</Text>
+                </View>
+              )}
+              <Text
+                style={[
+                  styles.dayLabel,
+                  isSelected && styles.dayLabelSelected,
+                ]}
+              >
+                {day.dayLabel}
+              </Text>
+              <Text
+                style={[
+                  styles.dateNum,
+                  isSelected && styles.dateNumSelected,
+                ]}
+              >
+                {day.dateNumber}
+              </Text>
+              <Text
+                style={[
+                  styles.slotsStatus,
+                  isSelected && styles.slotsStatusSelected,
+                ]}
+              >
+                Còn {day.slotsAvailable} chỗ
+              </Text>
+            </View>
+          </PressableScale>
         );
       })}
     </ScrollView>
@@ -110,49 +119,60 @@ export const TimeSlotGrid: React.FC<TimeSlotGridProps> = ({
     const isSelected = slot.id === selectedSlotId;
     const isFast = slot.status === 'fast' && !isSelected;
 
+    if (isBooked) {
+      return (
+        <View
+          key={slot.id}
+          style={[styles.slotBtn, styles.slotBooked]}
+          accessibilityState={{ disabled: true }}
+        >
+          <Text style={[styles.slotTimeText, styles.slotTimeBooked]}>{slot.time}</Text>
+        </View>
+      );
+    }
+
     return (
-      <TouchableOpacity
+      <PressableScale
         key={slot.id}
-        disabled={isBooked}
-        activeOpacity={0.8}
+        activeScale={0.93}
         onPress={() => onSelectSlot(slot)}
         accessibilityRole="button"
         accessibilityLabel={`Khung giờ ${slot.time}`}
-        accessibilityState={{ selected: isSelected, disabled: isBooked }}
-        style={[
-          styles.slotBtn,
-          isBooked && styles.slotBooked,
-          isSelected && [styles.slotSelected, SHADOWS.sm],
-          isFast && styles.slotFast,
-        ]}
       >
-        <Text
+        <View
           style={[
-            styles.slotTimeText,
-            isBooked && styles.slotTimeBooked,
-            isSelected && styles.slotTimeSelected,
-            isFast && styles.slotTimeFast,
+            styles.slotBtn,
+            isSelected && [styles.slotSelected, SHADOWS.sm],
+            isFast && styles.slotFast,
           ]}
         >
-          {slot.time}
-        </Text>
-        {isSelected && (
-          <Ionicons
-            name="checkmark-circle-outline"
-            size={12}
-            color="#FFFFFF"
-            style={styles.slotCornerIcon}
-          />
-        )}
-        {isFast && (
-          <Ionicons
-            name="flash"
-            size={11}
-            color={COLORS.secondary}
-            style={styles.slotCornerIcon}
-          />
-        )}
-      </TouchableOpacity>
+          <Text
+            style={[
+              styles.slotTimeText,
+              isSelected && styles.slotTimeSelected,
+              isFast && styles.slotTimeFast,
+            ]}
+          >
+            {slot.time}
+          </Text>
+          {isSelected && (
+            <Ionicons
+              name="checkmark-circle-outline"
+              size={12}
+              color="#FFFFFF"
+              style={styles.slotCornerIcon}
+            />
+          )}
+          {isFast && (
+            <Ionicons
+              name="flash"
+              size={11}
+              color={COLORS.secondary}
+              style={styles.slotCornerIcon}
+            />
+          )}
+        </View>
+      </PressableScale>
     );
   };
 

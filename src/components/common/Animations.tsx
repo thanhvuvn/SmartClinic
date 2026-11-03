@@ -319,7 +319,120 @@ export const QuickServicesSkeleton: React.FC = () => (
   </View>
 );
 
+// ==========================================
+// 5. TYPING DOTS (Staggered Chat Bounce)
+// ==========================================
+export const TypingDots: React.FC<{ color?: string }> = ({ color = COLORS.primary }) => {
+  const dot1 = useRef(new Animated.Value(0)).current;
+  const dot2 = useRef(new Animated.Value(0)).current;
+  const dot3 = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const createBounce = (anim: Animated.Value, delay: number) =>
+      Animated.loop(
+        Animated.sequence([
+          Animated.delay(delay),
+          Animated.timing(anim, {
+            toValue: -6,
+            duration: 260,
+            useNativeDriver: true,
+          }),
+          Animated.timing(anim, {
+            toValue: 0,
+            duration: 260,
+            useNativeDriver: true,
+          }),
+          Animated.delay(400 - delay),
+        ])
+      );
+
+    const l1 = createBounce(dot1, 0);
+    const l2 = createBounce(dot2, 130);
+    const l3 = createBounce(dot3, 260);
+
+    l1.start();
+    l2.start();
+    l3.start();
+
+    return () => {
+      l1.stop();
+      l2.stop();
+      l3.stop();
+    };
+  }, [dot1, dot2, dot3]);
+
+  return (
+    <View style={styles.typingRow}>
+      <Animated.View style={[styles.typingDot, { backgroundColor: color, transform: [{ translateY: dot1 }] }]} />
+      <Animated.View style={[styles.typingDot, { backgroundColor: color, transform: [{ translateY: dot2 }] }]} />
+      <Animated.View style={[styles.typingDot, { backgroundColor: color, transform: [{ translateY: dot3 }] }]} />
+    </View>
+  );
+};
+
+// ==========================================
+// 6. ANIMATED SUCCESS CHECKMARK (Spring Pop)
+// ==========================================
+export const AnimatedSuccessBadge: React.FC<{ size?: number; color?: string; children: React.ReactNode }> = ({
+  size = 64,
+  color = COLORS.secondary,
+  children,
+}) => {
+  const scale = useRef(new Animated.Value(0.2)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.spring(scale, {
+        toValue: 1,
+        bounciness: 12,
+        speed: 10,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 350,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [scale, opacity]);
+
+  return (
+    <Animated.View
+      style={[
+        styles.successCircleWrap,
+        {
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor: '#CCFBF1',
+          opacity,
+          transform: [{ scale }],
+        },
+      ]}
+    >
+      {children}
+    </Animated.View>
+  );
+};
+
 const styles = StyleSheet.create({
+  typingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  typingDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  successCircleWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   haloCircle: {
     position: 'absolute',
   },

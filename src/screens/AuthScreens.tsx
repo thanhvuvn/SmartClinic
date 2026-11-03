@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,6 +18,9 @@ import {
   AppInput,
   Badge,
   SegmentedControl,
+  AnimatedEntry,
+  PressableScale,
+  PulsingDot,
 } from '../components';
 
 export interface SplashScreenProps {
@@ -24,22 +28,48 @@ export interface SplashScreenProps {
 }
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onContinue }) => {
+  const logoScale = useRef(new Animated.Value(0.75)).current;
+  const progressAnim = useRef(new Animated.Value(0.15)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.spring(logoScale, {
+        toValue: 1,
+        friction: 5,
+        tension: 40,
+        useNativeDriver: true,
+      }),
+      Animated.timing(progressAnim, {
+        toValue: 0.95,
+        duration: 1800,
+        useNativeDriver: false,
+      }),
+    ]).start();
+  }, [logoScale, progressAnim]);
+
+  const progressWidth = progressAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0%', '100%'],
+  });
+
   return (
     <LinearGradient colors={GRADIENTS.splashBg} style={styles.splashContainer}>
       {/* Top Subtle Trust Badge */}
-      <View style={[styles.splashTopPill, SHADOWS.sm]}>
-        <View style={styles.greenDot} />
-        <Text style={styles.splashTopPillText}>HỆ THỐNG Y TẾ KỸ THUẬT SỐ</Text>
-      </View>
+      <AnimatedEntry delay={100} direction="down">
+        <View style={[styles.splashTopPill, SHADOWS.sm]}>
+          <PulsingDot color={COLORS.secondary} size={6} />
+          <Text style={styles.splashTopPillText}>HỆ THỐNG Y TẾ KỸ THUẬT SỐ</Text>
+        </View>
+      </AnimatedEntry>
 
       {/* Center Identity Block */}
-      <View style={styles.splashCenter}>
-        <View style={[styles.logoCircle, SHADOWS.lg]}>
+      <AnimatedEntry delay={250} direction="up" style={styles.splashCenter}>
+        <Animated.View style={[styles.logoCircle, SHADOWS.lg, { transform: [{ scale: logoScale }] }]}>
           <Ionicons name="medical" size={44} color={COLORS.primary} />
           <View style={styles.sparkleBadge}>
             <Ionicons name="sparkles" size={16} color="#FFFFFF" />
           </View>
-        </View>
+        </Animated.View>
 
         <Text style={styles.brandName}>SmartClinic</Text>
         <Badge
@@ -72,27 +102,27 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onContinue }) => {
             <Text style={styles.trustText}>Bảo mật y tế</Text>
           </View>
         </View>
-      </View>
+      </AnimatedEntry>
 
       {/* Bottom Loading & Compliance Block */}
-      <View style={styles.splashBottom}>
+      <AnimatedEntry delay={400} direction="up" style={styles.splashBottom}>
         <View style={styles.progressTrack}>
-          <LinearGradient
-            colors={GRADIENTS.primaryTeal}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.progressBarFill}
-          />
+          <Animated.View style={[styles.progressBarFill, { width: progressWidth }]}>
+            <LinearGradient
+              colors={GRADIENTS.primaryTeal}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={{ width: '100%', height: '100%' }}
+            />
+          </Animated.View>
         </View>
         <Text style={styles.loadingText}>Đang tải hồ sơ sức khỏe...</Text>
 
-        <TouchableOpacity
-          style={styles.enterBtn}
-          onPress={onContinue}
-          activeOpacity={0.85}
-        >
-          <Text style={styles.enterBtnText}>Bắt đầu trải nghiệm →</Text>
-        </TouchableOpacity>
+        <PressableScale onPress={onContinue} activeScale={0.95}>
+          <View style={styles.enterBtn}>
+            <Text style={styles.enterBtnText}>Bắt đầu trải nghiệm →</Text>
+          </View>
+        </PressableScale>
 
         <View style={styles.compliancePill}>
           <Ionicons
@@ -104,7 +134,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onContinue }) => {
             Phiên bản 2.4.0 • Tiêu chuẩn an toàn y tế Bộ Y tế
           </Text>
         </View>
-      </View>
+      </AnimatedEntry>
     </LinearGradient>
   );
 };
@@ -197,200 +227,224 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
         keyboardShouldPersistTaps="handled"
       >
         {/* Brand Header */}
-        <View style={styles.authHero}>
-          <View style={[styles.authLogoBox, SHADOWS.sm]}>
-            <Ionicons name="medkit" size={28} color={COLORS.primary} />
+        <AnimatedEntry delay={40} direction="up">
+          <View style={styles.authHero}>
+            <View style={[styles.authLogoBox, SHADOWS.sm]}>
+              <Ionicons name="medkit" size={28} color={COLORS.primary} />
+            </View>
+            <Text style={styles.authTitle}>Đăng nhập</Text>
+            <Text style={styles.authSub}>
+              Chào mừng bạn quay trở lại với{'\n'}SmartClinic
+            </Text>
           </View>
-          <Text style={styles.authTitle}>Đăng nhập</Text>
-          <Text style={styles.authSub}>
-            Chào mừng bạn quay trở lại với{'\n'}SmartClinic
-          </Text>
-        </View>
+        </AnimatedEntry>
 
         {/* Quick Role Account Switcher for Demo */}
-        <View style={styles.roleQuickBox}>
-          <Text style={styles.roleQuickTitle}>
-            Chọn nhanh tài khoản phân quyền (Demo):
-          </Text>
-          <View style={styles.roleQuickButtons}>
-            <TouchableOpacity
-              style={[
-                styles.roleChip,
-                selectedRolePreset === 'patient' && styles.roleChipActive,
-              ]}
-              onPress={() => handleSelectPreset('patient')}
-            >
-              <Ionicons
-                name="person-outline"
-                size={14}
-                color={
-                  selectedRolePreset === 'patient' ? '#FFFFFF' : COLORS.primary
-                }
-              />
-              <Text
-                style={[
-                  styles.roleChipText,
-                  selectedRolePreset === 'patient' && styles.roleChipTextActive,
-                ]}
-              >
-                Bệnh nhân (Vũ)
+        <AnimatedEntry delay={90} direction="up">
+          <View style={styles.roleQuickBox}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+              <Text style={styles.roleQuickTitle}>
+                Chọn nhanh tài khoản phân quyền (Demo):
               </Text>
-            </TouchableOpacity>
+              <PulsingDot color={COLORS.secondary} size={5} />
+            </View>
+            <View style={styles.roleQuickButtons}>
+              <PressableScale
+                style={{ flex: 1 }}
+                activeScale={0.93}
+                onPress={() => handleSelectPreset('patient')}
+              >
+                <View
+                  style={[
+                    styles.roleChip,
+                    selectedRolePreset === 'patient' && styles.roleChipActive,
+                  ]}
+                >
+                  <Ionicons
+                    name="person-outline"
+                    size={14}
+                    color={
+                      selectedRolePreset === 'patient' ? '#FFFFFF' : COLORS.primary
+                    }
+                  />
+                  <Text
+                    style={[
+                      styles.roleChipText,
+                      selectedRolePreset === 'patient' && styles.roleChipTextActive,
+                    ]}
+                  >
+                    Bệnh nhân
+                  </Text>
+                </View>
+              </PressableScale>
 
-            <TouchableOpacity
-              style={[
-                styles.roleChip,
-                selectedRolePreset === 'doctor' && styles.roleChipActive,
-              ]}
-              onPress={() => handleSelectPreset('doctor')}
-            >
-              <Ionicons
-                name="medkit-outline"
-                size={14}
-                color={
-                  selectedRolePreset === 'doctor' ? '#FFFFFF' : COLORS.secondary
-                }
-              />
-              <Text
-                style={[
-                  styles.roleChipText,
-                  selectedRolePreset === 'doctor' && styles.roleChipTextActive,
-                ]}
+              <PressableScale
+                style={{ flex: 1 }}
+                activeScale={0.93}
+                onPress={() => handleSelectPreset('doctor')}
               >
-                Bác sĩ (BS. Trang)
-              </Text>
-            </TouchableOpacity>
+                <View
+                  style={[
+                    styles.roleChip,
+                    selectedRolePreset === 'doctor' && styles.roleChipActive,
+                  ]}
+                >
+                  <Ionicons
+                    name="medkit-outline"
+                    size={14}
+                    color={
+                      selectedRolePreset === 'doctor' ? '#FFFFFF' : COLORS.secondary
+                    }
+                  />
+                  <Text
+                    style={[
+                      styles.roleChipText,
+                      selectedRolePreset === 'doctor' && styles.roleChipTextActive,
+                    ]}
+                  >
+                    Bác sĩ
+                  </Text>
+                </View>
+              </PressableScale>
 
-            <TouchableOpacity
-              style={[
-                styles.roleChip,
-                selectedRolePreset === 'admin' && styles.roleChipActive,
-              ]}
-              onPress={() => handleSelectPreset('admin')}
-            >
-              <Ionicons
-                name="shield-checkmark-outline"
-                size={14}
-                color={
-                  selectedRolePreset === 'admin' ? '#FFFFFF' : COLORS.textPrimary
-                }
-              />
-              <Text
-                style={[
-                  styles.roleChipText,
-                  selectedRolePreset === 'admin' && styles.roleChipTextActive,
-                ]}
+              <PressableScale
+                style={{ flex: 1 }}
+                activeScale={0.93}
+                onPress={() => handleSelectPreset('admin')}
               >
-                Admin
-              </Text>
-            </TouchableOpacity>
+                <View
+                  style={[
+                    styles.roleChip,
+                    selectedRolePreset === 'admin' && styles.roleChipActive,
+                  ]}
+                >
+                  <Ionicons
+                    name="shield-checkmark-outline"
+                    size={14}
+                    color={
+                      selectedRolePreset === 'admin' ? '#FFFFFF' : COLORS.textPrimary
+                    }
+                  />
+                  <Text
+                    style={[
+                      styles.roleChipText,
+                      selectedRolePreset === 'admin' && styles.roleChipTextActive,
+                    ]}
+                  >
+                    Admin
+                  </Text>
+                </View>
+              </PressableScale>
+            </View>
           </View>
-        </View>
+        </AnimatedEntry>
 
         {/* Form */}
-        <AppInput
-          label="Email hoặc số điện thoại"
-          leftIcon="at-outline"
-          placeholder="Nhập email hoặc số điện thoại của bạn"
-          value={email}
-          onChangeText={(txt) => {
-            setEmail(txt);
-            if (emailError) setEmailError('');
-            setSelectedRolePreset(detectRoleFromEmail(txt));
-          }}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoComplete="email"
-          textContentType="emailAddress"
-          returnKeyType="next"
-          error={emailError}
-        />
-
-        <AppInput
-          label="Mật khẩu"
-          leftIcon="lock-closed-outline"
-          placeholder="Nhập mật khẩu"
-          value={password}
-          onChangeText={(txt) => {
-            setPassword(txt);
-            if (passwordError) setPasswordError('');
-          }}
-          isPassword
-          autoComplete="password"
-          textContentType="password"
-          returnKeyType="done"
-          onSubmitEditing={handleLoginPress}
-          error={passwordError}
-        />
-
-        <View style={styles.rememberRow}>
-          <TouchableOpacity
-            style={styles.checkboxRow}
-            onPress={() => setRemember(!remember)}
-            accessibilityRole="checkbox"
-            accessibilityLabel="Ghi nhớ đăng nhập"
-            accessibilityState={{ checked: remember }}
-          >
-            <View
-              style={[
-                styles.checkbox,
-                remember && styles.checkboxChecked,
-              ]}
-            >
-              {remember && (
-                <Ionicons name="checkmark" size={13} color="#FFFFFF" />
-              )}
-            </View>
-            <Text style={styles.rememberLabel}>Ghi nhớ đăng nhập</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity accessibilityRole="button" accessibilityLabel="Quên mật khẩu">
-            <Text style={styles.forgotText}>Quên mật khẩu?</Text>
-          </TouchableOpacity>
-        </View>
-
-        <AppButton
-          title="Đăng nhập"
-          variant="gradient"
-          size="lg"
-          rightIcon="arrow-forward"
-          onPress={handleLoginPress}
-        />
-
-        <View style={styles.dividerRow}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>HOẶC TIẾP TỤC VỚI</Text>
-          <View style={styles.dividerLine} />
-        </View>
-
-        <AppButton
-          title="Đăng nhập bằng Google"
-          variant="google"
-          size="lg"
-          onPress={handleLoginPress}
-        />
-
-        <View style={styles.switchAuthRow}>
-          <Text style={styles.switchAuthLabel}>Chưa có tài khoản? </Text>
-          <TouchableOpacity
-            onPress={onGoRegister}
-            accessibilityRole="button"
-            accessibilityLabel="Đăng ký ngay"
-          >
-            <Text style={styles.switchAuthLink}>Đăng ký ngay</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.securityAssurance}>
-          <Ionicons
-            name="shield-checkmark-outline"
-            size={14}
-            color={COLORS.secondary}
+        <AnimatedEntry delay={150} direction="up">
+          <AppInput
+            label="Email hoặc số điện thoại"
+            leftIcon="at-outline"
+            placeholder="Nhập email hoặc số điện thoại của bạn"
+            value={email}
+            onChangeText={(txt) => {
+              setEmail(txt);
+              if (emailError) setEmailError('');
+              setSelectedRolePreset(detectRoleFromEmail(txt));
+            }}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+            textContentType="emailAddress"
+            returnKeyType="next"
+            error={emailError}
           />
-          <Text style={styles.securityText}>
-            Thông tin được mã hóa bảo mật chuẩn y tế
-          </Text>
-        </View>
+
+          <AppInput
+            label="Mật khẩu"
+            leftIcon="lock-closed-outline"
+            placeholder="Nhập mật khẩu"
+            value={password}
+            onChangeText={(txt) => {
+              setPassword(txt);
+              if (passwordError) setPasswordError('');
+            }}
+            isPassword
+            autoComplete="password"
+            textContentType="password"
+            returnKeyType="done"
+            onSubmitEditing={handleLoginPress}
+            error={passwordError}
+          />
+
+          <View style={styles.rememberRow}>
+            <TouchableOpacity
+              style={styles.checkboxRow}
+              onPress={() => setRemember(!remember)}
+              accessibilityRole="checkbox"
+              accessibilityLabel="Ghi nhớ đăng nhập"
+              accessibilityState={{ checked: remember }}
+            >
+              <View
+                style={[
+                  styles.checkbox,
+                  remember && styles.checkboxChecked,
+                ]}
+              >
+                {remember && (
+                  <Ionicons name="checkmark" size={13} color="#FFFFFF" />
+                )}
+              </View>
+              <Text style={styles.rememberLabel}>Ghi nhớ đăng nhập</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity accessibilityRole="button" accessibilityLabel="Quên mật khẩu">
+              <Text style={styles.forgotText}>Quên mật khẩu?</Text>
+            </TouchableOpacity>
+          </View>
+
+          <AppButton
+            title="Đăng nhập"
+            variant="gradient"
+            size="lg"
+            rightIcon="arrow-forward"
+            onPress={handleLoginPress}
+          />
+
+          <View style={styles.dividerRow}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>HOẶC TIẾP TỤC VỚI</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <AppButton
+            title="Đăng nhập bằng Google"
+            variant="google"
+            size="lg"
+            onPress={handleLoginPress}
+          />
+
+          <View style={styles.switchAuthRow}>
+            <Text style={styles.switchAuthLabel}>Chưa có tài khoản? </Text>
+            <TouchableOpacity
+              onPress={onGoRegister}
+              accessibilityRole="button"
+              accessibilityLabel="Đăng ký ngay"
+            >
+              <Text style={styles.switchAuthLink}>Đăng ký ngay</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.securityAssurance}>
+            <Ionicons
+              name="shield-checkmark-outline"
+              size={14}
+              color={COLORS.secondary}
+            />
+            <Text style={styles.securityText}>
+              Thông tin được mã hóa bảo mật chuẩn y tế
+            </Text>
+          </View>
+        </AnimatedEntry>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -429,164 +483,168 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <Badge
-          label="Bảo mật chuẩn Y tế"
-          variant="teal"
-          icon="shield-checkmark"
-        />
-        <Text style={[styles.authTitle, { textAlign: 'left', marginTop: 8 }]}>
-          Tạo tài khoản
-        </Text>
-        <Text style={[styles.authSub, { textAlign: 'left', marginBottom: 14 }]}>
-          Đăng ký để trải nghiệm dịch vụ y tế thông minh & đặt khám nhanh chóng
-        </Text>
-
-        {/* EHR Sync Highlight Box */}
-        <View style={styles.ehrBanner}>
-          <View style={styles.ehrBannerIcon}>
-            <Ionicons name="shield-half-outline" size={20} color={COLORS.primary} />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.ehrBannerTitle}>Hồ sơ bệnh án điện tử</Text>
-            <Text style={styles.ehrBannerSub} numberOfLines={1}>
-              Đồng bộ tự động với bác sĩ điều trị và bệnh viện
-            </Text>
-          </View>
-        </View>
-
-        <AppInput
-          label="Họ và tên"
-          leftIcon="person-outline"
-          placeholder="Ví dụ: Nguyễn Văn Vũ"
-          value={fullName}
-          onChangeText={setFullName}
-          autoComplete="name"
-          textContentType="name"
-          returnKeyType="next"
-        />
-        <AppInput
-          label="Email"
-          leftIcon="mail-outline"
-          placeholder="example@email.com"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoComplete="email"
-          textContentType="emailAddress"
-          returnKeyType="next"
-        />
-        <AppInput
-          label="Số điện thoại"
-          leftIcon="call-outline"
-          placeholder="0912 345 678"
-          value={phone}
-          onChangeText={setPhone}
-          keyboardType="phone-pad"
-          autoComplete="tel"
-          textContentType="telephoneNumber"
-          returnKeyType="next"
-        />
-
-        <View style={styles.rowTwoCols}>
-          <View style={{ flex: 1 }}>
-            <AppInput
-              label="Ngày sinh"
-              leftIcon="calendar-outline"
-              placeholder="DD/MM/YYYY"
-              value={dob}
-              onChangeText={setDob}
-              returnKeyType="next"
-            />
-          </View>
-          <View style={{ flex: 1.15 }}>
-            <Text style={styles.inputLabel}>Giới tính</Text>
-            <SegmentedControl
-              variant="primarySelect"
-              selectedKey={gender}
-              onSelect={setGender}
-              options={[
-                { key: 'nam', label: 'Nam' },
-                { key: 'nu', label: 'Nữ' },
-                { key: 'khac', label: 'Khác' },
-              ]}
-            />
-          </View>
-        </View>
-
-        <AppInput
-          label="Mật khẩu"
-          leftIcon="lock-closed-outline"
-          placeholder="Tối thiểu 8 ký tự"
-          value={password}
-          onChangeText={setPassword}
-          isPassword
-          autoComplete="new-password"
-          textContentType="newPassword"
-          returnKeyType="next"
-        />
-        <AppInput
-          label="Xác nhận mật khẩu"
-          leftIcon="lock-closed-outline"
-          placeholder="Nhập lại mật khẩu"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          isPassword
-          autoComplete="new-password"
-          textContentType="newPassword"
-          returnKeyType="done"
-          onSubmitEditing={onRegisterSuccess}
-        />
-
-        <TouchableOpacity
-          style={styles.termsRow}
-          onPress={() => setAgreed(!agreed)}
-          accessibilityRole="checkbox"
-          accessibilityLabel="Đồng ý điều khoản dịch vụ và chính sách bảo mật y tế"
-          accessibilityState={{ checked: agreed }}
-        >
-          <View style={[styles.checkbox, agreed && styles.checkboxChecked]}>
-            {agreed && <Ionicons name="checkmark" size={13} color="#FFFFFF" />}
-          </View>
-          <Text style={styles.termsText}>
-            Tôi đồng ý với{' '}
-            <Text style={styles.switchAuthLink}>Điều khoản dịch vụ</Text> và{' '}
-            <Text style={styles.switchAuthLink}>Chính sách bảo mật y tế</Text>{' '}
-            của SmartClinic
+        <AnimatedEntry delay={40} direction="up">
+          <Badge
+            label="Bảo mật chuẩn Y tế"
+            variant="teal"
+            icon="shield-checkmark"
+          />
+          <Text style={[styles.authTitle, { textAlign: 'left', marginTop: 8 }]}>
+            Tạo tài khoản
           </Text>
-        </TouchableOpacity>
+          <Text style={[styles.authSub, { textAlign: 'left', marginBottom: 14 }]}>
+            Đăng ký để trải nghiệm dịch vụ y tế thông minh & đặt khám nhanh chóng
+          </Text>
 
-        <AppButton
-          title="Đăng ký"
-          variant="primary"
-          size="lg"
-          leftIcon="person-add-outline"
-          onPress={onRegisterSuccess}
-        />
+          {/* EHR Sync Highlight Box */}
+          <View style={styles.ehrBanner}>
+            <View style={styles.ehrBannerIcon}>
+              <Ionicons name="shield-half-outline" size={20} color={COLORS.primary} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.ehrBannerTitle}>Hồ sơ bệnh án điện tử</Text>
+              <Text style={styles.ehrBannerSub} numberOfLines={1}>
+                Đồng bộ tự động với bác sĩ điều trị và bệnh viện
+              </Text>
+            </View>
+          </View>
+        </AnimatedEntry>
 
-        <View style={styles.dividerRow}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>hoặc</Text>
-          <View style={styles.dividerLine} />
-        </View>
+        <AnimatedEntry delay={120} direction="up">
+          <AppInput
+            label="Họ và tên"
+            leftIcon="person-outline"
+            placeholder="Ví dụ: Nguyễn Văn Vũ"
+            value={fullName}
+            onChangeText={setFullName}
+            autoComplete="name"
+            textContentType="name"
+            returnKeyType="next"
+          />
+          <AppInput
+            label="Email"
+            leftIcon="mail-outline"
+            placeholder="example@email.com"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+            textContentType="emailAddress"
+            returnKeyType="next"
+          />
+          <AppInput
+            label="Số điện thoại"
+            leftIcon="call-outline"
+            placeholder="0912 345 678"
+            value={phone}
+            onChangeText={setPhone}
+            keyboardType="phone-pad"
+            autoComplete="tel"
+            textContentType="telephoneNumber"
+            returnKeyType="next"
+          />
 
-        <AppButton
-          title="Đăng ký bằng Google"
-          variant="google"
-          size="lg"
-          onPress={onRegisterSuccess}
-        />
+          <View style={styles.rowTwoCols}>
+            <View style={{ flex: 1 }}>
+              <AppInput
+                label="Ngày sinh"
+                leftIcon="calendar-outline"
+                placeholder="DD/MM/YYYY"
+                value={dob}
+                onChangeText={setDob}
+                returnKeyType="next"
+              />
+            </View>
+            <View style={{ flex: 1.15 }}>
+              <Text style={styles.inputLabel}>Giới tính</Text>
+              <SegmentedControl
+                variant="primarySelect"
+                selectedKey={gender}
+                onSelect={setGender}
+                options={[
+                  { key: 'nam', label: 'Nam' },
+                  { key: 'nu', label: 'Nữ' },
+                  { key: 'khac', label: 'Khác' },
+                ]}
+              />
+            </View>
+          </View>
 
-        <View style={styles.switchAuthRow}>
-          <Text style={styles.switchAuthLabel}>Đã có tài khoản? </Text>
+          <AppInput
+            label="Mật khẩu"
+            leftIcon="lock-closed-outline"
+            placeholder="Tối thiểu 8 ký tự"
+            value={password}
+            onChangeText={setPassword}
+            isPassword
+            autoComplete="new-password"
+            textContentType="newPassword"
+            returnKeyType="next"
+          />
+          <AppInput
+            label="Xác nhận mật khẩu"
+            leftIcon="lock-closed-outline"
+            placeholder="Nhập lại mật khẩu"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            isPassword
+            autoComplete="new-password"
+            textContentType="newPassword"
+            returnKeyType="done"
+            onSubmitEditing={onRegisterSuccess}
+          />
+
           <TouchableOpacity
-            onPress={onGoLogin}
-            accessibilityRole="button"
-            accessibilityLabel="Đăng nhập ngay"
+            style={styles.termsRow}
+            onPress={() => setAgreed(!agreed)}
+            accessibilityRole="checkbox"
+            accessibilityLabel="Đồng ý điều khoản dịch vụ và chính sách bảo mật y tế"
+            accessibilityState={{ checked: agreed }}
           >
-            <Text style={styles.switchAuthLink}>Đăng nhập ngay</Text>
+            <View style={[styles.checkbox, agreed && styles.checkboxChecked]}>
+              {agreed && <Ionicons name="checkmark" size={13} color="#FFFFFF" />}
+            </View>
+            <Text style={styles.termsText}>
+              Tôi đồng ý với{' '}
+              <Text style={styles.switchAuthLink}>Điều khoản dịch vụ</Text> và{' '}
+              <Text style={styles.switchAuthLink}>Chính sách bảo mật y tế</Text>{' '}
+              của SmartClinic
+            </Text>
           </TouchableOpacity>
-        </View>
+
+          <AppButton
+            title="Đăng ký"
+            variant="primary"
+            size="lg"
+            leftIcon="person-add-outline"
+            onPress={onRegisterSuccess}
+          />
+
+          <View style={styles.dividerRow}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>hoặc</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <AppButton
+            title="Đăng ký bằng Google"
+            variant="google"
+            size="lg"
+            onPress={onRegisterSuccess}
+          />
+
+          <View style={styles.switchAuthRow}>
+            <Text style={styles.switchAuthLabel}>Đã có tài khoản? </Text>
+            <TouchableOpacity
+              onPress={onGoLogin}
+              accessibilityRole="button"
+              accessibilityLabel="Đăng nhập ngay"
+            >
+              <Text style={styles.switchAuthLink}>Đăng nhập ngay</Text>
+            </TouchableOpacity>
+          </View>
+        </AnimatedEntry>
       </ScrollView>
     </KeyboardAvoidingView>
   );

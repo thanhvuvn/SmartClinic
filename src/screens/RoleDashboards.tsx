@@ -28,6 +28,9 @@ import {
   SegmentedControl,
   SettingToggleRow,
   ToastBanner,
+  AnimatedEntry,
+  PressableScale,
+  PulsingDot,
 } from '../components';
 
 // ==========================================
@@ -56,154 +59,160 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
       showsVerticalScrollIndicator={false}
     >
       {/* Admin Identity Hero Banner */}
-      <LinearGradient
-        colors={['#0F172A', '#004B73', '#006A61']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.heroBanner, SHADOWS.md]}
-      >
-        <View style={styles.heroTop}>
-          <View style={styles.heroUserRow}>
-            <View style={styles.adminAvatarCircle}>
-              <Ionicons name="shield-checkmark" size={24} color="#86F2E4" />
-            </View>
-            <View style={{ marginLeft: 12 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                <Text style={styles.heroName}>Admin Hệ Thống</Text>
-                <Badge label="SUPER ADMIN" variant="teal" />
+      <AnimatedEntry delay={40} direction="up">
+        <LinearGradient
+          colors={['#0F172A', '#004B73', '#006A61']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.heroBanner, SHADOWS.md]}
+        >
+          <View style={styles.heroTop}>
+            <View style={styles.heroUserRow}>
+              <View style={styles.adminAvatarCircle}>
+                <Ionicons name="shield-checkmark" size={24} color="#86F2E4" />
               </View>
-              <Text style={styles.heroEmail}>admin@smartclinic.vn • Toàn quyền</Text>
+              <View style={{ marginLeft: 12 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <Text style={styles.heroName}>Admin Hệ Thống</Text>
+                  <Badge label="SUPER ADMIN" variant="teal" />
+                </View>
+                <Text style={styles.heroEmail}>admin@smartclinic.vn • Toàn quyền</Text>
+              </View>
             </View>
           </View>
-        </View>
 
-        <View style={styles.heroMetricsStrip}>
-          <View style={styles.heroMetricItem}>
-            <Text style={styles.heroMetricVal}>99.98%</Text>
-            <Text style={styles.heroMetricLabel}>Uptime Server</Text>
+          <View style={styles.heroMetricsStrip}>
+            <View style={styles.heroMetricItem}>
+              <Text style={styles.heroMetricVal}>99.98%</Text>
+              <Text style={styles.heroMetricLabel}>Uptime Server</Text>
+            </View>
+            <View style={styles.heroDivider} />
+            <View style={styles.heroMetricItem}>
+              <Text style={styles.heroMetricVal}>HL7/FHIR</Text>
+              <Text style={styles.heroMetricLabel}>Chuẩn dữ liệu</Text>
+            </View>
+            <View style={styles.heroDivider} />
+            <View style={styles.heroMetricItem}>
+              <Text style={styles.heroMetricVal}>Realtime</Text>
+              <Text style={styles.heroMetricLabel}>Đồng bộ lịch khám</Text>
+            </View>
           </View>
-          <View style={styles.heroDivider} />
-          <View style={styles.heroMetricItem}>
-            <Text style={styles.heroMetricVal}>HL7/FHIR</Text>
-            <Text style={styles.heroMetricLabel}>Chuẩn dữ liệu</Text>
-          </View>
-          <View style={styles.heroDivider} />
-          <View style={styles.heroMetricItem}>
-            <Text style={styles.heroMetricVal}>Realtime</Text>
-            <Text style={styles.heroMetricLabel}>Đồng bộ lịch khám</Text>
-          </View>
-        </View>
-      </LinearGradient>
+        </LinearGradient>
+      </AnimatedEntry>
 
       {/* 4 KPI Stat Cards */}
-      <SectionHeader
-        title="Số liệu vận hành hôm nay"
-        subtitle="Cập nhật thời gian thực (29/10/2024)"
-      />
-      <View style={styles.kpiGrid}>
-        <View style={[styles.kpiCard, SHADOWS.sm]}>
-          <View style={styles.kpiTop}>
-            <View style={styles.kpiIconBlue}>
-              <Ionicons name="calendar" size={18} color={COLORS.primary} />
+      <AnimatedEntry delay={100} direction="up">
+        <SectionHeader
+          title="Số liệu vận hành hôm nay"
+          subtitle="Cập nhật thời gian thực (29/10/2024)"
+        />
+        <View style={styles.kpiGrid}>
+          <View style={[styles.kpiCard, SHADOWS.sm]}>
+            <View style={styles.kpiTop}>
+              <View style={styles.kpiIconBlue}>
+                <Ionicons name="calendar" size={18} color={COLORS.primary} />
+              </View>
+              <Badge label="+18%" variant="teal" />
             </View>
-            <Badge label="+18%" variant="teal" />
+            <Text style={styles.kpiValue} numberOfLines={1}>
+              142
+            </Text>
+            <Text style={styles.kpiTitle} numberOfLines={1}>
+              Lịch khám hôm nay
+            </Text>
+            <Text style={styles.kpiSub} numberOfLines={1}>
+              118 tại viện • 24 Chat
+            </Text>
           </View>
-          <Text style={styles.kpiValue} numberOfLines={1}>
-            142
-          </Text>
-          <Text style={styles.kpiTitle} numberOfLines={1}>
-            Lịch khám hôm nay
-          </Text>
-          <Text style={styles.kpiSub} numberOfLines={1}>
-            118 tại viện • 24 Chat
-          </Text>
-        </View>
 
-        <View style={[styles.kpiCard, SHADOWS.sm]}>
-          <View style={styles.kpiTop}>
-            <View style={styles.kpiIconTeal}>
-              <Ionicons name="cash-outline" size={18} color={COLORS.secondary} />
+          <View style={[styles.kpiCard, SHADOWS.sm]}>
+            <View style={styles.kpiTop}>
+              <View style={styles.kpiIconTeal}>
+                <Ionicons name="cash-outline" size={18} color={COLORS.secondary} />
+              </View>
+              <Badge label="Đạt chỉ tiêu" variant="teal" />
             </View>
-            <Badge label="Đạt chỉ tiêu" variant="teal" />
+            <Text style={[styles.kpiValue, { color: COLORS.secondary }]} numberOfLines={1}>
+              48.5M đ
+            </Text>
+            <Text style={styles.kpiTitle} numberOfLines={1}>
+              Doanh thu viện phí
+            </Text>
+            <Text style={styles.kpiSub} numberOfLines={1}>
+              96 lượt thanh toán
+            </Text>
           </View>
-          <Text style={[styles.kpiValue, { color: COLORS.secondary }]} numberOfLines={1}>
-            48.5M đ
-          </Text>
-          <Text style={styles.kpiTitle} numberOfLines={1}>
-            Doanh thu viện phí
-          </Text>
-          <Text style={styles.kpiSub} numberOfLines={1}>
-            96 lượt thanh toán
-          </Text>
-        </View>
 
-        <View style={[styles.kpiCard, SHADOWS.sm]}>
-          <View style={styles.kpiTop}>
-            <View style={styles.kpiIconBlue}>
-              <Ionicons name="medkit-outline" size={18} color={COLORS.primary} />
+          <View style={[styles.kpiCard, SHADOWS.sm]}>
+            <View style={styles.kpiTop}>
+              <View style={styles.kpiIconBlue}>
+                <Ionicons name="medkit-outline" size={18} color={COLORS.primary} />
+              </View>
+              <Badge label="90% trực" variant="blue" />
             </View>
-            <Badge label="90% trực" variant="blue" />
+            <Text style={styles.kpiValue} numberOfLines={1}>
+              38 / 42
+            </Text>
+            <Text style={styles.kpiTitle} numberOfLines={1}>
+              Bác sĩ đang trực
+            </Text>
+            <Text style={styles.kpiSub} numberOfLines={1}>
+              8 chuyên khoa hoạt động
+            </Text>
           </View>
-          <Text style={styles.kpiValue} numberOfLines={1}>
-            38 / 42
-          </Text>
-          <Text style={styles.kpiTitle} numberOfLines={1}>
-            Bác sĩ đang trực
-          </Text>
-          <Text style={styles.kpiSub} numberOfLines={1}>
-            8 chuyên khoa hoạt động
-          </Text>
-        </View>
 
-        <View style={[styles.kpiCard, SHADOWS.sm]}>
-          <View style={styles.kpiTop}>
-            <View style={styles.kpiIconTeal}>
-              <Ionicons name="people-outline" size={18} color={COLORS.secondary} />
+          <View style={[styles.kpiCard, SHADOWS.sm]}>
+            <View style={styles.kpiTop}>
+              <View style={styles.kpiIconTeal}>
+                <Ionicons name="people-outline" size={18} color={COLORS.secondary} />
+              </View>
+              <Badge label="+64 mới" variant="teal" />
             </View>
-            <Badge label="+64 mới" variant="teal" />
+            <Text style={styles.kpiValue} numberOfLines={1}>
+              12,480
+            </Text>
+            <Text style={styles.kpiTitle} numberOfLines={1}>
+              Hồ sơ bệnh nhân EHR
+            </Text>
+            <Text style={styles.kpiSub} numberOfLines={1}>
+              100% đồng bộ VssID
+            </Text>
           </View>
-          <Text style={styles.kpiValue} numberOfLines={1}>
-            12,480
-          </Text>
-          <Text style={styles.kpiTitle} numberOfLines={1}>
-            Hồ sơ bệnh nhân EHR
-          </Text>
-          <Text style={styles.kpiSub} numberOfLines={1}>
-            100% đồng bộ VssID
-          </Text>
         </View>
-      </View>
+      </AnimatedEntry>
 
       {/* Specialty Load Distribution */}
-      <View style={[styles.card, SHADOWS.sm]}>
-        <SectionHeader
-          title="Tỷ lệ đặt khám theo chuyên khoa"
-          leftIcon="bar-chart-outline"
-        />
-        {[
-          { name: 'Nội Thần Kinh (TS. BS. Lê Thu Trang)', count: 42, pct: 85, color: COLORS.primary },
-          { name: 'Tim Mạch Can Thiệp (BS. CKII. Nguyễn Văn Minh)', count: 36, pct: 72, color: COLORS.secondary },
-          { name: 'Nhãn Khoa / Mắt (ThS. BS. Nguyễn Minh Đức)', count: 28, pct: 56, color: '#0284C7' },
-          { name: 'Ngoại Thần Kinh (PGS. BS. Trần Anh Tuấn)', count: 21, pct: 44, color: '#0D9488' },
-        ].map((item) => (
-          <View key={item.name} style={styles.barRow}>
-            <View style={styles.barLabelRow}>
-              <Text style={styles.barName} numberOfLines={1}>
-                {item.name}
-              </Text>
-              <Text style={styles.barCount}>{item.count} ca ({item.pct}%)</Text>
+      <AnimatedEntry delay={180} direction="up">
+        <View style={[styles.card, SHADOWS.sm]}>
+          <SectionHeader
+            title="Tỷ lệ đặt khám theo chuyên khoa"
+            leftIcon="bar-chart-outline"
+          />
+          {[
+            { name: 'Nội Thần Kinh (TS. BS. Lê Thu Trang)', count: 42, pct: 85, color: COLORS.primary },
+            { name: 'Tim Mạch Can Thiệp (BS. CKII. Nguyễn Văn Minh)', count: 36, pct: 72, color: COLORS.secondary },
+            { name: 'Nhãn Khoa / Mắt (ThS. BS. Nguyễn Minh Đức)', count: 28, pct: 56, color: '#0284C7' },
+            { name: 'Ngoại Thần Kinh (PGS. BS. Trần Anh Tuấn)', count: 21, pct: 44, color: '#0D9488' },
+          ].map((item) => (
+            <View key={item.name} style={styles.barRow}>
+              <View style={styles.barLabelRow}>
+                <Text style={styles.barName} numberOfLines={1}>
+                  {item.name}
+                </Text>
+                <Text style={styles.barCount}>{item.count} ca ({item.pct}%)</Text>
+              </View>
+              <View style={styles.barTrack}>
+                <View
+                  style={[
+                    styles.barFill,
+                    { width: `${item.pct}%`, backgroundColor: item.color },
+                  ]}
+                />
+              </View>
             </View>
-            <View style={styles.barTrack}>
-              <View
-                style={[
-                  styles.barFill,
-                  { width: `${item.pct}%`, backgroundColor: item.color },
-                ]}
-              />
-            </View>
-          </View>
-        ))}
-      </View>
+          ))}
+        </View>
+      </AnimatedEntry>
     </ScrollView>
   );
 
@@ -490,40 +499,47 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
       showsVerticalScrollIndicator={false}
     >
       {/* Doctor Identity Card */}
-      <LinearGradient
-        colors={GRADIENTS.heroCard}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.heroBanner, SHADOWS.md]}
-      >
-        <View style={styles.heroUserRow}>
-          <Image source={{ uri: doctor.avatar }} style={styles.docHeroAvatar} />
-          <View style={{ flex: 1, marginLeft: 12 }}>
-            <Badge label="ĐANG TRỰC CA SÁNG • P.302" variant="teal" showDot />
-            <Text style={[styles.heroName, { marginTop: 4 }]}>{doctor.name}</Text>
-            <Text style={styles.heroEmail}>
-              {doctor.degree} • {doctor.hospital}
-            </Text>
+      <AnimatedEntry delay={40} direction="up">
+        <LinearGradient
+          colors={GRADIENTS.heroCard}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[styles.heroBanner, SHADOWS.md]}
+        >
+          <View style={styles.heroUserRow}>
+            <View style={{ position: 'relative' }}>
+              <Image source={{ uri: doctor.avatar }} style={styles.docHeroAvatar} />
+              <View style={{ position: 'absolute', bottom: -2, right: -2 }}>
+                <PulsingDot color="#86F2E4" size={7} />
+              </View>
+            </View>
+            <View style={{ flex: 1, marginLeft: 12 }}>
+              <Badge label="ĐANG TRỰC CA SÁNG • P.302" variant="teal" showDot />
+              <Text style={[styles.heroName, { marginTop: 4 }]}>{doctor.name}</Text>
+              <Text style={styles.heroEmail}>
+                {doctor.degree} • {doctor.hospital}
+              </Text>
+            </View>
           </View>
-        </View>
 
-        <View style={styles.heroMetricsStrip}>
-          <View style={styles.heroMetricItem}>
-            <Text style={styles.heroMetricVal}>18 ca</Text>
-            <Text style={styles.heroMetricLabel}>Tổng lịch hôm nay</Text>
+          <View style={styles.heroMetricsStrip}>
+            <View style={styles.heroMetricItem}>
+              <Text style={styles.heroMetricVal}>18 ca</Text>
+              <Text style={styles.heroMetricLabel}>Tổng lịch hôm nay</Text>
+            </View>
+            <View style={styles.heroDivider} />
+            <View style={styles.heroMetricItem}>
+              <Text style={styles.heroMetricVal}>12 ca</Text>
+              <Text style={styles.heroMetricLabel}>Đã hoàn tất</Text>
+            </View>
+            <View style={styles.heroDivider} />
+            <View style={styles.heroMetricItem}>
+              <Text style={styles.heroMetricVal}>06 ca</Text>
+              <Text style={styles.heroMetricLabel}>Đang chờ khám</Text>
+            </View>
           </View>
-          <View style={styles.heroDivider} />
-          <View style={styles.heroMetricItem}>
-            <Text style={styles.heroMetricVal}>12 ca</Text>
-            <Text style={styles.heroMetricLabel}>Đã hoàn tất</Text>
-          </View>
-          <View style={styles.heroDivider} />
-          <View style={styles.heroMetricItem}>
-            <Text style={styles.heroMetricVal}>06 ca</Text>
-            <Text style={styles.heroMetricLabel}>Đang chờ khám</Text>
-          </View>
-        </View>
-      </LinearGradient>
+        </LinearGradient>
+      </AnimatedEntry>
 
       <SectionHeader
         title="Hàng đợi bệnh nhân hôm nay"
@@ -556,61 +572,66 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
           time: '14:00 - 14:30',
           symptom: 'Mất ngủ kéo dài, căng cơ cổ vai gáy.',
         },
-      ].map((pt) => (
-        <View key={pt.id} style={[styles.card, SHADOWS.sm]}>
-          <View style={styles.aptRowTop}>
-            <Badge label={`${pt.stt} • ${pt.time}`} variant="blue" />
-            <Badge label={queueStatuses[pt.id]} variant="teal" showDot />
+      ].map((pt, idx) => (
+        <AnimatedEntry key={pt.id} delay={100 + idx * 70} direction="up">
+          <View style={[styles.card, SHADOWS.sm]}>
+            <View style={styles.aptRowTop}>
+              <Badge label={`${pt.stt} • ${pt.time}`} variant="blue" />
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                {pt.id === '1' && <PulsingDot color={COLORS.secondary} size={6} />}
+                <Badge label={queueStatuses[pt.id]} variant="teal" showDot />
+              </View>
+            </View>
+
+            <Text style={styles.docName}>{pt.name}</Text>
+            <Text style={styles.docSub}>{pt.meta}</Text>
+
+            <View style={styles.symptomBox}>
+              <Text style={styles.symptomLabel}>Triệu chứng / Lý do khám (AI Triage):</Text>
+              <Text style={styles.symptomText}>{pt.symptom}</Text>
+            </View>
+
+            {pt.allergy && (
+              <Badge
+                label={pt.allergy}
+                variant="danger"
+                icon="warning-outline"
+                style={{ marginBottom: 10 }}
+              />
+            )}
+
+            <View style={styles.docActionRow}>
+              <AppButton
+                title={pt.id === '3' ? 'Mở phòng Chat' : 'Gọi vào khám'}
+                variant="primary"
+                size="sm"
+                leftIcon={pt.id === '3' ? 'chatbubbles-outline' : 'megaphone-outline'}
+                fullWidth={false}
+                style={{ flex: 1 }}
+                onPress={() => {
+                  if (pt.id === '3' && onNavigate) {
+                    onNavigate('teleconsult');
+                    return;
+                  }
+                  setQueueStatuses((prev) => ({
+                    ...prev,
+                    [pt.id]: 'Đang khám tại P.302',
+                  }));
+                  setToastMessage(`Đã phát loa gọi ${pt.stt} - ${pt.name} vào Phòng 302.`);
+                }}
+              />
+              <AppButton
+                title="Kê đơn thuốc"
+                variant="secondary"
+                size="sm"
+                leftIcon="create-outline"
+                fullWidth={false}
+                style={{ flex: 1 }}
+                onPress={() => setActiveTab('prescribe')}
+              />
+            </View>
           </View>
-
-          <Text style={styles.docName}>{pt.name}</Text>
-          <Text style={styles.docSub}>{pt.meta}</Text>
-
-          <View style={styles.symptomBox}>
-            <Text style={styles.symptomLabel}>Triệu chứng / Lý do khám (AI Triage):</Text>
-            <Text style={styles.symptomText}>{pt.symptom}</Text>
-          </View>
-
-          {pt.allergy && (
-            <Badge
-              label={pt.allergy}
-              variant="danger"
-              icon="warning-outline"
-              style={{ marginBottom: 10 }}
-            />
-          )}
-
-          <View style={styles.docActionRow}>
-            <AppButton
-              title={pt.id === '3' ? 'Mở phòng Chat' : 'Gọi vào khám'}
-              variant="primary"
-              size="sm"
-              leftIcon={pt.id === '3' ? 'chatbubbles-outline' : 'megaphone-outline'}
-              fullWidth={false}
-              style={{ flex: 1 }}
-              onPress={() => {
-                if (pt.id === '3' && onNavigate) {
-                  onNavigate('teleconsult');
-                  return;
-                }
-                setQueueStatuses((prev) => ({
-                  ...prev,
-                  [pt.id]: 'Đang khám tại P.302',
-                }));
-                setToastMessage(`Đã phát loa gọi ${pt.stt} - ${pt.name} vào Phòng 302.`);
-              }}
-            />
-            <AppButton
-              title="Kê đơn thuốc"
-              variant="secondary"
-              size="sm"
-              leftIcon="create-outline"
-              fullWidth={false}
-              style={{ flex: 1 }}
-              onPress={() => setActiveTab('prescribe')}
-            />
-          </View>
-        </View>
+        </AnimatedEntry>
       ))}
     </ScrollView>
   );

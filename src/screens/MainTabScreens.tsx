@@ -450,35 +450,41 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
         contentContainerStyle={styles.scrollPad}
         showsVerticalScrollIndicator={false}
       >
-        <PatientMasterIdentityCard
-          onQrPress={() => onNavigate('bookingSuccess')}
-          onBhytPress={() => onNavigate('familyProfiles')}
-          style={{ marginBottom: 16 }}
-        />
+        <AnimatedEntry delay={40} direction="up">
+          <PatientMasterIdentityCard
+            onQrPress={() => onNavigate('bookingSuccess')}
+            onBhytPress={() => onNavigate('familyProfiles')}
+            style={{ marginBottom: 16 }}
+          />
+        </AnimatedEntry>
 
-        <AIClinicalInsightCard
-          onAskAIPress={onAskAI}
-          style={{ marginBottom: 16 }}
-        />
+        <AnimatedEntry delay={90} direction="up">
+          <AIClinicalInsightCard
+            onAskAIPress={onAskAI}
+            style={{ marginBottom: 16 }}
+          />
+        </AnimatedEntry>
 
-        <SegmentedControl
-          variant="chips"
-          selectedKey={filterKey}
-          onSelect={setFilterKey}
-          options={[
-            { key: 'all', label: 'Tất cả', icon: 'grid-outline' },
-            {
-              key: 'rx',
-              label: 'Đơn thuốc điện tử (4)',
-              icon: 'document-text-outline',
-            },
-            { key: 'lab', label: 'Xét nghiệm & CĐHA', icon: 'flask-outline' },
-          ]}
-          style={{ marginBottom: 16 }}
-        />
+        <AnimatedEntry delay={140} direction="up">
+          <SegmentedControl
+            variant="chips"
+            selectedKey={filterKey}
+            onSelect={setFilterKey}
+            options={[
+              { key: 'all', label: 'Tất cả', icon: 'grid-outline' },
+              {
+                key: 'rx',
+                label: 'Đơn thuốc điện tử (4)',
+                icon: 'document-text-outline',
+              },
+              { key: 'lab', label: 'Xét nghiệm & CĐHA', icon: 'flask-outline' },
+            ]}
+            style={{ marginBottom: 16 }}
+          />
+        </AnimatedEntry>
 
         {(filterKey === 'all' || filterKey === 'rx') && (
-          <>
+          <AnimatedEntry delay={190} direction="up">
             <SectionHeader
               title="Đơn thuốc đang điều trị"
               leftIcon="medkit-outline"
@@ -496,11 +502,11 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
               onBuyMedicine={() => onNavigate('medicineCabinet')}
               onReminderPress={() => onNavigate('medLog')}
             />
-          </>
+          </AnimatedEntry>
         )}
 
         {(filterKey === 'all' || filterKey === 'lab') && (
-          <>
+          <AnimatedEntry delay={240} direction="up">
             <SectionHeader
               title="Xét nghiệm & Chẩn đoán hình ảnh"
               leftIcon="flask-outline"
@@ -517,11 +523,11 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
               }
               onVerifySignature={() => onNavigate('teleconsult')}
             />
-          </>
+          </AnimatedEntry>
         )}
 
         {filterKey === 'all' && (
-          <>
+          <AnimatedEntry delay={290} direction="up">
             <SectionHeader
               title="Lịch sử khám bệnh"
               leftIcon="calendar-outline"
@@ -531,36 +537,38 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
             <MedicalHistoryTimeline
               onItemPress={() => onNavigate('postConsultSummary')}
             />
-          </>
+          </AnimatedEntry>
         )}
 
         {/* Upload External Record Card */}
-        <View style={[styles.ocrCard, SHADOWS.sm]}>
-          <View style={styles.ocrIconBox}>
-            <Ionicons name="scan-outline" size={20} color="#FFFFFF" />
+        <AnimatedEntry delay={340} direction="up">
+          <View style={[styles.ocrCard, SHADOWS.sm]}>
+            <View style={styles.ocrIconBox}>
+              <Ionicons name="scan-outline" size={20} color="#FFFFFF" />
+            </View>
+            <View style={{ flex: 1, minWidth: 140, marginHorizontal: 10 }}>
+              <Text style={styles.ocrTitle} numberOfLines={1}>
+                Tải lên hồ sơ / Toa thuốc cũ
+              </Text>
+              <Text style={styles.ocrSub} numberOfLines={1}>
+                Lưu trữ hình ảnh kết quả xét nghiệm và đơn thuốc cá nhân
+              </Text>
+            </View>
+            <AppButton
+              title="Tải lên"
+              variant="primary"
+              size="sm"
+              leftIcon="camera-outline"
+              fullWidth={false}
+              onPress={() =>
+                setToastInfo({
+                  title: 'Tải lên hồ sơ',
+                  msg: 'Đã mở trình chọn ảnh toa thuốc & kết quả xét nghiệm.',
+                })
+              }
+            />
           </View>
-          <View style={{ flex: 1, minWidth: 140, marginHorizontal: 10 }}>
-            <Text style={styles.ocrTitle} numberOfLines={1}>
-              Tải lên hồ sơ / Toa thuốc cũ
-            </Text>
-            <Text style={styles.ocrSub} numberOfLines={1}>
-              Lưu trữ hình ảnh kết quả xét nghiệm và đơn thuốc cá nhân
-            </Text>
-          </View>
-          <AppButton
-            title="Tải lên"
-            variant="primary"
-            size="sm"
-            leftIcon="camera-outline"
-            fullWidth={false}
-            onPress={() =>
-              setToastInfo({
-                title: 'Tải lên hồ sơ',
-                msg: 'Đã mở trình chọn ảnh toa thuốc & kết quả xét nghiệm.',
-              })
-            }
-          />
-        </View>
+        </AnimatedEntry>
       </ScrollView>
       <ToastBanner
         visible={!!toastInfo}
@@ -618,48 +626,51 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
 
         {statusTab === 'upcoming' && (
           <>
-            <AIReminderCard style={{ marginBottom: 14 }} />
+            <AnimatedEntry delay={40} direction="up">
+              <AIReminderCard style={{ marginBottom: 14 }} />
+            </AnimatedEntry>
 
             {APPOINTMENTS.length > 0 ? (
-              APPOINTMENTS.map((apt) => (
-                <AppointmentCard
-                  key={apt.id}
-                  appointment={apt}
-                  onPrimaryPress={(item) => {
-                    if (item.mode === 'video') {
-                      onNavigate('teleconsult');
-                    } else {
-                      onNavigate('bookingSuccess');
-                    }
-                  }}
-                  onSecondaryPress={(item) => {
-                    if (item.mode === 'clinic') {
-                      Alert.alert(
-                        'Chỉ đường đến phòng khám',
-                        `${item.doctor.hospital}\n${item.room}`,
-                        [
-                          { text: 'Đóng', style: 'cancel' },
-                          {
-                            text: 'Xem chi tiết Bác sĩ',
-                            onPress: () => onSelectDoctor(item.doctor),
-                          },
-                        ]
-                      );
-                    } else {
-                      Alert.alert(
-                        'Đổi / Hủy lịch hẹn',
-                        `Bạn muốn đổi lịch tư vấn Video với ${item.doctor.name}?`,
-                        [
-                          { text: 'Giữ lịch', style: 'cancel' },
-                          {
-                            text: 'Chọn khung giờ khác',
-                            onPress: () => onBookNew(),
-                          },
-                        ]
-                      );
-                    }
-                  }}
-                />
+              APPOINTMENTS.map((apt, idx) => (
+                <AnimatedEntry key={apt.id} delay={100 + idx * 70} direction="up">
+                  <AppointmentCard
+                    appointment={apt}
+                    onPrimaryPress={(item) => {
+                      if (item.mode === 'video') {
+                        onNavigate('teleconsult');
+                      } else {
+                        onNavigate('bookingSuccess');
+                      }
+                    }}
+                    onSecondaryPress={(item) => {
+                      if (item.mode === 'clinic') {
+                        Alert.alert(
+                          'Chỉ đường đến phòng khám',
+                          `${item.doctor.hospital}\n${item.room}`,
+                          [
+                            { text: 'Đóng', style: 'cancel' },
+                            {
+                              text: 'Xem chi tiết Bác sĩ',
+                              onPress: () => onSelectDoctor(item.doctor),
+                            },
+                          ]
+                        );
+                      } else {
+                        Alert.alert(
+                          'Đổi / Hủy lịch hẹn',
+                          `Bạn muốn đổi lịch tư vấn Video với ${item.doctor.name}?`,
+                          [
+                            { text: 'Giữ lịch', style: 'cancel' },
+                            {
+                              text: 'Chọn khung giờ khác',
+                              onPress: () => onBookNew(),
+                            },
+                          ]
+                        );
+                      }
+                    }}
+                  />
+                </AnimatedEntry>
               ))
             ) : (
               <EmptyState

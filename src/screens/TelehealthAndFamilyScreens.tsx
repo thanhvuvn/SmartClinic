@@ -24,6 +24,10 @@ import {
   ChatBottomInputBar,
   ActivePrescriptionCard,
   ToastBanner,
+  AnimatedEntry,
+  PressableScale,
+  PulsingDot,
+  AnimatedSuccessBadge,
 } from '../components';
 
 // ============================================================================
@@ -44,98 +48,104 @@ export const BookingSuccessScreen: React.FC<{
       />
       <ScrollView contentContainerStyle={styles.scrollPad}>
         {/* Section 1: Success Celebration Header */}
-        <View style={[styles.cardCenter, SHADOWS.sm]}>
-          <View style={styles.successCircle}>
-            <Ionicons name="checkmark-circle" size={48} color={COLORS.secondary} />
-          </View>
-          <Text style={styles.heroTitle}>Đặt lịch khám thành công!</Text>
-          <Text style={styles.heroSub}>
-            Phiếu hẹn của bạn đã được xác nhận. Tin nhắn SMS và thông báo nhắc
-            nhở đã được gửi tới số{' '}
-            <Text style={{ fontWeight: '800', color: COLORS.primary }}>
-              0912 345 678
+        <AnimatedEntry delay={30} direction="up">
+          <View style={[styles.cardCenter, SHADOWS.sm]}>
+            <AnimatedSuccessBadge size={68}>
+              <Ionicons name="checkmark-circle" size={50} color={COLORS.secondary} />
+            </AnimatedSuccessBadge>
+            <Text style={styles.heroTitle}>Đặt lịch khám thành công!</Text>
+            <Text style={styles.heroSub}>
+              Phiếu hẹn của bạn đã được xác nhận. Tin nhắn SMS và thông báo nhắc
+              nhở đã được gửi tới số{' '}
+              <Text style={{ fontWeight: '800', color: COLORS.primary }}>
+                0912 345 678
+              </Text>
+              .
             </Text>
-            .
-          </Text>
-        </View>
+          </View>
+        </AnimatedEntry>
 
         {/* Section 2: Smart Appointment Ticket Card */}
-        <View style={[styles.card, SHADOWS.md]}>
-          <View style={styles.rowBetween}>
-            <View>
-              <Text style={styles.capLabel}>MÃ PHIẾU HẸN</Text>
-              <Text style={styles.ticketCode}>#SC-241029-8892</Text>
+        <AnimatedEntry delay={100} direction="up">
+          <View style={[styles.card, SHADOWS.md]}>
+            <View style={styles.rowBetween}>
+              <View>
+                <Text style={styles.capLabel}>MÃ PHIẾU HẸN</Text>
+                <Text style={styles.ticketCode}>#SC-241029-8892</Text>
+              </View>
+              <Badge label="Đúng hẹn • Đã xác nhận" variant="teal" showDot />
             </View>
-            <Badge label="Đúng hẹn • Đã xác nhận" variant="teal" showDot />
-          </View>
 
-          <View style={styles.divider} />
+            <View style={styles.divider} />
 
-          <View style={styles.docRow}>
-            <Image source={{ uri: doctor.avatar }} style={styles.avatarMd} />
-            <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
-              <Badge label="Khám chuyên khoa" variant="blue" />
-              <Text style={[styles.docName, { marginTop: 4 }]} numberOfLines={1}>
-                {doctor.name}
-              </Text>
-              <Text style={styles.docSub} numberOfLines={1}>
-                {doctor.degree}
-              </Text>
-              <Text style={styles.docHospital} numberOfLines={1}>
-                {doctor.hospital}
-              </Text>
+            <View style={styles.docRow}>
+              <Image source={{ uri: doctor.avatar }} style={styles.avatarMd} />
+              <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
+                <Badge label="Khám chuyên khoa" variant="blue" />
+                <Text style={[styles.docName, { marginTop: 4 }]} numberOfLines={1}>
+                  {doctor.name}
+                </Text>
+                <Text style={styles.docSub} numberOfLines={1}>
+                  {doctor.degree}
+                </Text>
+                <Text style={styles.docHospital} numberOfLines={1}>
+                  {doctor.hospital}
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.ticketGrid}>
+              <View style={styles.ticketBox}>
+                <Text style={styles.capLabel} numberOfLines={1}>
+                  THỜI GIAN KHÁM
+                </Text>
+                <Text style={styles.ticketVal} numberOfLines={1}>
+                  09:30 - 10:00
+                </Text>
+                <Text style={styles.docSub} numberOfLines={1}>
+                  Thứ 3, 29/10/2024
+                </Text>
+              </View>
+              <View style={styles.ticketBox}>
+                <Text style={styles.capLabel} numberOfLines={1}>
+                  PHÒNG KHÁM & STT
+                </Text>
+                <Text
+                  style={[styles.ticketVal, { color: COLORS.secondary }]}
+                  numberOfLines={1}
+                >
+                  STT #14 • P.302
+                </Text>
+                <Text style={styles.docSub} numberOfLines={1}>
+                  Tầng 3, Tòa nhà A
+                </Text>
+              </View>
             </View>
           </View>
-
-          <View style={styles.ticketGrid}>
-            <View style={styles.ticketBox}>
-              <Text style={styles.capLabel} numberOfLines={1}>
-                THỜI GIAN KHÁM
-              </Text>
-              <Text style={styles.ticketVal} numberOfLines={1}>
-                09:30 - 10:00
-              </Text>
-              <Text style={styles.docSub} numberOfLines={1}>
-                Thứ 3, 29/10/2024
-              </Text>
-            </View>
-            <View style={styles.ticketBox}>
-              <Text style={styles.capLabel} numberOfLines={1}>
-                PHÒNG KHÁM & STT
-              </Text>
-              <Text
-                style={[styles.ticketVal, { color: COLORS.secondary }]}
-                numberOfLines={1}
-              >
-                STT #14 • P.302
-              </Text>
-              <Text style={styles.docSub} numberOfLines={1}>
-                Tầng 3, Tòa nhà A
-              </Text>
-            </View>
-          </View>
-        </View>
+        </AnimatedEntry>
 
         {/* Section 3: High-speed QR Fast Check-in Module */}
-        <View style={[styles.cardCenter, SHADOWS.sm]}>
-          <Badge
-            label="MÃ QR CHECK-IN SIÊU TỐC"
-            variant="blue"
-            icon="qr-code-outline"
-          />
-          <View style={styles.qrMockBox}>
-            <Ionicons name="qr-code" size={116} color={COLORS.textPrimary} />
+        <AnimatedEntry delay={170} direction="up">
+          <View style={[styles.cardCenter, SHADOWS.sm]}>
+            <Badge
+              label="MÃ QR CHECK-IN SIÊU TỐC"
+              variant="blue"
+              icon="qr-code-outline"
+            />
+            <View style={styles.qrMockBox}>
+              <Ionicons name="qr-code" size={116} color={COLORS.textPrimary} />
+            </View>
+            <Text style={styles.heroSub}>
+              Quét mã tại Kiosk tự động hoặc Quầy tiếp đón số 2 để nhận số vào
+              phòng khám mà không cần xếp hàng.
+            </Text>
+            <Badge
+              label="Hợp lệ check-in trước 15 phút (từ 09:15)"
+              variant="teal"
+              style={{ marginTop: 8 }}
+            />
           </View>
-          <Text style={styles.heroSub}>
-            Quét mã tại Kiosk tự động hoặc Quầy tiếp đón số 2 để nhận số vào
-            phòng khám mà không cần xếp hàng.
-          </Text>
-          <Badge
-            label="Hợp lệ check-in trước 15 phút (từ 09:15)"
-            variant="teal"
-            style={{ marginTop: 8 }}
-          />
-        </View>
+        </AnimatedEntry>
 
         {/* Section 4: Quick Action Floating Grid */}
         <View style={styles.quickGrid3}>
@@ -794,70 +804,77 @@ export const TeleconsultationScreen: React.FC<{
         keyboardShouldPersistTaps="handled"
       >
         {/* Top Doctor & Session Info Banner */}
-        <View style={[styles.card, SHADOWS.sm]}>
-          <View style={styles.docRow}>
-            <Image source={{ uri: doctor.avatar }} style={styles.avatarMd} />
-            <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
-              <View style={styles.rowBetween}>
-                <Text style={[styles.docName, { flex: 1 }]} numberOfLines={1}>
-                  {doctor.name}
-                </Text>
-                <Badge label="Đang hoạt động" variant="teal" showDot />
+        <AnimatedEntry delay={40} direction="up">
+          <View style={[styles.card, SHADOWS.sm]}>
+            <View style={styles.docRow}>
+              <View style={{ position: 'relative' }}>
+                <Image source={{ uri: doctor.avatar }} style={styles.avatarMd} />
+                <View style={{ position: 'absolute', bottom: -2, right: -2 }}>
+                  <PulsingDot color={COLORS.secondary} size={8} />
+                </View>
               </View>
-              <Text style={styles.docSub} numberOfLines={1}>
-                Ca tư vấn #SC-241029-8892 • BN: Nguyễn Văn Vũ
-              </Text>
-              <Text style={styles.docHospital} numberOfLines={1}>
-                {doctor.hospital}
-              </Text>
+              <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
+                <View style={styles.rowBetween}>
+                  <Text style={[styles.docName, { flex: 1 }]} numberOfLines={1}>
+                    {doctor.name}
+                  </Text>
+                  <Badge label="Bác sĩ online" variant="teal" showDot />
+                </View>
+                <Text style={styles.docSub} numberOfLines={1}>
+                  Ca tư vấn #SC-241029-8892 • BN: Nguyễn Văn Vũ
+                </Text>
+                <Text style={styles.docHospital} numberOfLines={1}>
+                  {doctor.hospital}
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.divider} />
+
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              <AppButton
+                title="Kết quả CĐHA"
+                variant="tonal"
+                size="sm"
+                leftIcon="document-text-outline"
+                fullWidth={false}
+                style={{ flex: 1 }}
+                onPress={onOpenLabResults}
+              />
+              <AppButton
+                title="Đơn thuốc & Kết luận"
+                variant="primary"
+                size="sm"
+                leftIcon="medkit-outline"
+                fullWidth={false}
+                style={{ flex: 1 }}
+                onPress={onFinishChat || onBack}
+              />
             </View>
           </View>
-
-          <View style={styles.divider} />
-
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <AppButton
-              title="Kết quả CĐHA"
-              variant="tonal"
-              size="sm"
-              leftIcon="document-text-outline"
-              fullWidth={false}
-              style={{ flex: 1 }}
-              onPress={onOpenLabResults}
-            />
-            <AppButton
-              title="Đơn thuốc & Kết luận"
-              variant="primary"
-              size="sm"
-              leftIcon="medkit-outline"
-              fullWidth={false}
-              style={{ flex: 1 }}
-              onPress={onFinishChat || onBack}
-            />
-          </View>
-        </View>
+        </AnimatedEntry>
 
         {/* Chat Messages Thread */}
         <View style={{ marginVertical: 4 }}>
-          {messages.map((msg) => {
+          {messages.map((msg, idx) => {
             const isPatient = msg.sender === 'patient';
             return (
-              <View
-                key={msg.id}
-                style={[
-                  styles.chatRow,
-                  isPatient ? styles.chatRowRight : styles.chatRowLeft,
-                ]}
-              >
-                {!isPatient && (
-                  <Image
-                    source={{ uri: doctor.avatar }}
-                    style={styles.chatAvatar}
-                  />
-                )}
+              <AnimatedEntry key={msg.id} delay={idx < 4 ? idx * 40 : 0} distance={8} direction="up">
                 <View
                   style={[
-                    styles.chatBubble,
+                    styles.chatRow,
+                    isPatient ? styles.chatRowRight : styles.chatRowLeft,
+                  ]}
+                >
+                  {!isPatient && (
+                    <Image
+                      source={{ uri: doctor.avatar }}
+                      style={styles.chatAvatar}
+                    />
+                  )}
+                  <View
+                    style={[
+                      styles.chatBubble,
                     isPatient
                       ? styles.chatBubblePatient
                       : styles.chatBubbleDoctor,
@@ -911,9 +928,10 @@ export const TeleconsultationScreen: React.FC<{
                   </Text>
                 </View>
               </View>
-            );
-          })}
-        </View>
+            </AnimatedEntry>
+          );
+        })}
+      </View>
 
         {/* Quick Question Chips */}
         <Text style={[styles.capLabel, { marginBottom: 8, marginTop: 4 }]}>

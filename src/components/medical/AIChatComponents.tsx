@@ -14,25 +14,29 @@ import { COLORS, RADIUS, SHADOWS, TOUCH } from '../../theme';
 import { DoctorItem } from '../../data/mockData';
 import { Badge } from '../common/Badge';
 import { AppButton } from '../common/AppButton';
+import {
+  AnimatedEntry,
+  PressableScale,
+  PulsingDot,
+  TypingDots,
+} from '../common/Animations';
 
 export const AIMedicalTriageBanner: React.FC<{ style?: ViewStyle }> = ({
   style,
 }) => (
-  <View style={[styles.triageContainer, style]}>
-    <View style={styles.triagePill}>
-      <Ionicons
-        name="shield-checkmark-outline"
-        size={15}
-        color={COLORS.secondary}
-      />
-      <Text style={styles.triagePillText}>
-        AI Powered Medical Triage • Độ chính xác định hướng cao
+  <AnimatedEntry delay={40} direction="down">
+    <View style={[styles.triageContainer, style]}>
+      <View style={styles.triagePill}>
+        <PulsingDot color={COLORS.secondaryDark} size={6} />
+        <Text style={styles.triagePillText}>
+          AI Powered Medical Triage • Độ chính xác định hướng cao
+        </Text>
+      </View>
+      <Text style={styles.triageSub}>
+        Trợ lý AI hỗ trợ định hướng chăm sóc sức khỏe ban đầu
       </Text>
     </View>
-    <Text style={styles.triageSub}>
-      Trợ lý AI hỗ trợ định hướng chăm sóc sức khỏe ban đầu
-    </Text>
-  </View>
+  </AnimatedEntry>
 );
 
 export interface AIChatBubbleProps {
@@ -48,31 +52,46 @@ export const AIChatBubble: React.FC<AIChatBubbleProps> = ({
 }) => {
   const isAI = sender === 'ai';
   return (
-    <View style={[styles.msgRow, !isAI && styles.msgRowUser]}>
-      {isAI && (
-        <View style={styles.botAvatar}>
-          <Ionicons name="sparkles" size={16} color={COLORS.secondary} />
+    <AnimatedEntry delay={50} distance={10} direction={isAI ? 'up' : 'up'}>
+      <View style={[styles.msgRow, !isAI && styles.msgRowUser]}>
+        {isAI && (
+          <View style={styles.botAvatar}>
+            <Ionicons name="sparkles" size={16} color={COLORS.secondary} />
+          </View>
+        )}
+        <View
+          style={[
+            styles.bubble,
+            isAI ? styles.bubbleAI : styles.bubbleUser,
+          ]}
+        >
+          <Text style={[styles.msgText, !isAI && styles.msgTextUser]}>
+            {message}
+          </Text>
+          <Text style={[styles.msgTime, !isAI && styles.msgTimeUser]}>{time}</Text>
         </View>
-      )}
-      <View
-        style={[
-          styles.bubble,
-          isAI ? styles.bubbleAI : styles.bubbleUser,
-        ]}
-      >
-        <Text style={[styles.msgText, !isAI && styles.msgTextUser]}>
-          {message}
-        </Text>
-        <Text style={[styles.msgTime, !isAI && styles.msgTimeUser]}>{time}</Text>
+        {!isAI && (
+          <View style={styles.userAvatar}>
+            <Ionicons name="person-outline" size={15} color="#FFFFFF" />
+          </View>
+        )}
       </View>
-      {!isAI && (
-        <View style={styles.userAvatar}>
-          <Ionicons name="person-outline" size={15} color="#FFFFFF" />
-        </View>
-      )}
-    </View>
+    </AnimatedEntry>
   );
 };
+
+export const AITypingIndicator: React.FC = () => (
+  <AnimatedEntry delay={20} distance={8} direction="up">
+    <View style={styles.msgRow}>
+      <View style={styles.botAvatar}>
+        <Ionicons name="sparkles" size={16} color={COLORS.secondary} />
+      </View>
+      <View style={[styles.bubble, styles.bubbleAI, { paddingVertical: 10, paddingHorizontal: 12 }]}>
+        <TypingDots color={COLORS.secondaryDark} />
+      </View>
+    </View>
+  </AnimatedEntry>
+);
 
 export interface AIClinicalResponseCardProps {
   doctors: DoctorItem[];
@@ -210,29 +229,30 @@ export const QuickPromptChips: React.FC<QuickPromptChipsProps> = ({
     contentContainerStyle={styles.promptsRow}
   >
     {prompts.map((p) => (
-      <TouchableOpacity
+      <PressableScale
         key={p.label}
-        style={[styles.promptChip, p.danger && styles.promptChipDanger]}
+        activeScale={0.93}
         onPress={() => onSelectPrompt?.(p.label)}
         accessibilityRole="button"
         accessibilityLabel={p.label}
-        hitSlop={TOUCH.hitSlopSm}
       >
-        <Ionicons
-          name={p.icon}
-          size={14}
-          color={p.danger ? COLORS.error : COLORS.primary}
-          importantForAccessibility="no"
-        />
-        <Text
-          style={[
-            styles.promptChipText,
-            p.danger && { color: COLORS.error },
-          ]}
-        >
-          {p.label}
-        </Text>
-      </TouchableOpacity>
+        <View style={[styles.promptChip, p.danger && styles.promptChipDanger]}>
+          <Ionicons
+            name={p.icon}
+            size={14}
+            color={p.danger ? COLORS.error : COLORS.primary}
+            importantForAccessibility="no"
+          />
+          <Text
+            style={[
+              styles.promptChipText,
+              p.danger && { color: COLORS.error },
+            ]}
+          >
+            {p.label}
+          </Text>
+        </View>
+      </PressableScale>
     ))}
   </ScrollView>
 );

@@ -16,6 +16,9 @@ import {
   Badge,
   SectionHeader,
   ToastBanner,
+  AnimatedEntry,
+  PressableScale,
+  PulsingDot,
 } from '../components';
 
 // ============================================================================
@@ -43,80 +46,84 @@ export const MedicationLogScreen: React.FC<{
       />
       <ScrollView contentContainerStyle={styles.scrollPad}>
         {/* Weekly Adherence Strip (Habit Tracker) */}
-        <View style={[styles.card, SHADOWS.sm]}>
-          <View style={styles.rowBetween}>
-            <Text style={[styles.cardTitle, { flex: 1 }]} numberOfLines={1}>
-              Tuần 44 • Tháng 10/2024
-            </Text>
-            <Badge label="2/3 cữ hôm nay" variant="teal" />
-          </View>
-          <View style={styles.weekRow}>
-            {[
-              { d: 'T2', n: '28', done: true },
-              { d: 'T3', n: '29', active: true },
-              { d: 'T4', n: '30', done: false },
-              { d: 'T5', n: '31', done: false },
-              { d: 'T6', n: '01', done: false },
-              { d: 'T7', n: '02', done: false },
-              { d: 'CN', n: '03', done: false },
-            ].map((day) => (
-              <View
-                key={day.d}
-                style={[
-                  styles.dayPill,
-                  day.active && styles.dayPillActive,
-                ]}
-              >
-                <Text
+        <AnimatedEntry delay={40} direction="up">
+          <View style={[styles.card, SHADOWS.sm]}>
+            <View style={styles.rowBetween}>
+              <Text style={[styles.cardTitle, { flex: 1 }]} numberOfLines={1}>
+                Tuần 44 • Tháng 10/2024
+              </Text>
+              <Badge label="2/3 cữ hôm nay" variant="teal" />
+            </View>
+            <View style={styles.weekRow}>
+              {[
+                { d: 'T2', n: '28', done: true },
+                { d: 'T3', n: '29', active: true },
+                { d: 'T4', n: '30', done: false },
+                { d: 'T5', n: '31', done: false },
+                { d: 'T6', n: '01', done: false },
+                { d: 'T7', n: '02', done: false },
+                { d: 'CN', n: '03', done: false },
+              ].map((day) => (
+                <View
+                  key={day.d}
                   style={[
-                    styles.dayPillText,
-                    day.active && { color: '#FFFFFF' },
+                    styles.dayPill,
+                    day.active && styles.dayPillActive,
                   ]}
-                  numberOfLines={1}
                 >
-                  {day.d}
-                </Text>
-                <Text
-                  style={[
-                    styles.dayPillNum,
-                    day.active && { color: '#FFFFFF' },
-                  ]}
-                  numberOfLines={1}
-                >
-                  {day.n}
-                </Text>
-                <Ionicons
-                  name={day.done ? 'checkmark-circle' : 'ellipse'}
-                  size={12}
-                  color={
-                    day.active
-                      ? '#86F2E4'
-                      : day.done
-                      ? COLORS.secondary
-                      : '#CBD5E1'
-                  }
-                />
-              </View>
-            ))}
+                  <Text
+                    style={[
+                      styles.dayPillText,
+                      day.active && { color: '#FFFFFF' },
+                    ]}
+                    numberOfLines={1}
+                  >
+                    {day.d}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.dayPillNum,
+                      day.active && { color: '#FFFFFF' },
+                    ]}
+                    numberOfLines={1}
+                  >
+                    {day.n}
+                  </Text>
+                  <Ionicons
+                    name={day.done ? 'checkmark-circle' : 'ellipse'}
+                    size={12}
+                    color={
+                      day.active
+                        ? '#86F2E4'
+                        : day.done
+                        ? COLORS.secondary
+                        : '#CBD5E1'
+                    }
+                  />
+                </View>
+              ))}
+            </View>
           </View>
-        </View>
+        </AnimatedEntry>
 
         {/* AI Medication Adherence Insight Card */}
-        <LinearGradient
-          colors={GRADIENTS.primaryTeal}
-          style={[styles.heroCard, SHADOWS.sm]}
-        >
-          <View style={styles.rowBetween}>
-            <Badge label="Trợ lý AI SmartClinic" variant="glass" icon="sparkles" />
-            <Text style={styles.whiteSub} numberOfLines={1}>
-              Toa: TS. BS. Lê Thu Trang
+        <AnimatedEntry delay={100} direction="up">
+          <LinearGradient
+            colors={GRADIENTS.primaryTeal}
+            style={[styles.heroCard, SHADOWS.sm]}
+          >
+            <View style={styles.rowBetween}>
+              <Badge label="Trợ lý AI SmartClinic" variant="glass" icon="sparkles" />
+              <Text style={styles.whiteSub} numberOfLines={1}>
+                Toa: TS. BS. Lê Thu Trang
+              </Text>
+            </View>
+            <Text style={styles.whiteBody}>
+              Bạn đã duy trì uống đúng giờ 6 ngày liên tiếp! Cữ tối nay (21:00 -
+              Flunarizine 5mg) giúp dự phòng cơn đau nửa đầu khi ngủ.
             </Text>
-          </View>
-          <Text style={styles.whiteBody}>
-            Bạn đã duy trì uống đúng giờ 6 ngày liên tiếp! Cữ tối nay (21:00 -
-            Flunarizine 5mg) giúp dự phòng cơn đau nửa đầu khi ngủ.
-          </Text>
-        </LinearGradient>
+          </LinearGradient>
+        </AnimatedEntry>
 
         {/* Today's Pill Schedule */}
         <SectionHeader
@@ -143,36 +150,56 @@ export const MedicationLogScreen: React.FC<{
             drug: 'Flunarizine 5mg (1 viên)',
             desc: 'Ngăn ngừa đau nửa đầu & co thắt mạch',
           },
-        ].map((slot) => {
+        ].map((slot, idx) => {
           const isTaken = takenMap[slot.key];
           return (
-            <View key={slot.key} style={[styles.card, SHADOWS.sm]}>
-              <View style={styles.rowBetween}>
-                <Text style={[styles.slotTime, { flex: 1 }]} numberOfLines={1}>
-                  {slot.time}
+            <AnimatedEntry key={slot.key} delay={160 + idx * 70} direction="up">
+              <View style={[styles.card, SHADOWS.sm]}>
+                <View style={styles.rowBetween}>
+                  <Text style={[styles.slotTime, { flex: 1 }]} numberOfLines={1}>
+                    {slot.time}
+                  </Text>
+                  <Badge
+                    label={isTaken ? 'Đã uống ✓' : 'Sắp tới (21:00)'}
+                    variant={isTaken ? 'teal' : 'warning'}
+                  />
+                </View>
+                <Text style={styles.cardTitle} numberOfLines={1}>
+                  {slot.drug}
                 </Text>
-                <Badge
-                  label={isTaken ? 'Đã uống ✓' : 'Sắp tới (21:00)'}
-                  variant={isTaken ? 'teal' : 'warning'}
-                />
+                <Text style={styles.subText} numberOfLines={1}>
+                  {slot.desc}
+                </Text>
+                <PressableScale
+                  activeScale={0.96}
+                  onPress={() =>
+                    setTakenMap((p) => ({ ...p, [slot.key]: !p[slot.key] }))
+                  }
+                  style={{ marginTop: 10 }}
+                >
+                  <View
+                    style={[
+                      styles.confirmBtnWrap,
+                      isTaken ? styles.confirmBtnTaken : styles.confirmBtnPending,
+                    ]}
+                  >
+                    <Ionicons
+                      name={isTaken ? 'checkmark-done' : 'checkmark-circle-outline'}
+                      size={16}
+                      color={isTaken ? COLORS.primary : '#FFFFFF'}
+                    />
+                    <Text
+                      style={[
+                        styles.confirmBtnText,
+                        isTaken ? { color: COLORS.primary } : { color: '#FFFFFF' },
+                      ]}
+                    >
+                      {isTaken ? 'Đã ghi nhận uống thuốc' : 'Xác nhận đã uống cữ này'}
+                    </Text>
+                  </View>
+                </PressableScale>
               </View>
-              <Text style={styles.cardTitle} numberOfLines={1}>
-                {slot.drug}
-              </Text>
-              <Text style={styles.subText} numberOfLines={1}>
-                {slot.desc}
-              </Text>
-              <AppButton
-                title={isTaken ? 'Đã ghi nhận uống thuốc' : 'Xác nhận đã uống cữ này'}
-                variant={isTaken ? 'tonal' : 'primary'}
-                size="sm"
-                leftIcon={isTaken ? 'checkmark-done' : 'checkmark-circle-outline'}
-                onPress={() =>
-                  setTakenMap((p) => ({ ...p, [slot.key]: !p[slot.key] }))
-                }
-                style={{ marginTop: 10 }}
-              />
-            </View>
+            </AnimatedEntry>
           );
         })}
 
@@ -312,33 +339,38 @@ export const FamilyMedicineCabinetScreen: React.FC<{
       />
       <ScrollView contentContainerStyle={styles.scrollPad}>
         {/* Refill Alert Banner */}
-        <View style={[styles.alertCard, SHADOWS.sm]}>
-          <View style={styles.rowBetween}>
-            <Badge
-              label="CẢNH BÁO SẮP HẾT THUỐC"
-              variant="danger"
-              icon="alert-circle"
-            />
-            <Text style={[styles.slotTime, { color: COLORS.error }]}>
-              Còn dùng được 3 ngày
+        <AnimatedEntry delay={40} direction="up">
+          <View style={[styles.alertCard, SHADOWS.sm]}>
+            <View style={styles.rowBetween}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <PulsingDot color={COLORS.error} size={7} />
+                <Badge
+                  label="CẢNH BÁO SẮP HẾT THUỐC"
+                  variant="danger"
+                  icon="alert-circle"
+                />
+              </View>
+              <Text style={[styles.slotTime, { color: COLORS.error }]}>
+                Còn dùng được 3 ngày
+              </Text>
+            </View>
+            <Text style={[styles.cardTitle, { marginTop: 8 }]}>
+              Sibelium 5mg (Flunarizine) chỉ còn 4 viên
             </Text>
+            <Text style={styles.subText}>
+              Đủ dùng đến 31/10/2024. Bạn nên đặt lịch tái khám hoặc hỏi ý kiến
+              TS. BS. Lê Thu Trang trước khi mua thêm.
+            </Text>
+            <AppButton
+              title="Nhắn tin hỏi Bác sĩ"
+              variant="primary"
+              size="md"
+              leftIcon="chatbubbles-outline"
+              onPress={onRefillNow}
+              style={{ marginTop: 10 }}
+            />
           </View>
-          <Text style={[styles.cardTitle, { marginTop: 8 }]}>
-            Sibelium 5mg (Flunarizine) chỉ còn 4 viên
-          </Text>
-          <Text style={styles.subText}>
-            Đủ dùng đến 31/10/2024. Bạn nên đặt lịch tái khám hoặc hỏi ý kiến
-            TS. BS. Lê Thu Trang trước khi mua thêm.
-          </Text>
-          <AppButton
-            title="Nhắn tin hỏi Bác sĩ"
-            variant="primary"
-            size="md"
-            leftIcon="chatbubbles-outline"
-            onPress={onRefillNow}
-            style={{ marginTop: 10 }}
-          />
-        </View>
+        </AnimatedEntry>
 
         <SectionHeader
           title="Thuốc đang lưu trữ trong gia đình"
@@ -366,21 +398,26 @@ export const FamilyMedicineCabinetScreen: React.FC<{
             exp: 'HSD: 05/2027',
             urgent: false,
           },
-        ].map((med) => (
-          <View key={med.name} style={[styles.card, SHADOWS.sm]}>
-            <View style={styles.rowBetween}>
-              <Text style={[styles.cardTitle, { flex: 1 }]} numberOfLines={1}>
-                {med.name}
+        ].map((med, idx) => (
+          <AnimatedEntry key={med.name} delay={100 + idx * 60} direction="up">
+            <View style={[styles.card, SHADOWS.sm]}>
+              <View style={styles.rowBetween}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
+                  {med.urgent && <PulsingDot color={COLORS.error} size={6} />}
+                  <Text style={[styles.cardTitle, { flex: 1 }]} numberOfLines={1}>
+                    {med.name}
+                  </Text>
+                </View>
+                <Badge
+                  label={med.stock}
+                  variant={med.urgent ? 'danger' : 'teal'}
+                />
+              </View>
+              <Text style={styles.subText} numberOfLines={1}>
+                Người dùng: {med.owner} • {med.exp}
               </Text>
-              <Badge
-                label={med.stock}
-                variant={med.urgent ? 'danger' : 'teal'}
-              />
             </View>
-            <Text style={styles.subText} numberOfLines={1}>
-              Người dùng: {med.owner} • {med.exp}
-            </Text>
-          </View>
+          </AnimatedEntry>
         ))}
       </ScrollView>
     </View>
@@ -479,5 +516,25 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.caption,
     lineHeight: TYPOGRAPHY.lineHeight.normal,
     color: COLORS.textPrimary,
+  },
+  confirmBtnWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderRadius: RADIUS.md,
+    gap: 6,
+  },
+  confirmBtnPending: {
+    backgroundColor: COLORS.primary,
+  },
+  confirmBtnTaken: {
+    backgroundColor: COLORS.surfaceContainer,
+    borderWidth: 1,
+    borderColor: COLORS.primaryContainer,
+  },
+  confirmBtnText: {
+    fontSize: TYPOGRAPHY.caption,
+    fontWeight: '700',
   },
 });
