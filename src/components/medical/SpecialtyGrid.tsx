@@ -9,6 +9,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, RADIUS, SHADOWS, TYPOGRAPHY } from '../../theme';
 import { SpecialtyItem } from '../../data/mockData';
+import { PressableScale } from '../common/Animations';
 
 export interface SpecialtyGridProps {
   items: SpecialtyItem[];
@@ -28,13 +29,12 @@ export const SpecialtyGrid: React.FC<SpecialtyGridProps> = ({
       {items.map((item) => {
         const isSelected = item.id === selectedId;
         return (
-          <TouchableOpacity
+          <PressableScale
             key={item.id}
-            activeOpacity={0.75}
+            activeScale={0.93}
             onPress={() => onSelect?.(item)}
             accessibilityRole="button"
             accessibilityLabel={`Chuyên khoa ${item.name}`}
-            accessibilityState={{ selected: isSelected }}
             style={[
               styles.itemContainer,
               isSelected && styles.itemContainerSelected,
@@ -64,7 +64,7 @@ export const SpecialtyGrid: React.FC<SpecialtyGridProps> = ({
             >
               {item.name}
             </Text>
-          </TouchableOpacity>
+          </PressableScale>
         );
       })}
     </View>

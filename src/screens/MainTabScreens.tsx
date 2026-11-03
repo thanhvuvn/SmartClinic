@@ -8,6 +8,7 @@ import {
   Platform,
   Alert,
   StyleSheet,
+  RefreshControl,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -52,6 +53,12 @@ import {
   Badge,
   ToastBanner,
   EmptyState,
+  AnimatedEntry,
+  PressableScale,
+  DoctorCardSkeleton,
+  AppointmentCardSkeleton,
+  QuickServicesSkeleton,
+  HospitalCardSkeleton,
 } from '../components';
 
 export interface HomeScreenProps {
@@ -71,7 +78,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 }) => {
   const [search, setSearch] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
   const insets = useSafeAreaInsets();
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 850);
+  };
 
   // Filter upcoming appointments to show on Home
   const upcomingAppointments = APPOINTMENTS.filter(
@@ -174,56 +189,73 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <ScrollView
         contentContainerStyle={styles.scrollPad}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={[COLORS.primary, COLORS.secondary]}
+            tintColor={COLORS.primary}
+          />
+        }
       >
         {/* SearchBar with interactive search & clear */}
-        <SearchBar
-          value={search}
-          onChangeText={setSearch}
-          placeholder="Tìm bác sĩ, chuyên khoa, bệnh viện..."
-          style={{ marginBottom: SPACING.lg }}
-        />
+        <AnimatedEntry delay={30}>
+          <SearchBar
+            value={search}
+            onChangeText={setSearch}
+            placeholder="Tìm bác sĩ, chuyên khoa, bệnh viện..."
+            style={{ marginBottom: SPACING.lg }}
+          />
+        </AnimatedEntry>
 
-        {/* Quick Services ABOVE AI Banner — 2×3 grid */}
-        <SectionHeader
-          title="Tiện ích Y tế thông minh"
-          subtitle="Truy cập nhanh tư vấn bác sĩ, nhắc thuốc & hồ sơ gia đình"
-        />
-        <View style={styles.quickServiceGrid}>
-          {quickServices.map((srv) => (
-            <TouchableOpacity
-              key={srv.route}
-              activeOpacity={0.85}
-              onPress={() =>
-                srv.route === 'booking'
-                  ? onBookDoctor(DOCTORS[0])
-                  : onNavigate(srv.route)
-              }
-              accessibilityRole="button"
-              accessibilityLabel={`${srv.title}, ${srv.sub}`}
-              style={[styles.quickServiceCard, SHADOWS.sm]}
-            >
-              <View style={[styles.quickServiceIcon, { backgroundColor: srv.bg }]}>
-                <Ionicons name={srv.icon} size={20} color={srv.color} />
-              </View>
-              <Text style={styles.quickServiceTitle} numberOfLines={1}>
-                {srv.title}
-              </Text>
-              <Text style={styles.quickServiceSub} numberOfLines={1}>
-                {srv.sub}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+        {/* Quick Services ABOVE AI Banner — 2×3 grid with tactile PressableScale */}
+        <AnimatedEntry delay={70}>
+          <SectionHeader
+            title="Tiện ích Y tế thông minh"
+            subtitle="Truy cập nhanh tư vấn bác sĩ, nhắc thuốc & hồ sơ gia đình"
+          />
+          {refreshing ? (
+            <QuickServicesSkeleton />
+          ) : (
+            <View style={styles.quickServiceGrid}>
+              {quickServices.map((srv) => (
+                <PressableScale
+                  key={srv.route}
+                  onPress={() =>
+                    srv.route === 'booking'
+                      ? onBookDoctor(DOCTORS[0])
+                      : onNavigate(srv.route)
+                  }
+                  accessibilityRole="button"
+                  accessibilityLabel={`${srv.title}, ${srv.sub}`}
+                  style={[styles.quickServiceCard, SHADOWS.sm]}
+                >
+                  <View style={[styles.quickServiceIcon, { backgroundColor: srv.bg }]}>
+                    <Ionicons name={srv.icon} size={20} color={srv.color} />
+                  </View>
+                  <Text style={styles.quickServiceTitle} numberOfLines={1}>
+                    {srv.title}
+                  </Text>
+                  <Text style={styles.quickServiceSub} numberOfLines={1}>
+                    {srv.sub}
+                  </Text>
+                </PressableScale>
+              ))}
+            </View>
+          )}
+        </AnimatedEntry>
 
         {/* AI Hero Banner */}
-        <AIHeroBanner
-          onAskAIPress={onAskAI}
-          style={{ marginBottom: SPACING.lg }}
-        />
+        <AnimatedEntry delay={120}>
+          <AIHeroBanner
+            onAskAIPress={onAskAI}
+            style={{ marginBottom: SPACING.lg }}
+          />
+        </AnimatedEntry>
 
         {/* Upcoming appointments section */}
         {upcomingAppointments.length > 0 && (
-          <>
+          <AnimatedEntry delay={170}>
             <SectionHeader
               title="Lịch hẹn sắp tới"
               subtitle="Cuộc hẹn đã xác nhận của bạn"
@@ -231,123 +263,156 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               actionText="Xem tất cả"
               onActionPress={() => onNavigate('appointments')}
             />
-            {upcomingAppointments.map((apt) => (
-              <AppointmentCard
-                key={apt.id}
-                appointment={apt}
-                onPrimaryPress={() => onSelectDoctor(apt.doctor)}
-              />
-            ))}
-          </>
+            {refreshing ? (
+              <AppointmentCardSkeleton />
+            ) : (
+              upcomingAppointments.map((apt) => (
+                <AppointmentCard
+                  key={apt.id}
+                  appointment={apt}
+                  onPrimaryPress={() => onSelectDoctor(apt.doctor)}
+                />
+              ))
+            )}
+          </AnimatedEntry>
         )}
 
         {/* Specialty Grid with interactive filtering */}
-        <SectionHeader
-          title="Chuyên khoa"
-          subtitle="Chọn khoa để lọc bác sĩ theo nhu cầu"
-          actionText={selectedSpecialty ? 'Bỏ lọc' : undefined}
-          onActionPress={() => setSelectedSpecialty(null)}
-        />
-        <SpecialtyGrid
-          items={SPECIALTIES}
-          selectedId={selectedSpecialty ?? undefined}
-          onSelect={(item) =>
-            setSelectedSpecialty((prev) => (prev === item.id ? null : item.id))
-          }
-          style={{ marginBottom: SPACING.lg }}
-        />
+        <AnimatedEntry delay={220}>
+          <SectionHeader
+            title="Chuyên khoa"
+            subtitle="Chọn khoa để lọc bác sĩ theo nhu cầu"
+            actionText={selectedSpecialty ? 'Bỏ lọc' : undefined}
+            onActionPress={() => setSelectedSpecialty(null)}
+          />
+          <SpecialtyGrid
+            items={SPECIALTIES}
+            selectedId={selectedSpecialty ?? undefined}
+            onSelect={(item) =>
+              setSelectedSpecialty((prev) => (prev === item.id ? null : item.id))
+            }
+            style={{ marginBottom: SPACING.lg }}
+          />
+        </AnimatedEntry>
 
         {/* Featured Doctors filtered by search & specialty */}
-        <SectionHeader
-          title={
-            selectedSpecialtyObj
-              ? `Bác sĩ ${selectedSpecialtyObj.name}`
-              : 'Bác sĩ nổi bật'
-          }
-          subtitle={
-            selectedSpecialtyObj
-              ? `Tìm thấy ${filteredDoctors.length} bác sĩ chuyên khoa`
-              : 'Chuyên gia đầu ngành sẵn sàng tư vấn'
-          }
-          actionText={selectedSpecialty ? 'Xem tất cả' : undefined}
-          onActionPress={() => setSelectedSpecialty(null)}
-        />
-        {filteredDoctors.length > 0 ? (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{
-              paddingBottom: SPACING.sm,
-              marginBottom: SPACING.lg,
-            }}
-          >
-            {filteredDoctors.map((doc) => (
-              <FeaturedDoctorCard
-                key={doc.id}
-                doctor={doc}
-                onPress={onSelectDoctor}
-                onBookPress={onBookDoctor}
-              />
-            ))}
-          </ScrollView>
-        ) : (
-          <View style={styles.emptyDoctorFilter}>
-            <Text style={styles.emptyDoctorText}>
-              Không tìm thấy bác sĩ phù hợp với tiêu chí tìm kiếm.
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedSpecialty(null);
-                setSearch('');
+        <AnimatedEntry delay={270}>
+          <SectionHeader
+            title={
+              selectedSpecialtyObj
+                ? `Bác sĩ ${selectedSpecialtyObj.name}`
+                : 'Bác sĩ nổi bật'
+            }
+            subtitle={
+              selectedSpecialtyObj
+                ? `Tìm thấy ${filteredDoctors.length} bác sĩ chuyên khoa`
+                : 'Chuyên gia đầu ngành sẵn sàng tư vấn'
+            }
+            actionText={selectedSpecialty ? 'Xem tất cả' : undefined}
+            onActionPress={() => setSelectedSpecialty(null)}
+          />
+          {refreshing ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingBottom: SPACING.sm,
+                marginBottom: SPACING.lg,
               }}
-              accessibilityRole="button"
-              accessibilityLabel="Xóa bộ lọc tìm kiếm"
-              style={styles.clearFilterBtn}
             >
-              <Text style={styles.clearFilterText}>Xóa bộ lọc</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+              <DoctorCardSkeleton />
+              <DoctorCardSkeleton />
+            </ScrollView>
+          ) : filteredDoctors.length > 0 ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingBottom: SPACING.sm,
+                marginBottom: SPACING.lg,
+              }}
+            >
+              {filteredDoctors.map((doc) => (
+                <FeaturedDoctorCard
+                  key={doc.id}
+                  doctor={doc}
+                  onPress={onSelectDoctor}
+                  onBookPress={onBookDoctor}
+                />
+              ))}
+            </ScrollView>
+          ) : (
+            <View style={styles.emptyDoctorFilter}>
+              <Text style={styles.emptyDoctorText}>
+                Không tìm thấy bác sĩ phù hợp với tiêu chí tìm kiếm.
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedSpecialty(null);
+                  setSearch('');
+                }}
+                accessibilityRole="button"
+                accessibilityLabel="Xóa bộ lọc tìm kiếm"
+                style={styles.clearFilterBtn}
+              >
+                <Text style={styles.clearFilterText}>Xóa bộ lọc</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </AnimatedEntry>
 
         {/* Promo Banner placed below Doctors for organic reading flow */}
-        <SmartPromoBanner
-          onPress={() => onBookDoctor(DOCTORS[0])}
-          style={{ marginBottom: SPACING.lg }}
-        />
+        <AnimatedEntry delay={320}>
+          <PressableScale
+            onPress={() => onBookDoctor(DOCTORS[0])}
+            style={{ marginBottom: SPACING.lg }}
+          >
+            <SmartPromoBanner />
+          </PressableScale>
+        </AnimatedEntry>
 
         {/* Hospitals near you */}
-        <SectionHeader
-          title="Bệnh viện gần bạn"
-          badgeText="TP. Hồ Chí Minh"
-          badgeVariant="teal"
-          badgeIcon="navigate"
-          actionText="Xem bản đồ"
-          onActionPress={() =>
-            Alert.alert(
-              'Bản đồ cơ sở y tế',
-              'Đang hiển thị 3 bệnh viện liên kết BHYT gần vị trí của bạn tại TP. Hồ Chí Minh.'
-            )
-          }
-        />
-        {filteredHospitals.map((h) => (
-          <HospitalCard
-            key={h.id}
-            hospital={h}
-            onMapPress={(hosp) =>
+        <AnimatedEntry delay={370}>
+          <SectionHeader
+            title="Bệnh viện gần bạn"
+            badgeText="TP. Hồ Chí Minh"
+            badgeVariant="teal"
+            badgeIcon="navigate"
+            actionText="Xem bản đồ"
+            onActionPress={() =>
               Alert.alert(
-                hosp.name,
-                `Khoảng cách: ${hosp.distance}\nTrạng thái: ${hosp.tag}`,
-                [
-                  { text: 'Đóng', style: 'cancel' },
-                  {
-                    text: 'Đặt khám tại đây',
-                    onPress: () => onBookDoctor(DOCTORS[0]),
-                  },
-                ]
+                'Bản đồ cơ sở y tế',
+                'Đang hiển thị 3 bệnh viện liên kết BHYT gần vị trí của bạn tại TP. Hồ Chí Minh.'
               )
             }
           />
-        ))}
+          {refreshing ? (
+            <>
+              <HospitalCardSkeleton />
+              <HospitalCardSkeleton />
+            </>
+          ) : (
+            filteredHospitals.map((h) => (
+              <HospitalCard
+                key={h.id}
+                hospital={h}
+                onMapPress={(hosp) =>
+                  Alert.alert(
+                    hosp.name,
+                    `Khoảng cách: ${hosp.distance}\nTrạng thái: ${hosp.tag}`,
+                    [
+                      { text: 'Đóng', style: 'cancel' },
+                      {
+                        text: 'Đặt khám tại đây',
+                        onPress: () => onBookDoctor(DOCTORS[0]),
+                      },
+                    ]
+                  )
+                }
+              />
+            ))
+          )}
+        </AnimatedEntry>
       </ScrollView>
     </View>
   );

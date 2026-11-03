@@ -6,6 +6,7 @@ export * from './common/SegmentedControl';
 export * from './common/SectionHeader';
 export * from './common/SettingRow';
 export * from './common/Feedback';
+export * from './common/Animations';
 
 // Navigation & Layout Components
 export * from './navigation/AppHeader';

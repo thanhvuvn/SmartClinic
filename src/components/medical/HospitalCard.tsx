@@ -10,6 +10,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, RADIUS, SHADOWS, TOUCH, TYPOGRAPHY } from '../../theme';
 import { HospitalItem } from '../../data/mockData';
+import { PressableScale } from '../common/Animations';
 
 export interface HospitalCardProps {
   hospital: HospitalItem;
@@ -51,13 +52,12 @@ export const HospitalCard: React.FC<HospitalCardProps> = ({
         </View>
       </View>
 
-      <TouchableOpacity
+      <PressableScale
         style={styles.mapBtn}
-        activeOpacity={0.8}
+        activeScale={0.92}
         onPress={() => onMapPress?.(hospital)}
         accessibilityRole="button"
         accessibilityLabel={`Xem bản đồ ${hospital.name}`}
-        hitSlop={TOUCH.hitSlopSm}
       >
         <Ionicons
           name="navigate-outline"
@@ -66,7 +66,7 @@ export const HospitalCard: React.FC<HospitalCardProps> = ({
           importantForAccessibility="no"
         />
         <Text style={styles.mapBtnText}>Bản đồ</Text>
-      </TouchableOpacity>
+      </PressableScale>
     </View>
   );
 };

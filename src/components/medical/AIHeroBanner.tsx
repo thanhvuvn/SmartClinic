@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, GRADIENTS, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../../theme';
 import { Badge } from '../common/Badge';
 import { AppButton } from '../common/AppButton';
+import { PulsingDot } from '../common/Animations';
 
 export interface AIHeroBannerProps {
   onAskAIPress?: () => void;
@@ -41,7 +42,7 @@ export const AIHeroBanner: React.FC<AIHeroBannerProps> = ({
           icon="sparkles"
         />
         <View style={styles.readyBadge}>
-          <View style={styles.onlinePulseDot} />
+          <PulsingDot color="#86F2E4" size={6} />
           <Text style={styles.readyText}>24/7 Sẵn sàng</Text>
         </View>
       </View>

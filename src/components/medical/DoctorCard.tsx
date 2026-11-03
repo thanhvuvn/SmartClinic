@@ -12,6 +12,7 @@ import { COLORS, RADIUS, SHADOWS, TYPOGRAPHY } from '../../theme';
 import { DoctorItem } from '../../data/mockData';
 import { AppButton } from '../common/AppButton';
 import { Badge } from '../common/Badge';
+import { PressableScale } from '../common/Animations';
 
 export interface FeaturedDoctorCardProps {
   doctor: DoctorItem;
@@ -27,8 +28,8 @@ export const FeaturedDoctorCard: React.FC<FeaturedDoctorCardProps> = ({
   style,
 }) => {
   return (
-    <TouchableOpacity
-      activeOpacity={0.9}
+    <PressableScale
+      activeScale={0.97}
       onPress={() => onPress?.(doctor)}
       accessibilityRole="button"
       accessibilityLabel={`Bác sĩ ${doctor.name}, chuyên khoa ${doctor.specialty}`}
@@ -78,7 +79,7 @@ export const FeaturedDoctorCard: React.FC<FeaturedDoctorCardProps> = ({
         leftIcon="calendar-outline"
         onPress={() => onBookPress?.(doctor)}
       />
-    </TouchableOpacity>
+    </PressableScale>
   );
 };
 

@@ -10,6 +10,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, RADIUS, SHADOWS, TOUCH } from '../../theme';
 import { Badge } from '../common/Badge';
+import { PulsingDot } from '../common/Animations';
 
 export interface HeaderAction {
   icon: keyof typeof Ionicons.glyphMap;
@@ -154,7 +155,9 @@ export const HomeGreetingHeader: React.FC<HomeGreetingHeaderProps> = ({
             style={styles.avatar}
             accessibilityLabel={`Ảnh đại diện ${userName}`}
           />
-          <View style={styles.onlineDot} />
+          <View style={styles.onlineDotWrap}>
+            <PulsingDot color={COLORS.secondary} size={9} />
+          </View>
         </View>
         <View>
           <Text style={styles.greetingTitle}>Xin chào, {userName} 👋</Text>
@@ -303,16 +306,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#FFFFFF',
   },
-  onlineDot: {
+  onlineDotWrap: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 13,
-    height: 13,
-    borderRadius: 7,
-    backgroundColor: COLORS.secondary,
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
+    bottom: -2,
+    right: -2,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 1,
   },
   greetingTitle: {
     fontSize: 17,
