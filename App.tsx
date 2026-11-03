@@ -26,6 +26,8 @@ import {
 import {
   DoctorDetailScreen,
   BookingSlotScreen,
+  BookingPaymentScreen,
+  PaymentMethodType,
 } from './src/screens/BookingFlowScreens';
 import {
   AdminDashboardScreen,
@@ -51,6 +53,13 @@ export default function App() {
   const [routeHistory, setRouteHistory] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<MainTabKey>('home');
   const [selectedDoctor, setSelectedDoctor] = useState<DoctorItem>(DOCTORS[0]);
+  const [bookingInfo, setBookingInfo] = useState<{
+    doctor?: DoctorItem;
+    day?: any;
+    slot?: any;
+    consultMode?: string;
+    paymentMethod?: PaymentMethodType;
+  }>({});
   const { width } = useWindowDimensions();
   const isTablet = width > 700;
 
@@ -171,7 +180,32 @@ export default function App() {
           <BookingSlotScreen
             doctor={selectedDoctor}
             onBack={() => goBack('doctorDetail')}
-            onConfirmBooking={() => navigateTo('bookingSuccess')}
+            onConfirmBooking={(details) => {
+              if (details) {
+                setBookingInfo((prev) => ({
+                  ...prev,
+                  doctor: details.doctor,
+                  day: details.day,
+                  slot: details.slot,
+                  consultMode: details.consultMode,
+                }));
+              }
+              navigateTo('bookingPayment');
+            }}
+          />
+        );
+      case 'bookingPayment':
+        return (
+          <BookingPaymentScreen
+            doctor={bookingInfo.doctor || selectedDoctor}
+            day={bookingInfo.day}
+            slot={bookingInfo.slot}
+            consultMode={bookingInfo.consultMode}
+            onBack={() => goBack('bookingSlot')}
+            onPaymentSuccess={(method) => {
+              setBookingInfo((prev) => ({ ...prev, paymentMethod: method }));
+              navigateTo('bookingSuccess');
+            }}
           />
         );
 
@@ -179,6 +213,7 @@ export default function App() {
       case 'bookingSuccess':
         return (
           <BookingSuccessScreen
+            paymentMethod={bookingInfo.paymentMethod || 'at_clinic_bhyt'}
             onViewAppointments={() => {
               setRouteHistory([]);
               setRoute('main');

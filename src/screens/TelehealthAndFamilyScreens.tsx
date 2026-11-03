@@ -37,8 +37,20 @@ export const BookingSuccessScreen: React.FC<{
   onViewAppointments?: () => void;
   onGoHome?: () => void;
   onNavigate?: (routeKey: string) => void;
-}> = ({ onViewAppointments, onGoHome, onNavigate }) => {
+  paymentMethod?: string;
+}> = ({ onViewAppointments, onGoHome, onNavigate, paymentMethod = 'at_clinic_bhyt' }) => {
   const doctor = DOCTORS[0];
+  const isBHYT = paymentMethod === 'at_clinic_bhyt';
+
+  const paymentLabel =
+    paymentMethod === 'vietqr'
+      ? 'Chuyển khoản VietQR 24/7'
+      : paymentMethod === 'vnpay'
+      ? 'Cổng VNPAY'
+      : paymentMethod === 'momo'
+      ? 'Ví MoMo'
+      : 'Thanh toán tại viện với BHYT';
+
   return (
     <View style={styles.screen}>
       <AppHeader
@@ -73,7 +85,11 @@ export const BookingSuccessScreen: React.FC<{
                 <Text style={styles.capLabel}>MÃ PHIẾU HẸN</Text>
                 <Text style={styles.ticketCode}>#SC-241029-8892</Text>
               </View>
-              <Badge label="Đúng hẹn • Đã xác nhận" variant="teal" showDot />
+              <Badge
+                label={isBHYT ? 'Giữ chỗ BHYT • Trả sau' : 'Đã thanh toán Online ✓'}
+                variant={isBHYT ? 'warning' : 'teal'}
+                showDot
+              />
             </View>
 
             <View style={styles.divider} />
@@ -120,6 +136,42 @@ export const BookingSuccessScreen: React.FC<{
                   Tầng 3, Tòa nhà A
                 </Text>
               </View>
+            </View>
+
+            {/* Payment Method Receipt Strip */}
+            <View
+              style={{
+                marginTop: 12,
+                padding: 10,
+                backgroundColor: COLORS.surfaceContainerLow,
+                borderRadius: RADIUS.md,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
+                <Ionicons
+                  name={isBHYT ? 'business-outline' : 'card-outline'}
+                  size={16}
+                  color={isBHYT ? COLORS.primary : COLORS.secondary}
+                />
+                <Text
+                  style={{ fontSize: TYPOGRAPHY.caption, color: COLORS.textSecondary, flex: 1 }}
+                  numberOfLines={1}
+                >
+                  Hình thức: <Text style={{ fontWeight: '700', color: COLORS.textPrimary }}>{paymentLabel}</Text>
+                </Text>
+              </View>
+              <Text
+                style={{
+                  fontSize: TYPOGRAPHY.caption,
+                  fontWeight: '800',
+                  color: isBHYT ? COLORS.primary : COLORS.secondary,
+                }}
+              >
+                {isBHYT ? 'Trả tại viện' : '450.000 đ'}
+              </Text>
             </View>
           </View>
         </AnimatedEntry>
