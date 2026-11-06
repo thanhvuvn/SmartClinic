@@ -19,6 +19,7 @@ import {
   PRESCRIPTION_DRUGS,
   SPECIALTIES,
 } from '../data/mockData';
+import { useAppContext } from '../context/AppContext';
 import {
   AppHeader,
   AppButton,
@@ -47,11 +48,13 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
   onLogout,
   onNavigate,
 }) => {
+  const { appointments, cancelAppointment } = useAppContext();
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
   const [docFilter, setDocFilter] = useState('all');
   const [searchDoc, setSearchDoc] = useState('');
   const [autoSyncVssID, setAutoSyncVssID] = useState(true);
   const [autoGdtTax, setAutoGdtTax] = useState(true);
+  const upcomingCount = appointments.filter((a) => a.status === 'upcoming').length;
 
   const renderOverview = () => (
     <ScrollView
@@ -115,13 +118,13 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
               <Badge label="+18%" variant="teal" />
             </View>
             <Text style={styles.kpiValue} numberOfLines={1}>
-              142
+              {140 + appointments.length}
             </Text>
             <Text style={styles.kpiTitle} numberOfLines={1}>
               Lịch khám hôm nay
             </Text>
             <Text style={styles.kpiSub} numberOfLines={1}>
-              118 tại viện • 24 Chat
+              {upcomingCount} chờ khám • Realtime
             </Text>
           </View>
 
@@ -319,53 +322,47 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
       showsVerticalScrollIndicator={false}
     >
       <SectionHeader
-        title="Điều phối lịch hẹn toàn viện"
-        subtitle="Danh sách bệnh nhân đăng ký khám ngày 29/10/2024"
+        title={`Điều phối lịch hẹn toàn viện (${appointments.length})`}
+        subtitle="Đồng bộ thời gian thực từ ứng dụng Bệnh nhân"
       />
-      {[
-        {
-          code: '#SC-241029-8892',
-          patient: 'Nguyễn Văn Vũ (32T • Nam)',
-          doctor: 'TS. BS. Lê Thu Trang',
-          time: '09:30 - Phòng 302',
-          status: 'Đã check-in QR',
-          variant: 'teal' as const,
-        },
-        {
-          code: '#SC-241029-8904',
-          patient: 'Trần Thị Bích (45T • Nữ)',
-          doctor: 'TS. BS. Lê Thu Trang',
-          time: '10:00 - Phòng 302',
-          status: 'Đang chờ khám',
-          variant: 'blue' as const,
-        },
-        {
-          code: '#SC-241029-8911',
-          patient: 'Lê Hoàng Khôi (58T • Nam)',
-          doctor: 'BS. CKII. Nguyễn Văn Minh',
-          time: '10:30 - Phòng Tim Mạch 104',
-          status: 'BHYT Đúng tuyến',
-          variant: 'teal' as const,
-        },
-        {
-          code: '#SC-241104-5120',
-          patient: 'Nguyễn Văn Vũ (32T • Nam)',
-          doctor: 'ThS. BS. Nguyễn Minh Đức',
-          time: '14:00 (04/11) - Chat trực tuyến',
-          status: 'Tư vấn từ xa',
-          variant: 'blue' as const,
-        },
-      ].map((item) => (
-        <View key={item.code} style={[styles.card, SHADOWS.sm]}>
-          <View style={styles.aptRowTop}>
-            <Text style={styles.aptCode}>{item.code}</Text>
-            <Badge label={item.status} variant={item.variant} showDot />
+      {appointments.map((apt) => {
+        const badgeVariant =
+          apt.status === 'cancelled'
+            ? ('danger' as const)
+            : apt.status === 'completed'
+            ? ('teal' as const)
+            : ('blue' as const);
+        return (
+          <View key={apt.id} style={[styles.card, SHADOWS.sm]}>
+            <View style={styles.aptRowTop}>
+              <Text style={styles.aptCode}>{apt.code}</Text>
+              <Badge label={apt.statusBadge} variant={badgeVariant} showDot />
+            </View>
+            <Text style={styles.aptPatient}>
+              Bệnh nhân: Nguyễn Văn Vũ (32T • Nam)
+            </Text>
+            <Text style={styles.aptDoc}>
+              Bác sĩ phụ trách: {apt.doctor.name} ({apt.doctor.hospital})
+            </Text>
+            <Text style={styles.aptTime}>
+              Khung giờ: {apt.timeRange} • {apt.room || 'Tư vấn trực tuyến'}
+            </Text>
+            {apt.status === 'upcoming' && (
+              <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
+                <AppButton
+                  title="Hủy lịch hẹn"
+                  variant="outline"
+                  size="sm"
+                  leftIcon="close-circle-outline"
+                  fullWidth={false}
+                  style={{ flex: 1 }}
+                  onPress={() => cancelAppointment(apt.id)}
+                />
+              </View>
+            )}
           </View>
-          <Text style={styles.aptPatient}>Bệnh nhân: {item.patient}</Text>
-          <Text style={styles.aptDoc}>Bác sĩ phụ trách: {item.doctor}</Text>
-          <Text style={styles.aptTime}>Khung giờ: {item.time}</Text>
-        </View>
-      ))}
+        );
+      })}
     </ScrollView>
   );
 
@@ -481,17 +478,28 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
   onLogout,
   onNavigate,
 }) => {
+  const {
+    appointments,
+    completeAppointment,
+    prescriptions,
+    addPrescriptionDrug,
+    diagnosisNote,
+    setDiagnosisNote,
+  } = useAppContext();
   const doctor = DOCTORS[0]; // TS. BS. Lê Thu Trang
   const [activeTab, setActiveTab] = useState<DoctorTab>('schedule');
-  const [diagnosisNote, setDiagnosisNote] = useState(
-    'Đau đầu căng thẳng (Tension headache) / Rối loạn vận mạch não nhẹ'
-  );
+  const [newDrugName, setNewDrugName] = useState('');
+  const [newDrugQty, setNewDrugQty] = useState('14 viên');
+  const [newDrugDosage, setNewDrugDosage] = useState('1 viên/lần • Sáng, Tối');
+  const [showAddDrugForm, setShowAddDrugForm] = useState(false);
   const [queueStatuses, setQueueStatuses] = useState<Record<string, string>>({
     '1': 'Đã check-in QR • Đang chờ',
     '2': 'Chờ tới lượt',
     '3': 'Chat trực tuyến (14:00)',
   });
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const upcomingPatientApts = appointments.filter((a) => a.status === 'upcoming');
+  const completedPatientApts = appointments.filter((a) => a.status === 'completed');
 
   const renderSchedule = () => (
     <ScrollView
@@ -524,17 +532,23 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
 
           <View style={styles.heroMetricsStrip}>
             <View style={styles.heroMetricItem}>
-              <Text style={styles.heroMetricVal}>18 ca</Text>
+              <Text style={styles.heroMetricVal}>
+                {15 + appointments.length} ca
+              </Text>
               <Text style={styles.heroMetricLabel}>Tổng lịch hôm nay</Text>
             </View>
             <View style={styles.heroDivider} />
             <View style={styles.heroMetricItem}>
-              <Text style={styles.heroMetricVal}>12 ca</Text>
+              <Text style={styles.heroMetricVal}>
+                {11 + completedPatientApts.length} ca
+              </Text>
               <Text style={styles.heroMetricLabel}>Đã hoàn tất</Text>
             </View>
             <View style={styles.heroDivider} />
             <View style={styles.heroMetricItem}>
-              <Text style={styles.heroMetricVal}>06 ca</Text>
+              <Text style={styles.heroMetricVal}>
+                0{4 + upcomingPatientApts.length} ca
+              </Text>
               <Text style={styles.heroMetricLabel}>Đang chờ khám</Text>
             </View>
           </View>
@@ -708,8 +722,10 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
             onChangeText={setDiagnosisNote}
           />
 
-          <Text style={styles.rxSectionLabel}>Danh mục thuốc chỉ định:</Text>
-          {PRESCRIPTION_DRUGS.map((d) => (
+          <Text style={styles.rxSectionLabel}>
+            Danh mục thuốc chỉ định ({prescriptions.length} loại):
+          </Text>
+          {prescriptions.map((d) => (
             <View key={d.id} style={styles.rxItemRow}>
               <View style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
                 <Text style={styles.docName} numberOfLines={1}>
@@ -723,6 +739,82 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
             </View>
           ))}
 
+          {/* Interactive Add New Drug to Prescription */}
+          {showAddDrugForm ? (
+            <View
+              style={{
+                marginTop: 12,
+                padding: 12,
+                backgroundColor: COLORS.surfaceContainerLow,
+                borderRadius: RADIUS.md,
+              }}
+            >
+              <Text style={[styles.docName, { marginBottom: 8 }]}>
+                + Thêm thuốc mới vào đơn của BN. Nguyễn Văn Vũ
+              </Text>
+              <AppInput
+                label="Tên thuốc & Hàm lượng *"
+                placeholder="VD: Magnesium B6 470mg"
+                value={newDrugName}
+                onChangeText={setNewDrugName}
+              />
+              <AppInput
+                label="Số lượng cấp"
+                placeholder="VD: 14 viên"
+                value={newDrugQty}
+                onChangeText={setNewDrugQty}
+              />
+              <AppInput
+                label="Liều dùng & Hướng dẫn"
+                placeholder="VD: 1 viên/lần • Sau ăn sáng, tối"
+                value={newDrugDosage}
+                onChangeText={setNewDrugDosage}
+              />
+              <View style={{ flexDirection: 'row', gap: 8 }}>
+                <AppButton
+                  title="Hủy"
+                  variant="outline"
+                  size="sm"
+                  fullWidth={false}
+                  style={{ flex: 1 }}
+                  onPress={() => setShowAddDrugForm(false)}
+                />
+                <AppButton
+                  title="Thêm vào đơn"
+                  variant="primary"
+                  size="sm"
+                  leftIcon="add-circle-outline"
+                  fullWidth={false}
+                  style={{ flex: 1 }}
+                  onPress={() => {
+                    if (!newDrugName.trim()) return;
+                    addPrescriptionDrug({
+                      name: newDrugName.trim(),
+                      indication: 'Chỉ định bổ sung từ Bác sĩ điều trị',
+                      quantity: newDrugQty.trim() || '14 viên',
+                      dosageTag: newDrugDosage.trim() || '1 viên/lần',
+                      instructionTag: 'Uống sau ăn theo chỉ dẫn BS',
+                    });
+                    setNewDrugName('');
+                    setShowAddDrugForm(false);
+                    setToastMessage(
+                      `Đã thêm "${newDrugName.trim()}" vào đơn thuốc điện tử của BN. Nguyễn Văn Vũ.`
+                    );
+                  }}
+                />
+              </View>
+            </View>
+          ) : (
+            <AppButton
+              title="+ Thêm thuốc vào đơn"
+              variant="tonal"
+              size="sm"
+              leftIcon="add-circle-outline"
+              onPress={() => setShowAddDrugForm(true)}
+              style={{ marginTop: 10 }}
+            />
+          )}
+
           <AppButton
             title="Lưu & Phát hành đơn thuốc"
             variant="gradient"
@@ -730,12 +822,14 @@ export const DoctorDashboardScreen: React.FC<DoctorDashboardScreenProps> = ({
             leftIcon="checkmark-circle-outline"
             style={{ marginTop: 14 }}
             onPress={() => {
+              if (upcomingPatientApts.length > 0) {
+                completeAppointment(upcomingPatientApts[0].id);
+              }
+              setToastMessage(
+                'Đã phát hành đơn thuốc #DT-241029-01 và đồng bộ tức thì sang Hồ sơ Bệnh án của bệnh nhân!'
+              );
               if (onNavigate) {
-                onNavigate('postConsultSummary');
-              } else {
-                setToastMessage(
-                  'Đơn thuốc #DT-241029-01 đã được lưu và đồng bộ sang ứng dụng của bệnh nhân Nguyễn Văn Vũ.'
-                );
+                setTimeout(() => onNavigate('postConsultSummary'), 600);
               }
             }}
           />

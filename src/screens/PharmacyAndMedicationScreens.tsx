@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../theme';
 import { PRESCRIPTION_DRUGS } from '../data/mockData';
 import { useAppContext } from '../context/AppContext';
+import { sharePrescription } from '../utils/shareUtils';
 import {
   AppHeader,
   AppButton,
@@ -237,6 +238,8 @@ export const PrescriptionDetailScreen: React.FC<{
   onBack?: () => void;
   onOpenMedLog?: () => void;
 }> = ({ onBack, onOpenMedLog }) => {
+  const { prescriptions, diagnosisNote } = useAppContext();
+
   return (
     <View style={styles.screen}>
       <AppHeader
@@ -244,6 +247,12 @@ export const PrescriptionDetailScreen: React.FC<{
         subtitle="#DT-241029-01 • BV ĐHYD TP.HCM"
         badgeText="Hợp lệ"
         onBack={onBack}
+        rightActions={[
+          {
+            icon: 'share-social-outline',
+            onPress: () => sharePrescription(prescriptions, diagnosisNote),
+          },
+        ]}
       />
       <ScrollView contentContainerStyle={styles.scrollPad}>
         {/* Header Summary */}
@@ -259,7 +268,7 @@ export const PrescriptionDetailScreen: React.FC<{
             Trưởng khoa Thần kinh • Bệnh nhân: Nguyễn Văn Vũ
           </Text>
           <Text style={styles.subText}>
-            CĐ: Đau đầu căng thẳng / Rối loạn vận mạch nhẹ
+            CĐ: {diagnosisNote}
           </Text>
           <Text style={styles.subText}>
             Ngày kê: 29/10/2024 • Tái khám: 05/11/2024
@@ -273,7 +282,7 @@ export const PrescriptionDetailScreen: React.FC<{
             <Badge label="An toàn" variant="teal" icon="shield-checkmark" />
           </View>
           <Text style={styles.subText}>
-            Không phát hiện tương khắc giữa 3 loại thuốc. Tương thích hoàn toàn
+            Không phát hiện tương khắc giữa {prescriptions.length} loại thuốc. Tương thích hoàn toàn
             với tiền sử dị ứng Penicillin của bạn.
           </Text>
           <View style={styles.noteCallout}>
@@ -287,9 +296,9 @@ export const PrescriptionDetailScreen: React.FC<{
 
         <SectionHeader
           title="Danh Mục Thuốc Kê Đơn"
-          subtitle="3 loại thuốc trong phác đồ điều trị"
+          subtitle={`${prescriptions.length} loại thuốc trong phác đồ điều trị`}
         />
-        {PRESCRIPTION_DRUGS.map((d) => (
+        {prescriptions.map((d) => (
           <View key={d.id} style={[styles.card, SHADOWS.sm]}>
             <View style={styles.rowBetween}>
               <Text style={[styles.cardTitle, { flex: 1 }]} numberOfLines={1}>
@@ -306,6 +315,15 @@ export const PrescriptionDetailScreen: React.FC<{
             </View>
           </View>
         ))}
+
+        <AppButton
+          title="Chia sẻ / Xuất đơn thuốc"
+          variant="outline"
+          size="lg"
+          leftIcon="share-social-outline"
+          onPress={() => sharePrescription(prescriptions, diagnosisNote)}
+          style={{ marginBottom: 10 }}
+        />
 
         <AppButton
           title="Mở lịch nhắc uống thuốc"

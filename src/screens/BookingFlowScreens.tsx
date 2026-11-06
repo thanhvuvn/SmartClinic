@@ -48,6 +48,7 @@ import {
   PulsingDot,
 } from '../components';
 import { findHospitalForDoctor } from '../utils/mapNavigation';
+import { shareDoctorProfile } from '../utils/shareUtils';
 
 export interface DoctorDetailScreenProps {
   doctor: DoctorItem;
@@ -63,6 +64,7 @@ export const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = ({
   const [selectedDay, setSelectedDay] = useState('d2');
   const [reviewFilter, setReviewFilter] = useState('all');
   const [mapModalVisible, setMapModalVisible] = useState(false);
+  const [bookmarked, setBookmarked] = useState(false);
   const doctorHospital = findHospitalForDoctor(doctor);
 
   return (
@@ -71,8 +73,14 @@ export const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = ({
         title="Chi Tiết Bác Sĩ"
         onBack={onBack}
         rightActions={[
-          { icon: 'share-social-outline' },
-          { icon: 'bookmark-outline' },
+          {
+            icon: 'share-social-outline',
+            onPress: () => shareDoctorProfile(doctor),
+          },
+          {
+            icon: bookmarked ? 'bookmark' : 'bookmark-outline',
+            onPress: () => setBookmarked((prev) => !prev),
+          },
         ]}
         showProfileIcon
       />

@@ -115,3 +115,4 @@ export async function callHospitalPhone(phone: string, hospitalName?: string): P
     );
   }
 }
+

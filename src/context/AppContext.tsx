@@ -67,6 +67,8 @@ interface AppContextValue {
   // 4. Prescriptions & Doctors (Shared with Doctor/Admin Portals)
   prescriptions: PrescriptionDrug[];
   addPrescriptionDrug: (drug: Omit<PrescriptionDrug, 'id'>) => void;
+  diagnosisNote: string;
+  setDiagnosisNote: (note: string) => void;
   doctors: DoctorItem[];
 
   // 5. Security & Privacy (PII Masking state)
@@ -170,6 +172,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   );
   const [prescriptions, setPrescriptions] =
     useState<PrescriptionDrug[]>(PRESCRIPTION_DRUGS);
+  const [diagnosisNote, setDiagnosisNote] = useState<string>(
+    'Đau đầu căng thẳng (Tension headache) / Rối loạn vận mạch não nhẹ'
+  );
   const [doctors] = useState<DoctorItem[]>(DOCTORS);
   const [isPiiMasked, setIsPiiMasked] = useState<boolean>(true);
 
@@ -314,6 +319,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         addFamilyMember,
         prescriptions,
         addPrescriptionDrug,
+        diagnosisNote,
+        setDiagnosisNote,
         doctors,
         isPiiMasked,
         togglePiiMask,

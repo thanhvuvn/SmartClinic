@@ -16,6 +16,7 @@ import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from 
 import { DOCTORS, PATIENT_PROFILE, PRESCRIPTION_DRUGS } from '../data/mockData';
 import { useAppContext } from '../context/AppContext';
 import { openGoogleMapsDirections } from '../utils/mapNavigation';
+import { shareAppointmentTicket } from '../utils/shareUtils';
 import {
   AppHeader,
   AppButton,
@@ -60,7 +61,12 @@ export const BookingSuccessScreen: React.FC<{
       <AppHeader
         title="Đặt Lịch Thành Công"
         onBack={onGoHome}
-        rightActions={[{ icon: 'share-social-outline' }]}
+        rightActions={[
+          {
+            icon: 'share-social-outline',
+            onPress: () => shareAppointmentTicket(latestBooking),
+          },
+        ]}
       />
       <ScrollView contentContainerStyle={styles.scrollPad}>
         {/* Section 1: Success Celebration Header */}
@@ -219,13 +225,9 @@ export const BookingSuccessScreen: React.FC<{
               action: onViewAppointments,
             },
             {
-              icon: 'download-outline',
-              label: 'Tải Phiếu PDF',
-              action: () =>
-                Alert.alert(
-                  'Tải Phiếu Hẹn PDF',
-                  'Đã lưu phiếu khám #SC-241029-8892 vào thiết bị.'
-                ),
+              icon: 'share-social-outline',
+              label: 'Chia Sẻ Phiếu',
+              action: () => shareAppointmentTicket(latestBooking),
             },
             {
               icon: 'navigate-outline',
