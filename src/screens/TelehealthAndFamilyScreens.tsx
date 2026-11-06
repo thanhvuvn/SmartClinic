@@ -14,6 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../theme';
 import { DOCTORS, PATIENT_PROFILE, PRESCRIPTION_DRUGS } from '../data/mockData';
+import { useAppContext } from '../context/AppContext';
 import {
   AppHeader,
   AppButton,
@@ -38,16 +39,18 @@ export const BookingSuccessScreen: React.FC<{
   onGoHome?: () => void;
   onNavigate?: (routeKey: string) => void;
   paymentMethod?: string;
-}> = ({ onViewAppointments, onGoHome, onNavigate, paymentMethod = 'at_clinic_bhyt' }) => {
-  const doctor = DOCTORS[0];
-  const isBHYT = paymentMethod === 'at_clinic_bhyt';
+}> = ({ onViewAppointments, onGoHome, onNavigate, paymentMethod }) => {
+  const { latestBooking } = useAppContext();
+  const doctor = latestBooking.doctor || DOCTORS[0];
+  const activePayment = paymentMethod || latestBooking.paymentMethod || 'at_clinic_bhyt';
+  const isBHYT = activePayment === 'at_clinic_bhyt';
 
   const paymentLabel =
-    paymentMethod === 'vietqr'
+    activePayment === 'vietqr'
       ? 'Chuyển khoản VietQR 24/7'
-      : paymentMethod === 'vnpay'
+      : activePayment === 'vnpay'
       ? 'Cổng VNPAY'
-      : paymentMethod === 'momo'
+      : activePayment === 'momo'
       ? 'Ví MoMo'
       : 'Thanh toán tại viện với BHYT';
 
@@ -83,7 +86,7 @@ export const BookingSuccessScreen: React.FC<{
             <View style={styles.rowBetween}>
               <View>
                 <Text style={styles.capLabel}>MÃ PHIẾU HẸN</Text>
-                <Text style={styles.ticketCode}>#SC-241029-8892</Text>
+                <Text style={styles.ticketCode}>{latestBooking.code}</Text>
               </View>
               <Badge
                 label={isBHYT ? 'Giữ chỗ BHYT • Trả sau' : 'Đã thanh toán Online ✓'}
@@ -97,7 +100,14 @@ export const BookingSuccessScreen: React.FC<{
             <View style={styles.docRow}>
               <Image source={{ uri: doctor.avatar }} style={styles.avatarMd} />
               <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
-                <Badge label="Khám chuyên khoa" variant="blue" />
+                <Badge
+                  label={
+                    latestBooking.consultMode === 'chat'
+                      ? 'Tư vấn Trực tuyến'
+                      : `Khám ${doctor.specialty}`
+                  }
+                  variant="blue"
+                />
                 <Text style={[styles.docName, { marginTop: 4 }]} numberOfLines={1}>
                   {doctor.name}
                 </Text>
@@ -116,10 +126,10 @@ export const BookingSuccessScreen: React.FC<{
                   THỜI GIAN KHÁM
                 </Text>
                 <Text style={styles.ticketVal} numberOfLines={1}>
-                  09:30 - 10:00
+                  {latestBooking.timeRange}
                 </Text>
                 <Text style={styles.docSub} numberOfLines={1}>
-                  Thứ 3, 29/10/2024
+                  {latestBooking.dayLabel}, {latestBooking.fullDate}
                 </Text>
               </View>
               <View style={styles.ticketBox}>
@@ -130,10 +140,10 @@ export const BookingSuccessScreen: React.FC<{
                   style={[styles.ticketVal, { color: COLORS.secondary }]}
                   numberOfLines={1}
                 >
-                  STT #14 • P.302
+                  {latestBooking.queueNumber}
                 </Text>
                 <Text style={styles.docSub} numberOfLines={1}>
-                  Tầng 3, Tòa nhà A
+                  {latestBooking.room}
                 </Text>
               </View>
             </View>
@@ -170,7 +180,7 @@ export const BookingSuccessScreen: React.FC<{
                   color: isBHYT ? COLORS.primary : COLORS.secondary,
                 }}
               >
-                {isBHYT ? 'Trả tại viện' : '450.000 đ'}
+                {isBHYT ? 'Trả tại viện' : doctor.fee}
               </Text>
             </View>
           </View>
@@ -286,6 +296,8 @@ export const FamilyProfilesScreen: React.FC<{
   onAddMember?: () => void;
   onNavigate?: (routeKey: string) => void;
 }> = ({ onBack, onSelectChild, onAddMember, onNavigate }) => {
+  const { familyMembers } = useAppContext();
+
   return (
     <View style={styles.screen}>
       <AppHeader
@@ -324,7 +336,7 @@ export const FamilyProfilesScreen: React.FC<{
         >
           <View style={styles.rowBetween}>
             <Badge label="SmartClinic AI Family Care" variant="glass" icon="sparkles" />
-            <Text style={styles.whiteSub}>4 thành viên</Text>
+            <Text style={styles.whiteSub}>{familyMembers.length + 1} thành viên</Text>
           </View>
           <Text style={styles.whiteBody}>
             Nhắc nhở y tế: <Text style={{ fontWeight: '800' }}>Bé Bảo Nam</Text>{' '}
@@ -353,45 +365,17 @@ export const FamilyProfilesScreen: React.FC<{
         </LinearGradient>
 
         <SectionHeader
-          title="Hồ Sơ Thành Viên (3 thành viên phụ)"
+          title={`Hồ Sơ Thành Viên (${familyMembers.length} thành viên phụ)`}
           subtitle="Đồng bộ thời gian thực"
           actionText="+ Thêm mới"
           onActionPress={onAddMember}
         />
 
-        {[
-          {
-            name: 'Bé Nguyễn Bảo Nam',
-            relation: 'Con trai • 4 tuổi',
-            code: '#BN-992104',
-            blood: 'O+',
-            note: 'Sắp tiêm nhắc MMR • Tăng trưởng chuẩn WHO',
-            badge: 'Nhi đồng',
-            onPress: onSelectChild,
-          },
-          {
-            name: 'Bà Trần Thị Lan',
-            relation: 'Mẹ ruột • 62 tuổi',
-            code: '#BN-441029',
-            blood: 'A+',
-            note: 'Đang theo dõi Huyết áp & Tim mạch tại BV ĐHYD',
-            badge: 'Cao tuổi',
-            onPress: onSelectChild,
-          },
-          {
-            name: 'Nguyễn Thị Mai',
-            relation: 'Vợ • 30 tuổi',
-            code: '#BN-882915',
-            blood: 'B+',
-            note: 'Khám sức khỏe định kỳ loại I (Tốt)',
-            badge: 'BHYT 80%',
-            onPress: onSelectChild,
-          },
-        ].map((mem) => (
+        {familyMembers.map((mem) => (
           <TouchableOpacity
-            key={mem.code}
+            key={mem.id}
             activeOpacity={0.85}
-            onPress={mem.onPress}
+            onPress={onSelectChild}
             accessibilityRole="button"
             accessibilityLabel={`Hồ sơ ${mem.name}, ${mem.relation}`}
             style={[styles.card, SHADOWS.sm]}
@@ -576,11 +560,18 @@ export const ChildEHRDetailScreen: React.FC<{ onBack?: () => void }> = ({
 export const AddEditFamilyMemberScreen: React.FC<{ onBack?: () => void }> = ({
   onBack,
 }) => {
+  const { addFamilyMember } = useAppContext();
   const [name, setName] = useState('NGUYỄN BẢO ANH');
   const [dob, setDob] = useState('18/06/2019');
   const [relation, setRelation] = useState('Con cái');
   const [showRelationDropdown, setShowRelationDropdown] = useState(false);
   const [bhyt, setBhyt] = useState('TE1 79 234 99102');
+
+  const handleSaveMember = () => {
+    if (!name.trim()) return;
+    addFamilyMember({ name: name.trim(), dob, relation, bhyt });
+    onBack?.();
+  };
 
   const RELATION_OPTIONS = [
     'Bố ruột',
@@ -735,7 +726,7 @@ export const AddEditFamilyMemberScreen: React.FC<{ onBack?: () => void }> = ({
           variant="primary"
           size="lg"
           leftIcon="checkmark-circle-outline"
-          onPress={onBack}
+          onPress={handleSaveMember}
         />
       </ScrollView>
     </KeyboardAvoidingView>

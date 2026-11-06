@@ -10,6 +10,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../theme';
 import { PRESCRIPTION_DRUGS } from '../data/mockData';
+import { useAppContext } from '../context/AppContext';
 import {
   AppHeader,
   AppButton,
@@ -29,12 +30,9 @@ export const MedicationLogScreen: React.FC<{
   onOpenPrescription?: () => void;
   onOpenCabinet?: () => void;
 }> = ({ onBack, onOpenPrescription, onOpenCabinet }) => {
-  const [takenMap, setTakenMap] = useState<Record<string, boolean>>({
-    morning: true,
-    afternoon: true,
-    evening: false,
-  });
+  const { takenMap, toggleMedicationTaken } = useAppContext();
   const [toastVisible, setToastVisible] = useState(false);
+  const takenCount = Object.values(takenMap).filter(Boolean).length;
 
   return (
     <View style={styles.screen}>
@@ -52,7 +50,7 @@ export const MedicationLogScreen: React.FC<{
               <Text style={[styles.cardTitle, { flex: 1 }]} numberOfLines={1}>
                 Tuần 44 • Tháng 10/2024
               </Text>
-              <Badge label="2/3 cữ hôm nay" variant="teal" />
+              <Badge label={`${takenCount}/3 cữ hôm nay`} variant="teal" />
             </View>
             <View style={styles.weekRow}>
               {[
@@ -172,9 +170,7 @@ export const MedicationLogScreen: React.FC<{
                 </Text>
                 <PressableScale
                   activeScale={0.96}
-                  onPress={() =>
-                    setTakenMap((p) => ({ ...p, [slot.key]: !p[slot.key] }))
-                  }
+                  onPress={() => toggleMedicationTaken(slot.key)}
                   style={{ marginTop: 10 }}
                 >
                   <View

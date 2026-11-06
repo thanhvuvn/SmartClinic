@@ -9,6 +9,7 @@ import {
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS, LAYOUT } from './src/theme';
 import { DOCTORS, DoctorItem } from './src/data/mockData';
+import { AppProvider, useAppContext } from './src/context/AppContext';
 import { BottomTabBar, MainTabKey } from './src/components';
 import {
   SplashScreen,
@@ -48,7 +49,8 @@ import {
   FamilyMedicineCabinetScreen,
 } from './src/screens/PharmacyAndMedicationScreens';
 
-export default function App() {
+function AppContent() {
+  const { createBooking } = useAppContext();
   const [route, setRoute] = useState<string>('login');
   const [routeHistory, setRouteHistory] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<MainTabKey>('home');
@@ -204,6 +206,13 @@ export default function App() {
             onBack={() => goBack('bookingSlot')}
             onPaymentSuccess={(method) => {
               setBookingInfo((prev) => ({ ...prev, paymentMethod: method }));
+              createBooking({
+                doctor: bookingInfo.doctor || selectedDoctor,
+                day: bookingInfo.day,
+                slot: bookingInfo.slot,
+                consultMode: bookingInfo.consultMode,
+                paymentMethod: method,
+              });
               navigateTo('bookingSuccess');
             }}
           />
@@ -370,13 +379,21 @@ export default function App() {
   };
 
   return (
+    <SafeAreaView style={styles.safeRoot}>
+      <StatusBar barStyle="dark-content" />
+      <View style={[styles.appViewport, isTablet && styles.tabletViewport]}>
+        {renderCurrentScreen()}
+      </View>
+    </SafeAreaView>
+  );
+}
+
+export default function App() {
+  return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.safeRoot}>
-        <StatusBar barStyle="dark-content" />
-        <View style={[styles.appViewport, isTablet && styles.tabletViewport]}>
-          {renderCurrentScreen()}
-        </View>
-      </SafeAreaView>
+      <AppProvider>
+        <AppContent />
+      </AppProvider>
     </SafeAreaProvider>
   );
 }

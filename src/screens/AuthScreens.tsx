@@ -459,14 +459,40 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
   onRegisterSuccess,
   onGoLogin,
 }) => {
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [dob, setDob] = useState('');
+  const [fullName, setFullName] = useState('Nguyễn Văn Vũ');
+  const [email, setEmail] = useState('vu.nguyen@smartclinic.vn');
+  const [phone, setPhone] = useState('0912345678');
+  const [dob, setDob] = useState('15/08/1992');
   const [gender, setGender] = useState('nam');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [password, setPassword] = useState('Smart123456');
+  const [confirmPassword, setConfirmPassword] = useState('Smart123456');
   const [agreed, setAgreed] = useState(true);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleRegisterSubmit = () => {
+    const newErrors: Record<string, string> = {};
+    if (!fullName.trim() || fullName.trim().length < 2) {
+      newErrors.fullName = 'Vui lòng nhập họ và tên đầy đủ';
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      newErrors.email = 'Email không đúng định dạng';
+    }
+    const cleanPhone = phone.replace(/\s+/g, '');
+    if (!/^(0[3|5|7|8|9])[0-9]{8}$/.test(cleanPhone)) {
+      newErrors.phone = 'Số điện thoại cần đủ 10 số hợp lệ tại Việt Nam';
+    }
+    if (!password || password.length < 8) {
+      newErrors.password = 'Mật khẩu cần tối thiểu 8 ký tự';
+    }
+    if (confirmPassword !== password) {
+      newErrors.confirmPassword = 'Mật khẩu xác nhận không khớp';
+    }
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length === 0 && agreed) {
+      onRegisterSuccess();
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -516,33 +542,45 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
             leftIcon="person-outline"
             placeholder="Ví dụ: Nguyễn Văn Vũ"
             value={fullName}
-            onChangeText={setFullName}
+            onChangeText={(txt) => {
+              setFullName(txt);
+              if (errors.fullName) setErrors((p) => ({ ...p, fullName: '' }));
+            }}
             autoComplete="name"
             textContentType="name"
             returnKeyType="next"
+            error={errors.fullName}
           />
           <AppInput
             label="Email"
             leftIcon="mail-outline"
             placeholder="example@email.com"
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(txt) => {
+              setEmail(txt);
+              if (errors.email) setErrors((p) => ({ ...p, email: '' }));
+            }}
             keyboardType="email-address"
             autoCapitalize="none"
             autoComplete="email"
             textContentType="emailAddress"
             returnKeyType="next"
+            error={errors.email}
           />
           <AppInput
             label="Số điện thoại"
             leftIcon="call-outline"
             placeholder="0912 345 678"
             value={phone}
-            onChangeText={setPhone}
+            onChangeText={(txt) => {
+              setPhone(txt);
+              if (errors.phone) setErrors((p) => ({ ...p, phone: '' }));
+            }}
             keyboardType="phone-pad"
             autoComplete="tel"
             textContentType="telephoneNumber"
             returnKeyType="next"
+            error={errors.phone}
           />
 
           <View style={styles.rowTwoCols}>
@@ -576,23 +614,32 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
             leftIcon="lock-closed-outline"
             placeholder="Tối thiểu 8 ký tự"
             value={password}
-            onChangeText={setPassword}
+            onChangeText={(txt) => {
+              setPassword(txt);
+              if (errors.password) setErrors((p) => ({ ...p, password: '' }));
+            }}
             isPassword
             autoComplete="new-password"
             textContentType="newPassword"
             returnKeyType="next"
+            error={errors.password}
           />
           <AppInput
             label="Xác nhận mật khẩu"
             leftIcon="lock-closed-outline"
             placeholder="Nhập lại mật khẩu"
             value={confirmPassword}
-            onChangeText={setConfirmPassword}
+            onChangeText={(txt) => {
+              setConfirmPassword(txt);
+              if (errors.confirmPassword)
+                setErrors((p) => ({ ...p, confirmPassword: '' }));
+            }}
             isPassword
             autoComplete="new-password"
             textContentType="newPassword"
             returnKeyType="done"
-            onSubmitEditing={onRegisterSuccess}
+            onSubmitEditing={handleRegisterSubmit}
+            error={errors.confirmPassword}
           />
 
           <TouchableOpacity
@@ -618,7 +665,7 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
             variant="primary"
             size="lg"
             leftIcon="person-add-outline"
-            onPress={onRegisterSuccess}
+            onPress={handleRegisterSubmit}
           />
 
           <View style={styles.dividerRow}>

@@ -22,6 +22,7 @@ import {
   PATIENT_PROFILE,
   DoctorItem,
 } from '../data/mockData';
+import { useAppContext } from '../context/AppContext';
 import {
   HomeGreetingHeader,
   SearchBar,
@@ -76,6 +77,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onOpenProfile,
   onNavigate,
 }) => {
+  const { appointments } = useAppContext();
   const [search, setSearch] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -89,7 +91,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   };
 
   // Filter upcoming appointments to show on Home
-  const upcomingAppointments = APPOINTMENTS.filter(
+  const upcomingAppointments = appointments.filter(
     (a) => a.status === 'upcoming'
   ).slice(0, 2);
 
@@ -427,6 +429,7 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
   onAskAI,
   onNavigate,
 }) => {
+  const { prescriptions } = useAppContext();
   const [filterKey, setFilterKey] = useState('all');
   const [toastInfo, setToastInfo] = useState<{ title: string; msg: string } | null>(
     null
@@ -474,7 +477,7 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
               { key: 'all', label: 'Tất cả', icon: 'grid-outline' },
               {
                 key: 'rx',
-                label: 'Đơn thuốc điện tử (4)',
+                label: `Đơn thuốc điện tử (${prescriptions.length})`,
                 icon: 'document-text-outline',
               },
               { key: 'lab', label: 'Xét nghiệm & CĐHA', icon: 'flask-outline' },
@@ -497,7 +500,7 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
               doctor={DOCTORS[0]}
               prescriptionCode="#DT-241029-01"
               date="29/10/2024"
-              drugs={PRESCRIPTION_DRUGS}
+              drugs={prescriptions}
               onViewOriginal={() => onNavigate('rxDetail')}
               onBuyMedicine={() => onNavigate('medicineCabinet')}
               onReminderPress={() => onNavigate('medLog')}
@@ -591,7 +594,13 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
   onBookNew,
   onNavigate,
 }) => {
+  const { appointments, cancelAppointment } = useAppContext();
   const [statusTab, setStatusTab] = useState('upcoming');
+  const [cancelToast, setCancelToast] = useState<string | null>(null);
+
+  const upcomingList = appointments.filter((a) => a.status === 'upcoming');
+  const completedList = appointments.filter((a) => a.status === 'completed');
+  const cancelledList = appointments.filter((a) => a.status === 'cancelled');
 
   return (
     <View style={styles.screen}>
@@ -617,9 +626,9 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
           selectedKey={statusTab}
           onSelect={setStatusTab}
           options={[
-            { key: 'upcoming', label: 'Sắp tới', count: 2 },
-            { key: 'completed', label: 'Đã khám', count: 5 },
-            { key: 'cancelled', label: 'Đã hủy', count: 1 },
+            { key: 'upcoming', label: 'Sắp tới', count: upcomingList.length },
+            { key: 'completed', label: 'Đã khám', count: completedList.length },
+            { key: 'cancelled', label: 'Đã hủy', count: cancelledList.length },
           ]}
           style={{ marginBottom: 14 }}
         />
@@ -630,8 +639,8 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
               <AIReminderCard style={{ marginBottom: 14 }} />
             </AnimatedEntry>
 
-            {APPOINTMENTS.length > 0 ? (
-              APPOINTMENTS.map((apt, idx) => (
+            {upcomingList.length > 0 ? (
+              upcomingList.map((apt, idx) => (
                 <AnimatedEntry key={apt.id} delay={100 + idx * 70} direction="up">
                   <AppointmentCard
                     appointment={apt}
@@ -643,31 +652,27 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
                       }
                     }}
                     onSecondaryPress={(item) => {
-                      if (item.mode === 'clinic') {
-                        Alert.alert(
-                          'Chỉ đường đến phòng khám',
-                          `${item.doctor.hospital}\n${item.room}`,
-                          [
-                            { text: 'Đóng', style: 'cancel' },
-                            {
-                              text: 'Xem chi tiết Bác sĩ',
-                              onPress: () => onSelectDoctor(item.doctor),
+                      Alert.alert(
+                        'Tùy chọn lịch hẹn',
+                        `${item.doctor.name} (${item.code})\n${item.timeRange}\n${item.room || item.doctor.hospital}`,
+                        [
+                          { text: 'Đóng', style: 'cancel' },
+                          {
+                            text: 'Xem Bác sĩ',
+                            onPress: () => onSelectDoctor(item.doctor),
+                          },
+                          {
+                            text: 'Hủy lịch hẹn này',
+                            style: 'destructive',
+                            onPress: () => {
+                              cancelAppointment(item.id);
+                              setCancelToast(
+                                `Đã hủy lịch hẹn ${item.code} với ${item.doctor.name}.`
+                              );
                             },
-                          ]
-                        );
-                      } else {
-                        Alert.alert(
-                          'Đổi / Hủy lịch hẹn',
-                          `Bạn muốn đổi lịch tư vấn Video với ${item.doctor.name}?`,
-                          [
-                            { text: 'Giữ lịch', style: 'cancel' },
-                            {
-                              text: 'Chọn khung giờ khác',
-                              onPress: () => onBookNew(),
-                            },
-                          ]
-                        );
-                      }
+                          },
+                        ]
+                      );
                     }}
                   />
                 </AnimatedEntry>
@@ -684,60 +689,62 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
           </>
         )}
 
-        {statusTab === 'completed' && (
-          <View style={[styles.sectionCard, SHADOWS.sm]}>
-            <View style={styles.statBoxTop}>
-              <Badge label="Hoàn thành • 28/10/2024" variant="teal" showDot />
-              <Badge label="Đã có kết quả" variant="blue" />
+        {statusTab === 'completed' &&
+          completedList.map((apt) => (
+            <View key={apt.id} style={[styles.sectionCard, SHADOWS.sm]}>
+              <View style={styles.statBoxTop}>
+                <Badge label={`Hoàn thành • ${apt.code}`} variant="teal" showDot />
+                <Badge label={apt.statusBadge} variant="blue" />
+              </View>
+              <Text style={styles.sectionCardTitle}>
+                Khám Chuyên khoa {apt.doctor.specialty} — {apt.doctor.name}
+              </Text>
+              <Text style={styles.sectionCardSub}>
+                Chẩn đoán: Đau nửa đầu Migraine (G43.0) • Thời gian: {apt.timeRange}
+              </Text>
+              <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
+                <AppButton
+                  title="Kết quả & Đơn thuốc"
+                  variant="primary"
+                  size="sm"
+                  leftIcon="document-text-outline"
+                  fullWidth={false}
+                  style={{ flex: 1 }}
+                  onPress={() => onNavigate('postConsultSummary')}
+                />
+                <AppButton
+                  title="Chat với Bác sĩ"
+                  variant="tonal"
+                  size="sm"
+                  leftIcon="chatbubbles-outline"
+                  fullWidth={false}
+                  style={{ flex: 1 }}
+                  onPress={() => onNavigate('teleconsult')}
+                />
+              </View>
             </View>
-            <Text style={styles.sectionCardTitle}>
-              Khám Chuyên khoa Nội Thần Kinh — TS. BS. Lê Thu Trang
-            </Text>
-            <Text style={styles.sectionCardSub}>
-              Chẩn đoán: Đau nửa đầu Migraine (G43.0) • Mã ca: #KB-2024-9982
-            </Text>
-            <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
-              <AppButton
-                title="Kết quả & Đơn thuốc"
-                variant="primary"
-                size="sm"
-                leftIcon="document-text-outline"
-                fullWidth={false}
-                style={{ flex: 1 }}
-                onPress={() => onNavigate('postConsultSummary')}
-              />
-              <AppButton
-                title="Chat với Bác sĩ"
-                variant="tonal"
-                size="sm"
-                leftIcon="chatbubbles-outline"
-                fullWidth={false}
-                style={{ flex: 1 }}
-                onPress={() => onNavigate('teleconsult')}
-              />
-            </View>
-          </View>
-        )}
+          ))}
 
-        {statusTab === 'cancelled' && (
-          <View style={[styles.sectionCard, SHADOWS.sm]}>
-            <Badge label="Đã hủy theo yêu cầu • 10/10/2024" variant="danger" />
-            <Text style={[styles.sectionCardTitle, { marginTop: 8 }]}>
-              Khám Da Liễu Thẩm Mỹ — BS. CKI. Đặng Thảo Vy
-            </Text>
-            <Text style={styles.sectionCardSub}>
-              Lý do: Bận công tác đột xuất • Đã hoàn 100% phí đặt cọc
-            </Text>
-            <AppButton
-              title="Đặt lại lịch khám này"
-              variant="outline"
-              size="sm"
-              leftIcon="refresh-outline"
-              onPress={onBookNew}
-              style={{ marginTop: 12 }}
-            />
-          </View>
-        )}
+        {statusTab === 'cancelled' &&
+          cancelledList.map((apt) => (
+            <View key={apt.id} style={[styles.sectionCard, SHADOWS.sm]}>
+              <Badge label={`Đã hủy • ${apt.code}`} variant="danger" />
+              <Text style={[styles.sectionCardTitle, { marginTop: 8 }]}>
+                Khám {apt.doctor.specialty} — {apt.doctor.name}
+              </Text>
+              <Text style={styles.sectionCardSub}>
+                Khung giờ: {apt.timeRange} • {apt.doctor.hospital}
+              </Text>
+              <AppButton
+                title="Đặt lại lịch khám này"
+                variant="outline"
+                size="sm"
+                leftIcon="refresh-outline"
+                onPress={() => onSelectDoctor(apt.doctor)}
+                style={{ marginTop: 12 }}
+              />
+            </View>
+          ))}
 
         {/* Need more consultation banner */}
         <View style={styles.moreConsultBanner}>
@@ -756,6 +763,12 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
           />
         </View>
       </ScrollView>
+      <ToastBanner
+        visible={!!cancelToast}
+        title="Đã hủy lịch khám"
+        message={cancelToast || ''}
+        onDismiss={() => setCancelToast(null)}
+      />
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,19 @@ import { PATIENT_PROFILE } from '../../data/mockData';
 import { Badge } from '../common/Badge';
 import { AppButton } from '../common/AppButton';
 
+const maskBhyt = (code: string, masked: boolean) => {
+  if (!masked) return code;
+  // e.g. 'DN4 79 234 82390' -> 'DN4 79 *** 82390'
+  const parts = code.split(' ');
+  if (parts.length >= 4) {
+    return `${parts[0]} ${parts[1]} *** ${parts[parts.length - 1]}`;
+  }
+  return code.slice(0, 6) + '***' + code.slice(-4);
+};
+
+const maskCccd = (masked: boolean) =>
+  masked ? '079201******' : '079201008829';
+
 export interface PatientMasterIdentityCardProps {
   profile?: typeof PATIENT_PROFILE;
   onQrPress?: () => void;
@@ -27,6 +40,8 @@ export const PatientMasterIdentityCard: React.FC<PatientMasterIdentityCardProps>
   onBhytPress,
   style,
 }) => {
+  const [isMasked, setIsMasked] = useState(true);
+
   return (
     <View style={[styles.card, SHADOWS.sm, style]}>
       <View style={styles.topRow}>
@@ -46,6 +61,38 @@ export const PatientMasterIdentityCard: React.FC<PatientMasterIdentityCardProps>
           <Text style={styles.patientCode} numberOfLines={1}>
             Mã BN: {profile.patientCode}
           </Text>
+
+          {/* PII Masked Identity Row (CCCD & BHYT) */}
+          <View style={styles.piiSecurityRow}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.piiText} numberOfLines={1}>
+                CCCD: <Text style={styles.piiValue}>{maskCccd(isMasked)}</Text>
+              </Text>
+              <Text style={styles.piiText} numberOfLines={1}>
+                BHYT: <Text style={styles.piiValue}>{maskBhyt(profile.bhytCode, isMasked)}</Text>
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => setIsMasked((prev) => !prev)}
+              style={styles.eyeToggleBtn}
+              accessibilityRole="button"
+              accessibilityLabel={
+                isMasked
+                  ? 'Hiện thông tin định danh CCCD và BHYT'
+                  : 'Ẩn thông tin định danh CCCD và BHYT'
+              }
+            >
+              <Ionicons
+                name={isMasked ? 'eye-off-outline' : 'eye-outline'}
+                size={15}
+                color={COLORS.primary}
+              />
+              <Text style={styles.eyeToggleText}>
+                {isMasked ? 'Hiện số' : 'Ẩn số'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
           <View style={styles.pillsRow}>
             <Badge
               label={`Nhóm máu ${profile.bloodType}`}
@@ -122,6 +169,8 @@ export const VssIDInsuranceCard: React.FC<VssIDInsuranceCardProps> = ({
   onDetailPress,
   style,
 }) => {
+  const [isMasked, setIsMasked] = useState(true);
+
   return (
     <LinearGradient
       colors={GRADIENTS.insuranceCard}
@@ -142,8 +191,26 @@ export const VssIDInsuranceCard: React.FC<VssIDInsuranceCardProps> = ({
         <Badge label="Hiệu lực" variant="teal" showDot />
       </View>
 
-      <Text style={styles.vssidCodeLabel}>Mã số BHYT toàn quốc</Text>
-      <Text style={styles.vssidCodeValue}>{profile.bhytCode}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <View>
+          <Text style={styles.vssidCodeLabel}>Mã số BHYT toàn quốc</Text>
+          <Text style={styles.vssidCodeValue}>
+            {maskBhyt(profile.bhytCode, isMasked)}
+          </Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => setIsMasked((prev) => !prev)}
+          style={styles.vssidEyeBtn}
+          accessibilityRole="button"
+          accessibilityLabel={isMasked ? 'Hiện mã số BHYT' : 'Ẩn mã số BHYT'}
+        >
+          <Ionicons
+            name={isMasked ? 'eye-off-outline' : 'eye-outline'}
+            size={16}
+            color="#FFFFFF"
+          />
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.vssidMetaBox}>
         <View style={styles.vssidMetaRow}>
@@ -326,6 +393,51 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: COLORS.primary,
     marginTop: 2,
+  },
+  piiSecurityRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.surfaceContainerLow,
+    borderRadius: RADIUS.sm,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    marginTop: 6,
+    gap: 8,
+  },
+  piiText: {
+    fontSize: 11,
+    color: COLORS.textSecondary,
+    lineHeight: 16,
+  },
+  piiValue: {
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+    fontVariant: ['tabular-nums'],
+  },
+  eyeToggleBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.full,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    gap: 4,
+    borderWidth: 1,
+    borderColor: COLORS.borderSubtle,
+  },
+  eyeToggleText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: COLORS.primary,
+  },
+  vssidEyeBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8,
   },
   pillsRow: {
     flexDirection: 'row',

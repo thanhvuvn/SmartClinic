@@ -39,3 +39,7 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# local AI project progress & context tracking (do not push to git)
+PROJECT_PROGRESS.md
+
