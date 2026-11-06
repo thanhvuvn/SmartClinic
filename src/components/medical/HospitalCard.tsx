@@ -40,7 +40,10 @@ export const HospitalCard: React.FC<HospitalCardProps> = ({
         <View style={styles.metaRow}>
           <View style={styles.distanceBadge}>
             <Ionicons name="navigate" size={10} color={COLORS.primary} />
-            <Text style={styles.distanceText}>{hospital.distance}</Text>
+            <Text style={styles.distanceText}>
+              {hospital.distance}
+              {hospital.travelTime ? ` • ${hospital.travelTime}` : ''}
+            </Text>
           </View>
           <View style={styles.ratingBadge}>
             <Ionicons name="star" size={10} color="#B45309" />
@@ -57,15 +60,15 @@ export const HospitalCard: React.FC<HospitalCardProps> = ({
         activeScale={0.92}
         onPress={() => onMapPress?.(hospital)}
         accessibilityRole="button"
-        accessibilityLabel={`Xem bản đồ ${hospital.name}`}
+        accessibilityLabel={`Xem bản đồ và chỉ đường tới ${hospital.name}`}
       >
         <Ionicons
-          name="navigate-outline"
+          name="navigate"
           size={16}
           color={COLORS.primary}
           importantForAccessibility="no"
         />
-        <Text style={styles.mapBtnText}>Bản đồ</Text>
+        <Text style={styles.mapBtnText}>Chỉ đường</Text>
       </PressableScale>
     </View>
   );

@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../theme';
 import { DOCTORS, PATIENT_PROFILE, PRESCRIPTION_DRUGS } from '../data/mockData';
 import { useAppContext } from '../context/AppContext';
+import { openGoogleMapsDirections } from '../utils/mapNavigation';
 import {
   AppHeader,
   AppButton,
@@ -229,7 +230,13 @@ export const BookingSuccessScreen: React.FC<{
             {
               icon: 'navigate-outline',
               label: 'Chỉ Đường',
-              action: () => onNavigate?.('doctorDetail'),
+              action: () =>
+                openGoogleMapsDirections({
+                  name: doctor.hospital,
+                  address: doctor.address,
+                  latitude: doctor.latitude,
+                  longitude: doctor.longitude,
+                }),
             },
           ].map((act) => (
             <TouchableOpacity

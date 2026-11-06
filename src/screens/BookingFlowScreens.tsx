@@ -42,10 +42,12 @@ import {
   AppointmentCard,
   PatientMasterIdentityCard,
   VssIDInsuranceCard,
+  HospitalMapModal,
   AnimatedEntry,
   PressableScale,
   PulsingDot,
 } from '../components';
+import { findHospitalForDoctor } from '../utils/mapNavigation';
 
 export interface DoctorDetailScreenProps {
   doctor: DoctorItem;
@@ -60,6 +62,8 @@ export const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = ({
 }) => {
   const [selectedDay, setSelectedDay] = useState('d2');
   const [reviewFilter, setReviewFilter] = useState('all');
+  const [mapModalVisible, setMapModalVisible] = useState(false);
+  const doctorHospital = findHospitalForDoctor(doctor);
 
   return (
     <View style={styles.screen}>
@@ -83,7 +87,11 @@ export const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = ({
         />
 
         {/* Work Location Card */}
-        <View style={[styles.card, SHADOWS.sm]}>
+        <PressableScale
+          activeScale={0.98}
+          onPress={() => setMapModalVisible(true)}
+          style={[styles.card, SHADOWS.sm]}
+        >
           <View style={styles.locationRow}>
             <View style={styles.locationIconBox}>
               <Ionicons
@@ -97,21 +105,32 @@ export const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = ({
               <Text style={styles.locationSub} numberOfLines={1}>
                 {doctor.address}
               </Text>
+              <Text
+                style={{
+                  fontSize: 11,
+                  fontWeight: '700',
+                  color: COLORS.primary,
+                  marginTop: 3,
+                }}
+              >
+                Chạm để xem cổng vào, bãi xe & mở chỉ đường Google Maps ➔
+              </Text>
             </View>
             <TouchableOpacity
               style={styles.mapCircleBtn}
+              onPress={() => setMapModalVisible(true)}
               accessibilityRole="button"
               accessibilityLabel={`Xem bản đồ ${doctor.hospital}`}
               hitSlop={TOUCH.hitSlopSm}
             >
               <Ionicons
-                name="navigate-outline"
+                name="navigate"
                 size={16}
                 color={COLORS.primary}
               />
             </TouchableOpacity>
           </View>
-        </View>
+        </PressableScale>
 
         {/* About & Training Section */}
         <View style={[styles.card, SHADOWS.sm]}>
@@ -248,6 +267,13 @@ export const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = ({
         priceValue={doctor.fee}
         buttonTitle="Đặt lịch khám"
         onButtonPress={() => onBookSlot(doctor)}
+      />
+
+      <HospitalMapModal
+        visible={mapModalVisible}
+        initialHospital={doctorHospital}
+        onClose={() => setMapModalVisible(false)}
+        onBookAtHospital={() => onBookSlot(doctor)}
       />
     </View>
   );

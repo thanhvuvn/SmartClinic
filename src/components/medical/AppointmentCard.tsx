@@ -10,6 +10,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../../theme';
 import { AppointmentItem } from '../../data/mockData';
+import { openGoogleMapsDirections } from '../../utils/mapNavigation';
 import { Badge } from '../common/Badge';
 import { AppButton } from '../common/AppButton';
 
@@ -127,6 +128,38 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             <Text style={[styles.roomText, { flex: 1 }]} numberOfLines={1}>
               {appointment.room}
             </Text>
+            <TouchableOpacity
+              onPress={() =>
+                openGoogleMapsDirections({
+                  name: doctor.hospital,
+                  address: doctor.address,
+                  latitude: doctor.latitude,
+                  longitude: doctor.longitude,
+                })
+              }
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 4,
+                backgroundColor: COLORS.primaryContainer,
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+                borderRadius: RADIUS.sm,
+              }}
+              accessibilityRole="button"
+              accessibilityLabel={`Chỉ đường Google Maps tới ${doctor.hospital}`}
+            >
+              <Ionicons name="navigate" size={12} color={COLORS.primary} />
+              <Text
+                style={{
+                  fontSize: 11,
+                  fontWeight: '800',
+                  color: COLORS.primary,
+                }}
+              >
+                Chỉ đường
+              </Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.qrCodeRow}>

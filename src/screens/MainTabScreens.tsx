@@ -21,6 +21,7 @@ import {
   PRESCRIPTION_DRUGS,
   PATIENT_PROFILE,
   DoctorItem,
+  HospitalItem,
 } from '../data/mockData';
 import { useAppContext } from '../context/AppContext';
 import {
@@ -32,6 +33,7 @@ import {
   SmartPromoBanner,
   FeaturedDoctorCard,
   HospitalCard,
+  HospitalMapModal,
   AppHeader,
   PatientMasterIdentityCard,
   AIClinicalInsightCard,
@@ -81,6 +83,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [search, setSearch] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [mapModalVisible, setMapModalVisible] = useState(false);
+  const [selectedMapHospital, setSelectedMapHospital] = useState<HospitalItem | null>(null);
   const insets = useSafeAreaInsets();
 
   const handleRefresh = () => {
@@ -381,12 +385,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             badgeVariant="teal"
             badgeIcon="navigate"
             actionText="Xem bản đồ"
-            onActionPress={() =>
-              Alert.alert(
-                'Bản đồ cơ sở y tế',
-                'Đang hiển thị 3 bệnh viện liên kết BHYT gần vị trí của bạn tại TP. Hồ Chí Minh.'
-              )
-            }
+            onActionPress={() => {
+              setSelectedMapHospital(HOSPITALS[0]);
+              setMapModalVisible(true);
+            }}
           />
           {refreshing ? (
             <>
@@ -398,24 +400,29 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <HospitalCard
                 key={h.id}
                 hospital={h}
-                onMapPress={(hosp) =>
-                  Alert.alert(
-                    hosp.name,
-                    `Khoảng cách: ${hosp.distance}\nTrạng thái: ${hosp.tag}`,
-                    [
-                      { text: 'Đóng', style: 'cancel' },
-                      {
-                        text: 'Đặt khám tại đây',
-                        onPress: () => onBookDoctor(DOCTORS[0]),
-                      },
-                    ]
-                  )
-                }
+                onMapPress={(hosp) => {
+                  setSelectedMapHospital(hosp);
+                  setMapModalVisible(true);
+                }}
               />
             ))
           )}
         </AnimatedEntry>
       </ScrollView>
+
+      <HospitalMapModal
+        visible={mapModalVisible}
+        initialHospital={selectedMapHospital}
+        onClose={() => setMapModalVisible(false)}
+        onBookAtHospital={(hosp) => {
+          const matchedDoc =
+            DOCTORS.find((d) =>
+              d.hospital.toLowerCase().includes(hosp.name.toLowerCase()) ||
+              hosp.name.toLowerCase().includes(d.hospital.toLowerCase())
+            ) || DOCTORS[0];
+          onBookDoctor(matchedDoc);
+        }}
+      />
     </View>
   );
 };

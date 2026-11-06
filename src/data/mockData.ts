@@ -14,6 +14,8 @@ export interface DoctorItem {
   subSpecialty: string;
   hospital: string;
   address: string;
+  latitude?: number;
+  longitude?: number;
   experienceYears: number;
   rating: number;
   reviewCount: number;
@@ -34,9 +36,16 @@ export interface HospitalItem {
   name: string;
   rating: number;
   distance: string;
+  travelTime?: string;
   tag: string;
   image: string;
   address: string;
+  latitude: number;
+  longitude: number;
+  phone: string;
+  gateInfo: string;
+  parkingInfo: string;
+  workingHours: string;
 }
 
 export interface DaySlotItem {
@@ -99,6 +108,8 @@ export const DOCTORS: DoctorItem[] = [
     subSpecialty: 'Nội thần kinh - Đau đầu & Mạch máu não',
     hospital: 'BV. Đại học Y Dược TP.HCM',
     address: 'Cơ sở 1: 215 Hồng Bàng, Phường 11, Quận 5, TP.HCM',
+    latitude: 10.755341,
+    longitude: 106.664971,
     experienceYears: 16,
     rating: 4.9,
     reviewCount: 185,
@@ -124,8 +135,10 @@ export const DOCTORS: DoctorItem[] = [
     degree: 'Chuyên gia Tim mạch can thiệp',
     specialty: 'Tim mạch',
     subSpecialty: 'Tim mạch • 15 năm KN',
-    hospital: 'BV. Đại học Y Dược',
-    address: '215 Hồng Bàng, Quận 5, TP.HCM',
+    hospital: 'BV. Đại học Y Dược TP.HCM',
+    address: '215 Hồng Bàng, Phường 11, Quận 5, TP.HCM',
+    latitude: 10.755341,
+    longitude: 106.664971,
     experienceYears: 15,
     rating: 4.9,
     reviewCount: 120,
@@ -151,7 +164,9 @@ export const DOCTORS: DoctorItem[] = [
     specialty: 'Mắt',
     subSpecialty: 'Khúc xạ & Võng mạc • 12 năm KN',
     hospital: 'BV. Mắt TP.HCM',
-    address: '280 Điện Biên Phủ, Quận 3, TP.HCM',
+    address: '280 Điện Biên Phủ, Phường Võ Thị Sáu, Quận 3, TP.HCM',
+    latitude: 10.779784,
+    longitude: 106.683823,
     experienceYears: 12,
     rating: 4.8,
     reviewCount: 95,
@@ -172,8 +187,10 @@ export const DOCTORS: DoctorItem[] = [
     degree: 'Chuyên gia Ngoại Thần kinh',
     specialty: 'Thần kinh',
     subSpecialty: 'Ngoại Thần kinh • 20 năm KN',
-    hospital: 'BV. Chợ Rẫy',
-    address: '201B Nguyễn Chí Thanh, Quận 5, TP.HCM',
+    hospital: 'Bệnh viện Chợ Rẫy',
+    address: '201B Nguyễn Chí Thanh, Phường 12, Quận 5, TP.HCM',
+    latitude: 10.757865,
+    longitude: 106.659638,
     experienceYears: 20,
     rating: 4.8,
     reviewCount: 120,
@@ -192,22 +209,68 @@ export const DOCTORS: DoctorItem[] = [
 
 export const HOSPITALS: HospitalItem[] = [
   {
+    id: 'hosp-0',
+    name: 'BV. Đại học Y Dược TP.HCM',
+    rating: 4.9,
+    distance: '1.2 km',
+    travelTime: '6 phút',
+    tag: 'Tuyến Trung ương • BHYT',
+    image: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=300&auto=format&fit=crop&q=80',
+    address: '215 Hồng Bàng, Phường 11, Quận 5, TP.HCM',
+    latitude: 10.755341,
+    longitude: 106.664971,
+    phone: '02838554269',
+    gateInfo: 'Cổng số 1 (Hồng Bàng) — Khu A Khám BHYT & Chuyên gia',
+    parkingInfo: 'Hầm B1 & B2 (Ô tô, Xe máy) vào từ cổng Tản Đà',
+    workingHours: '05:00 - 16:30 (T2 - T7) • Cấp cứu 24/7',
+  },
+  {
     id: 'hosp-1',
     name: 'BV. Đa khoa Quốc tế Vinmec',
     rating: 4.9,
     distance: '1.8 km',
+    travelTime: '8 phút',
     tag: 'Cấp cứu 24/7',
     image: 'https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=300&auto=format&fit=crop&q=80',
     address: '208 Nguyễn Hữu Cảnh, Bình Thạnh, TP.HCM',
+    latitude: 10.796608,
+    longitude: 106.721912,
+    phone: '02836221166',
+    gateInfo: 'Sảnh chính Lobby A — Quầy Fast Check-in SmartClinic',
+    parkingInfo: 'Hầm B1 rộng rãi dành cho cả Ô tô & Xe máy',
+    workingHours: '07:30 - 17:00 (T2 - T7) • Cấp cứu 24/7',
   },
   {
     id: 'hosp-2',
     name: 'Bệnh viện Chợ Rẫy',
     rating: 4.7,
     distance: '3.2 km',
+    travelTime: '12 phút',
     tag: 'Đa khoa Trung ương',
     image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=300&auto=format&fit=crop&q=80',
-    address: '201B Nguyễn Chí Thanh, Quận 5, TP.HCM',
+    address: '201B Nguyễn Chí Thanh, Phường 12, Quận 5, TP.HCM',
+    latitude: 10.757865,
+    longitude: 106.659638,
+    phone: '02838554137',
+    gateInfo: 'Cổng số 1 (Nguyễn Chí Thanh) — Khu Khám bệnh nhà A',
+    parkingInfo: 'Bãi xe cổng số 2 đường Thuận Kiều & Nguyễn Chí Thanh',
+    workingHours: '06:00 - 16:00 (T2 - T7) • Cấp cứu 24/7',
+  },
+  {
+    id: 'hosp-3',
+    name: 'BV. Mắt TP.HCM',
+    rating: 4.8,
+    distance: '2.5 km',
+    travelTime: '10 phút',
+    tag: 'Chuyên khoa Đầu ngành',
+    image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=300&auto=format&fit=crop&q=80',
+    address: '280 Điện Biên Phủ, Phường Võ Thị Sáu, Quận 3, TP.HCM',
+    latitude: 10.779784,
+    longitude: 106.683823,
+    phone: '02839325364',
+    gateInfo: 'Cổng chính 280 Điện Biên Phủ — Khu Khám Khúc xạ & Đáy mắt',
+    parkingInfo: 'Bãi xe nội viện cổng Bà Huyện Thanh Quan',
+    workingHours: '06:00 - 16:30 (T2 - CN)',
   },
 ];
 
