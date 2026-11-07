@@ -488,6 +488,10 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
     if (confirmPassword !== password) {
       newErrors.confirmPassword = 'Mật khẩu xác nhận không khớp';
     }
+    if (!agreed) {
+      newErrors.agreed =
+        'Vui lòng đồng ý với Điều khoản dịch vụ và Chính sách bảo mật y tế';
+    }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0 && agreed) {
       onRegisterSuccess();
@@ -644,7 +648,13 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
 
           <TouchableOpacity
             style={styles.termsRow}
-            onPress={() => setAgreed(!agreed)}
+            onPress={() => {
+              const next = !agreed;
+              setAgreed(next);
+              if (next && errors.agreed) {
+                setErrors((p) => ({ ...p, agreed: '' }));
+              }
+            }}
             accessibilityRole="checkbox"
             accessibilityLabel="Đồng ý điều khoản dịch vụ và chính sách bảo mật y tế"
             accessibilityState={{ checked: agreed }}
@@ -659,6 +669,19 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
               của SmartClinic
             </Text>
           </TouchableOpacity>
+          {errors.agreed ? (
+            <Text
+              style={{
+                fontSize: TYPOGRAPHY.caption,
+                color: COLORS.error,
+                marginTop: -6,
+                marginBottom: 10,
+                fontWeight: '600',
+              }}
+            >
+              {errors.agreed}
+            </Text>
+          ) : null}
 
           <AppButton
             title="Đăng ký"

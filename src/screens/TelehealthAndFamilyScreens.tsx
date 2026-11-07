@@ -575,10 +575,25 @@ export const AddEditFamilyMemberScreen: React.FC<{ onBack?: () => void }> = ({
   const [relation, setRelation] = useState('Con cái');
   const [showRelationDropdown, setShowRelationDropdown] = useState(false);
   const [bhyt, setBhyt] = useState('TE1 79 234 99102');
+  const [nameError, setNameError] = useState('');
+  const [dobError, setDobError] = useState('');
 
   const handleSaveMember = () => {
-    if (!name.trim()) return;
-    addFamilyMember({ name: name.trim(), dob, relation, bhyt });
+    let hasErr = false;
+    if (!name.trim() || name.trim().length < 2) {
+      setNameError('Vui lòng nhập họ và tên đầy đủ của người thân');
+      hasErr = true;
+    } else {
+      setNameError('');
+    }
+    if (!dob.trim()) {
+      setDobError('Vui lòng nhập ngày tháng năm sinh (DD/MM/YYYY)');
+      hasErr = true;
+    } else {
+      setDobError('');
+    }
+    if (hasErr) return;
+    addFamilyMember({ name: name.trim(), dob: dob.trim(), relation, bhyt });
     onBack?.();
   };
 
@@ -713,13 +728,21 @@ export const AddEditFamilyMemberScreen: React.FC<{ onBack?: () => void }> = ({
             label="Họ và tên đầy đủ (Chữ IN HOA có dấu) *"
             leftIcon="person-outline"
             value={name}
-            onChangeText={setName}
+            onChangeText={(txt) => {
+              setName(txt);
+              if (nameError) setNameError('');
+            }}
+            error={nameError}
           />
           <AppInput
             label="Ngày sinh *"
             leftIcon="calendar-outline"
             value={dob}
-            onChangeText={setDob}
+            onChangeText={(txt) => {
+              setDob(txt);
+              if (dobError) setDobError('');
+            }}
+            error={dobError}
           />
           <AppInput
             label="Mã số BHYT / Định danh VssID"
