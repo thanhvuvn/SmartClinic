@@ -29,7 +29,6 @@ import {
   ToastBanner,
   AnimatedEntry,
   PressableScale,
-  PulsingDot,
   AnimatedSuccessBadge,
 } from '../components';
 
@@ -886,8 +885,7 @@ export const TeleconsultationScreen: React.FC<{
     >
       <AppHeader
         title="Chat Trực Tuyến Với Bác Sĩ"
-        subtitle="TS. BS. Lê Thu Trang • Nội Thần Kinh"
-        badgeText="TRỰC TUYẾN"
+        subtitle={`${doctor.name} • ${doctor.specialty}`}
         onBack={onBack}
       />
 
@@ -898,33 +896,15 @@ export const TeleconsultationScreen: React.FC<{
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Top Doctor & Session Info Banner */}
+        {/* Compact Session Info & Clinical Quick-Actions Strip */}
         <AnimatedEntry delay={40} direction="up">
-          <View style={[styles.card, SHADOWS.sm]}>
-            <View style={styles.docRow}>
-              <View style={{ position: 'relative' }}>
-                <Image source={{ uri: doctor.avatar }} style={styles.avatarMd} />
-                <View style={{ position: 'absolute', bottom: -2, right: -2 }}>
-                  <PulsingDot color={COLORS.secondary} size={8} />
-                </View>
-              </View>
-              <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
-                <View style={styles.rowBetween}>
-                  <Text style={[styles.docName, { flex: 1 }]} numberOfLines={1}>
-                    {doctor.name}
-                  </Text>
-                  <Badge label="Bác sĩ online" variant="teal" showDot />
-                </View>
-                <Text style={styles.docSub} numberOfLines={1}>
-                  Ca tư vấn #SC-241029-8892 • BN: Nguyễn Văn Vũ
-                </Text>
-                <Text style={styles.docHospital} numberOfLines={1}>
-                  {doctor.hospital}
-                </Text>
-              </View>
+          <View style={[styles.card, SHADOWS.sm, { paddingVertical: 10 }]}>
+            <View style={[styles.rowBetween, { marginBottom: 8 }]}>
+              <Text style={[styles.docSub, { flex: 1 }]} numberOfLines={1}>
+                Ca tư vấn #SC-241029-8892 • BN: Nguyễn Văn Vũ
+              </Text>
+              <Badge label="Đang tư vấn" variant="teal" showDot />
             </View>
-
-            <View style={styles.divider} />
 
             <View style={{ flexDirection: 'row', gap: 8 }}>
               <AppButton
