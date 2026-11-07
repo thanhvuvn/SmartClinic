@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Linking,
   StyleSheet,
   RefreshControl,
 } from 'react-native';
@@ -1169,25 +1170,39 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
           />
         </View>
 
-        {/* Emergency Hotline Banner */}
+        {/* Emergency 115 & Clinic Support Hotline Banner */}
+        {/* TODO: Remove "(Dữ liệu mẫu)" label before production release */}
         <View style={styles.hotlineBanner}>
           <View style={styles.hotlineIcon}>
-            <Ionicons name="headset-outline" size={20} color={COLORS.error} />
+            <Ionicons name="medical" size={20} color={COLORS.error} />
           </View>
           <View style={{ flex: 1, minWidth: 0, marginHorizontal: 10 }}>
             <Text style={styles.hotlineLabel} numberOfLines={1}>
-              Hotline Cấp Cứu & Trợ Giúp 24/7
+              Cấp Cứu Y Tế 115 & Tổng Đài Hỗ Trợ (Dữ liệu mẫu)
             </Text>
             <Text style={styles.hotlineNumber} numberOfLines={1}>
-              1900 6868
+              Cấp cứu: 115 • Hỗ trợ: 1900 6868
             </Text>
           </View>
+        </View>
+        <View style={{ flexDirection: 'row', gap: 10, marginTop: 10 }}>
           <AppButton
-            title="Gọi ngay"
+            title="Gọi Cấp cứu 115"
             variant="danger"
-            size="sm"
+            size="md"
             leftIcon="call-outline"
             fullWidth={false}
+            style={{ flex: 1 }}
+            onPress={() => Linking.openURL('tel:115')}
+          />
+          <AppButton
+            title="Hỗ trợ 1900 6868"
+            variant="tonal"
+            size="md"
+            leftIcon="headset-outline"
+            fullWidth={false}
+            style={{ flex: 1 }}
+            onPress={() => Linking.openURL('tel:19006868')}
           />
         </View>
 

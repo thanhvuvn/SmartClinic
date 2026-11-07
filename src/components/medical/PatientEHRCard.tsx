@@ -4,6 +4,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  Linking,
   StyleSheet,
   ViewStyle,
 } from 'react-native';
@@ -318,14 +319,44 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
         />
       </View>
 
-      <View style={styles.emergencyStrip}>
-        <Ionicons name="medical" size={15} color={COLORS.error} />
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={styles.emergencyLabel}>Liên hệ khẩn cấp</Text>
-          <Text style={styles.emergencyText}>{profile.emergencyContact}</Text>
-        </View>
-        <Ionicons name="call-outline" size={17} color={COLORS.primary} />
-      </View>
+      {/* TODO: Remove "(Dữ liệu mẫu)" label before production release */}
+      {(() => {
+        const rawContact = profile?.emergencyContact?.trim() || '';
+        const extractedPhone = rawContact.replace(/[^0-9+]/g, '');
+        const hasValidPhone = extractedPhone.length > 0;
+        return (
+          <TouchableOpacity
+            style={[styles.emergencyStrip, { minHeight: 44 }]}
+            activeOpacity={hasValidPhone ? 0.8 : 1}
+            disabled={!hasValidPhone}
+            onPress={() => {
+              if (hasValidPhone) {
+                Linking.openURL(`tel:${extractedPhone}`);
+              }
+            }}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: !hasValidPhone }}
+            accessibilityLabel={
+              hasValidPhone
+                ? `Gọi liên hệ khẩn cấp: ${rawContact}`
+                : 'Chưa cập nhật số điện thoại liên hệ khẩn cấp'
+            }
+          >
+            <Ionicons name="medical" size={15} color={COLORS.error} />
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Text style={styles.emergencyLabel}>
+                Liên hệ khẩn cấp (Dữ liệu mẫu)
+              </Text>
+              <Text style={styles.emergencyText}>
+                {rawContact || 'Chưa cập nhật số điện thoại khẩn cấp'}
+              </Text>
+            </View>
+            {hasValidPhone && (
+              <Ionicons name="call-outline" size={17} color={COLORS.primary} />
+            )}
+          </TouchableOpacity>
+        );
+      })()}
     </View>
   );
 };
