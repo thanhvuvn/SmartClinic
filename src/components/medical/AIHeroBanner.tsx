@@ -123,6 +123,15 @@ export const AIReminderCard: React.FC<AIReminderCardProps> = ({ style }) => {
   );
 };
 
+const formatRelativeDay = (offsetDays: number): string => {
+  const target = new Date();
+  target.setDate(target.getDate() + offsetDays);
+  const dd = String(target.getDate()).padStart(2, '0');
+  const mm = String(target.getMonth() + 1).padStart(2, '0');
+  const yyyy = target.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+};
+
 export interface AIClinicalInsightCardProps {
   onAskAIPress?: () => void;
   style?: ViewStyle;
@@ -132,6 +141,9 @@ export const AIClinicalInsightCard: React.FC<AIClinicalInsightCardProps> = ({
   onAskAIPress,
   style,
 }) => {
+  const recentExamDate = formatRelativeDay(-2);
+  const followUpDate = formatRelativeDay(12);
+
   return (
     <View style={[styles.insightCard, style]}>
       <View style={styles.insightHeader}>
@@ -139,9 +151,14 @@ export const AIClinicalInsightCard: React.FC<AIClinicalInsightCardProps> = ({
           <View style={styles.insightIconBox}>
             <Ionicons name="bulb-outline" size={18} color="#FFFFFF" />
           </View>
-          <Text style={styles.insightTitle}>Trợ lý AI Tóm tắt Bệnh án</Text>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text style={styles.insightTitle}>Tóm tắt Hồ sơ Bệnh án</Text>
+            <Text style={styles.insightSourceText}>
+              Tóm tắt từ kết luận khám gần nhất ({recentExamDate}) của TS. BS. Lê Thu Trang (Khoa Nội Thần Kinh)
+            </Text>
+          </View>
         </View>
-        <Badge label="Phân tích mới" variant="teal" icon="sparkles" />
+        <Badge label="Nguồn Bác sĩ" variant="teal" icon="document-text-outline" />
       </View>
 
       <Text style={styles.insightParagraph}>
@@ -156,7 +173,7 @@ export const AIClinicalInsightCard: React.FC<AIClinicalInsightCardProps> = ({
           icon="warning-outline"
         />
         <Badge
-          label="Tái khám: 12/11/2024 (sau 2 tuần)"
+          label={`Tái khám: ${followUpDate} (sau 2 tuần)`}
           variant="blue"
           icon="calendar-outline"
         />
@@ -344,7 +361,12 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.body,
     fontWeight: '800',
     color: COLORS.textPrimary,
-    flex: 1,
+  },
+  insightSourceText: {
+    fontSize: TYPOGRAPHY.caption,
+    color: COLORS.textSecondary,
+    lineHeight: TYPOGRAPHY.lineHeight.tight,
+    marginTop: 2,
   },
   insightParagraph: {
     fontSize: TYPOGRAPHY.bodySm,
