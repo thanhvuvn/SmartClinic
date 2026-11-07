@@ -47,6 +47,7 @@ import {
   AppointmentCard,
   AIMedicalTriageBanner,
   AIChatBubble,
+  AITypingIndicator,
   AIClinicalResponseCard,
   QuickPromptChips,
   ChatBottomInputBar,
@@ -785,6 +786,8 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({
   onBookDoctor,
 }) => {
   const [inputMsg, setInputMsg] = useState('');
+  const [showSampleThread, setShowSampleThread] = useState(true);
+  const [isTyping, setIsTyping] = useState(false);
   const [extraMessages, setExtraMessages] = useState<
     { id: string; sender: 'user' | 'ai'; text: string; time: string }[]
   >([]);
@@ -792,21 +795,34 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({
 
   const handleSend = (customText?: string) => {
     const content = (customText ?? inputMsg).trim();
-    if (!content) return;
+    if (!content || isTyping) return;
     setExtraMessages((prev) => [
       ...prev,
       { id: Date.now().toString(), sender: 'user', text: content, time: '09:44' },
-      {
-        id: (Date.now() + 1).toString(),
-        sender: 'ai',
-        text: 'Trợ lý AI đã ghi nhận thêm thông tin của bạn. Bạn nên hạn chế cà phê, uống đủ 2 lít nước/ngày và nghỉ mắt mỗi 45 phút làm việc máy tính. Nếu đau đầu kèm sốt cao hoặc tê yếu tay chân, cần đến cơ sở y tế ngay.',
-        time: '09:44',
-      },
     ]);
     if (!customText) setInputMsg('');
+
+    // TODO: Replace simulated typing timeout and sample response with real AI triage backend API
+    setIsTyping(true);
     setTimeout(() => {
       chatScrollRef.current?.scrollToEnd({ animated: true });
-    }, 100);
+    }, 80);
+
+    setTimeout(() => {
+      setIsTyping(false);
+      setExtraMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          sender: 'ai',
+          text: 'Trợ lý AI đã ghi nhận thêm thông tin của bạn. Bạn nên hạn chế cà phê, uống đủ 2 lít nước/ngày và nghỉ mắt mỗi 45 phút làm việc máy tính. Nếu đau đầu kèm sốt cao hoặc tê yếu tay chân, cần đến cơ sở y tế ngay.',
+          time: '09:44',
+        },
+      ]);
+      setTimeout(() => {
+        chatScrollRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+    }, 550);
   };
 
   return (
@@ -824,7 +840,11 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({
           {
             icon: 'refresh-outline',
             label: 'Làm mới cuộc trò chuyện',
-            onPress: () => setExtraMessages([]),
+            onPress: () => {
+              setShowSampleThread(false);
+              setIsTyping(false);
+              setExtraMessages([]);
+            },
           },
         ]}
       />
@@ -843,16 +863,20 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({
           time="09:41"
         />
 
-        <AIChatBubble
-          sender="user"
-          message="Tôi bị đau đầu vùng thái dương và cảm giác chóng mặt buồn nôn nhẹ trong 2 ngày nay, làm việc máy tính nhiều thì đau tăng lên."
-          time="09:42"
-        />
+        {showSampleThread && (
+          <>
+            <AIChatBubble
+              sender="user"
+              message="Tôi bị đau đầu vùng thái dương và cảm giác chóng mặt buồn nôn nhẹ trong 2 ngày nay, làm việc máy tính nhiều thì đau tăng lên."
+              time="09:42"
+            />
 
-        <AIClinicalResponseCard
-          doctors={[DOCTORS[0], DOCTORS[3]]}
-          onBookDoctor={onBookDoctor}
-        />
+            <AIClinicalResponseCard
+              doctors={[DOCTORS[0], DOCTORS[3]]}
+              onBookDoctor={onBookDoctor}
+            />
+          </>
+        )}
 
         {extraMessages.map((m) => (
           <AIChatBubble
@@ -862,6 +886,8 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({
             time={m.time}
           />
         ))}
+
+        {isTyping && <AITypingIndicator />}
 
         <QuickPromptChips
           prompts={[
