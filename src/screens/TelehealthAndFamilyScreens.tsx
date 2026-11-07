@@ -510,54 +510,75 @@ export const ChildEHRDetailScreen: React.FC<{ onBack?: () => void }> = ({
           style={{ marginBottom: 14 }}
         />
 
-        {/* Vaccine Immunization Tracker Card */}
-        <View style={[styles.card, SHADOWS.sm]}>
-          <SectionHeader
-            title="Lịch Tiêm Chủng Mở Rộng & Dịch Vụ"
-            leftIcon="shield-checkmark-outline"
-            badgeText="Sắp tới"
-            badgeVariant="warning"
-          />
-          <View style={styles.memberNoteBox}>
-            <Ionicons name="calendar" size={16} color={COLORS.primary} />
-            <View style={{ flex: 1, marginLeft: 8 }}>
-              <Text style={styles.docName}>
-                Mũi nhắc MMR II (Sởi - Quai bị - Rubella)
-              </Text>
-              <Text style={styles.docSub}>
-                Dự kiến: 03/11/2024 • Trung tâm Tiêm chủng Nhi đồng SmartClinic
-              </Text>
-            </View>
-          </View>
-          <View style={[styles.memberNoteBox, { marginTop: 8 }]}>
-            <Ionicons
-              name="checkmark-circle"
-              size={16}
-              color={COLORS.secondary}
+        {tab === 'vaccine' && (
+          /* Vaccine Immunization Tracker Card */
+          <View style={[styles.card, SHADOWS.sm]}>
+            <SectionHeader
+              title="Lịch Tiêm Chủng Mở Rộng & Dịch Vụ"
+              leftIcon="shield-checkmark-outline"
+              badgeText="Sắp tới"
+              badgeVariant="warning"
             />
-            <View style={{ flex: 1, marginLeft: 8 }}>
-              <Text style={styles.docName}>Vắc-xin Cúm mùa Tứ giá (Influvac)</Text>
-              <Text style={styles.docSub}>
-                Đã tiêm: 12/08/2024 • Lô: #INF-2024-88A • Không phản ứng phụ
-              </Text>
+            <View style={styles.memberNoteBox}>
+              <Ionicons name="calendar" size={16} color={COLORS.primary} />
+              <View style={{ flex: 1, marginLeft: 8 }}>
+                <Text style={styles.docName}>
+                  Mũi nhắc MMR II (Sởi - Quai bị - Rubella)
+                </Text>
+                <Text style={styles.docSub}>
+                  Dự kiến: 03/11/2024 • Trung tâm Tiêm chủng Nhi đồng SmartClinic
+                </Text>
+              </View>
+            </View>
+            <View style={[styles.memberNoteBox, { marginTop: 8 }]}>
+              <Ionicons
+                name="checkmark-circle"
+                size={16}
+                color={COLORS.secondary}
+              />
+              <View style={{ flex: 1, marginLeft: 8 }}>
+                <Text style={styles.docName}>Vắc-xin Cúm mùa Tứ giá (Influvac)</Text>
+                <Text style={styles.docSub}>
+                  Đã tiêm: 12/08/2024 • Lô: #INF-2024-88A • Không phản ứng phụ
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
+        )}
 
-        {/* Latest Pediatric Examination */}
-        <View style={[styles.card, SHADOWS.sm]}>
-          <SectionHeader
-            title="Lần khám Nhi khoa gần nhất"
-            subtitle="10/09/2024 • BS. CKI. Lê Hoàng Yến"
-          />
-          <Text style={styles.docName}>
-            Khám tổng quát định kỳ & Tư vấn dinh dưỡng 4 tuổi
-          </Text>
-          <Text style={styles.checkItemText}>
-            Tim phổi bình thường, phản xạ vận động tốt. Khuyến nghị bổ sung
-            Vitamin D3 400 IU/ngày và tăng cường rau xanh, cá hồi.
-          </Text>
-        </View>
+        {tab === 'exam' && (
+          /* Latest Pediatric Examination */
+          <View style={[styles.card, SHADOWS.sm]}>
+            <SectionHeader
+              title="Lần khám Nhi khoa gần nhất"
+              subtitle="10/09/2024 • BS. CKI. Lê Hoàng Yến"
+            />
+            <Text style={styles.docName}>
+              Khám tổng quát định kỳ & Tư vấn dinh dưỡng 4 tuổi
+            </Text>
+            <Text style={styles.checkItemText}>
+              Tim phổi bình thường, phản xạ vận động tốt. Khuyến nghị bổ sung
+              Vitamin D3 400 IU/ngày và tăng cường rau xanh, cá hồi.
+            </Text>
+          </View>
+        )}
+
+        {tab === 'growth' && (
+          /* WHO Growth Chart — Existing vitals data + Coming Soon notice */
+          <View style={[styles.card, SHADOWS.sm]}>
+            <SectionHeader
+              title="Biểu đồ WHO"
+              badgeText="Sắp ra mắt"
+              badgeVariant="surface"
+            />
+            <Text style={styles.docName}>
+              104 cm (Chuẩn WHO) • 16.5 kg (+0.4kg/quý) • BMI 15.2 (Phát triển tốt)
+            </Text>
+            <Text style={styles.checkItemText}>
+              Biểu đồ theo dõi chiều cao và cân nặng trực quan đang được phát triển.
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -1202,51 +1223,55 @@ export const LabAndImagingResultsScreen: React.FC<{
           style={{ marginBottom: 14 }}
         />
 
-        {/* PACS / DICOM Deep Diagnostic Imaging */}
-        <View style={[styles.card, SHADOWS.sm]}>
-          <SectionHeader
-            title="Cộng Hưởng Từ Sọ Não (MRI 1.5 Tesla)"
-            subtitle="Vùng khảo sát: Sọ não & Mạch máu nội sọ (MRA)"
-            badgeText="PACS v4.2"
-            badgeVariant="blue"
-          />
-          <Text style={styles.checkItemText}>
-            • Hệ thống não thất bên, não thất III và IV không giãn, cân đối qua
-            đường giữa.
-          </Text>
-          <Text style={styles.checkItemText}>
-            • Chuỗi xung MRA TOF 3D: Đa giác Willis và các nhánh động mạch não
-            trước, giữa, sau lưu thông tốt, không phình mạch.
-          </Text>
-        </View>
+        {tab === 'imaging' && (
+          /* PACS / DICOM Deep Diagnostic Imaging */
+          <View style={[styles.card, SHADOWS.sm]}>
+            <SectionHeader
+              title="Cộng Hưởng Từ Sọ Não (MRI 1.5 Tesla)"
+              subtitle="Vùng khảo sát: Sọ não & Mạch máu nội sọ (MRA)"
+              badgeText="PACS v4.2"
+              badgeVariant="blue"
+            />
+            <Text style={styles.checkItemText}>
+              • Hệ thống não thất bên, não thất III và IV không giãn, cân đối qua
+              đường giữa.
+            </Text>
+            <Text style={styles.checkItemText}>
+              • Chuỗi xung MRA TOF 3D: Đa giác Willis và các nhánh động mạch não
+              trước, giữa, sau lưu thông tốt, không phình mạch.
+            </Text>
+          </View>
+        )}
 
-        {/* Detailed Lab Test Results */}
-        <View style={[styles.card, SHADOWS.sm]}>
-          <SectionHeader
-            title="Bảng 14 Chỉ Số Sinh Hóa & Huyết Học"
-            badgeText="14/14 Chuẩn"
-            badgeVariant="teal"
-          />
-          {[
-            { name: 'Glucose máu lúc đói', val: '5.2 mmol/L', ref: '3.9 - 6.4' },
-            { name: 'HbA1c', val: '5.4 %', ref: '4.0 - 6.0' },
-            { name: 'Cholesterol toàn phần', val: '4.8 mmol/L', ref: '< 5.2' },
-            { name: 'Men gan AST / ALT', val: '22 / 24 U/L', ref: '< 35' },
-            { name: 'Creatinine huyết thanh', val: '78 µmol/L', ref: '62 - 106' },
-          ].map((lab) => (
-            <View key={lab.name} style={styles.labRow}>
-              <View style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
-                <Text style={styles.docName} numberOfLines={1}>
-                  {lab.name}
-                </Text>
-                <Text style={styles.docSub} numberOfLines={1}>
-                  Tham chiếu: {lab.ref}
-                </Text>
+        {tab === 'blood' && (
+          /* Detailed Lab Test Results */
+          <View style={[styles.card, SHADOWS.sm]}>
+            <SectionHeader
+              title="Bảng 14 Chỉ Số Sinh Hóa & Huyết Học"
+              badgeText="14/14 Chuẩn"
+              badgeVariant="teal"
+            />
+            {[
+              { name: 'Glucose máu lúc đói', val: '5.2 mmol/L', ref: '3.9 - 6.4' },
+              { name: 'HbA1c', val: '5.4 %', ref: '4.0 - 6.0' },
+              { name: 'Cholesterol toàn phần', val: '4.8 mmol/L', ref: '< 5.2' },
+              { name: 'Men gan AST / ALT', val: '22 / 24 U/L', ref: '< 35' },
+              { name: 'Creatinine huyết thanh', val: '78 µmol/L', ref: '62 - 106' },
+            ].map((lab) => (
+              <View key={lab.name} style={styles.labRow}>
+                <View style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
+                  <Text style={styles.docName} numberOfLines={1}>
+                    {lab.name}
+                  </Text>
+                  <Text style={styles.docSub} numberOfLines={1}>
+                    Tham chiếu: {lab.ref}
+                  </Text>
+                </View>
+                <Text style={styles.labVal}>{lab.val}</Text>
               </View>
-              <Text style={styles.labVal}>{lab.val}</Text>
-            </View>
-          ))}
-        </View>
+            ))}
+          </View>
+        )}
       </ScrollView>
       <ToastBanner
         visible={pdfToast}

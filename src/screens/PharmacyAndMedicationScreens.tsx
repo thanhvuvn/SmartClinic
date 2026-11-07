@@ -17,6 +17,8 @@ import {
   AppButton,
   Badge,
   SectionHeader,
+  SegmentedControl,
+  EmptyState,
   ToastBanner,
   AnimatedEntry,
   PressableScale,
@@ -344,6 +346,36 @@ export const FamilyMedicineCabinetScreen: React.FC<{
   onBack?: () => void;
   onRefillNow?: () => void;
 }> = ({ onBack, onRefillNow }) => {
+  const [filterKey, setFilterKey] = useState('all');
+  const cabinetMeds = [
+    {
+      name: 'Sibelium 5mg (Flunarizine)',
+      owner: 'Nguyễn Văn Vũ (Bản thân)',
+      stock: 'Còn 4 / 30 viên',
+      exp: 'HSD: 12/2026',
+      urgent: true,
+    },
+    {
+      name: 'Ginkgo Biloba 80mg',
+      owner: 'Nguyễn Văn Vũ (Bản thân)',
+      stock: 'Còn 18 / 30 viên',
+      exp: 'HSD: 08/2026',
+      urgent: false,
+    },
+    {
+      name: 'Amlodipine 5mg (Thuốc Huyết áp)',
+      owner: 'Bà Nguyễn Thị Mai (Mẹ • 62T)',
+      stock: 'Còn 22 / 30 viên',
+      exp: 'HSD: 05/2027',
+      urgent: false,
+    },
+  ];
+  const filteredMeds = cabinetMeds.filter((m) => {
+    if (filterKey === 'urgent') return m.urgent;
+    if (filterKey === 'normal') return !m.urgent;
+    return true;
+  });
+
   return (
     <View style={styles.screen}>
       <AppHeader
@@ -390,49 +422,53 @@ export const FamilyMedicineCabinetScreen: React.FC<{
           title="Thuốc đang lưu trữ trong gia đình"
           subtitle="Nguyễn Văn Vũ • Bé Bảo Nam • Bà Nguyễn Thị Mai"
         />
-        {[
-          {
-            name: 'Sibelium 5mg (Flunarizine)',
-            owner: 'Nguyễn Văn Vũ (Bản thân)',
-            stock: 'Còn 4 / 30 viên',
-            exp: 'HSD: 12/2026',
-            urgent: true,
-          },
-          {
-            name: 'Ginkgo Biloba 80mg',
-            owner: 'Nguyễn Văn Vũ (Bản thân)',
-            stock: 'Còn 18 / 30 viên',
-            exp: 'HSD: 08/2026',
-            urgent: false,
-          },
-          {
-            name: 'Amlodipine 5mg (Thuốc Huyết áp)',
-            owner: 'Bà Nguyễn Thị Mai (Mẹ • 62T)',
-            stock: 'Còn 22 / 30 viên',
-            exp: 'HSD: 05/2027',
-            urgent: false,
-          },
-        ].map((med, idx) => (
-          <AnimatedEntry key={med.name} delay={100 + idx * 60} direction="up">
-            <View style={[styles.card, SHADOWS.sm]}>
-              <View style={styles.rowBetween}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
-                  {med.urgent && <PulsingDot color={COLORS.error} size={6} />}
-                  <Text style={[styles.cardTitle, { flex: 1 }]} numberOfLines={1}>
-                    {med.name}
-                  </Text>
+        <SegmentedControl
+          variant="chips"
+          selectedKey={filterKey}
+          onSelect={setFilterKey}
+          options={[
+            { key: 'all', label: `Tất cả (${cabinetMeds.length})` },
+            {
+              key: 'urgent',
+              label: `Sắp hết (${cabinetMeds.filter((m) => m.urgent).length})`,
+            },
+            {
+              key: 'normal',
+              label: `Đủ dùng (${cabinetMeds.filter((m) => !m.urgent).length})`,
+            },
+          ]}
+          style={{ marginBottom: 12 }}
+        />
+
+        {filteredMeds.length > 0 ? (
+          filteredMeds.map((med, idx) => (
+            <AnimatedEntry key={med.name} delay={100 + idx * 60} direction="up">
+              <View style={[styles.card, SHADOWS.sm]}>
+                <View style={styles.rowBetween}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
+                    {med.urgent && <PulsingDot color={COLORS.error} size={6} />}
+                    <Text style={[styles.cardTitle, { flex: 1 }]} numberOfLines={1}>
+                      {med.name}
+                    </Text>
+                  </View>
+                  <Badge
+                    label={med.stock}
+                    variant={med.urgent ? 'danger' : 'teal'}
+                  />
                 </View>
-                <Badge
-                  label={med.stock}
-                  variant={med.urgent ? 'danger' : 'teal'}
-                />
+                <Text style={styles.subText} numberOfLines={1}>
+                  Người dùng: {med.owner} • {med.exp}
+                </Text>
               </View>
-              <Text style={styles.subText} numberOfLines={1}>
-                Người dùng: {med.owner} • {med.exp}
-              </Text>
-            </View>
-          </AnimatedEntry>
-        ))}
+            </AnimatedEntry>
+          ))
+        ) : (
+          <EmptyState
+            icon="medkit-outline"
+            title="Không có thuốc trong danh mục này"
+            description="Hiện không có thuốc nào thuộc bộ lọc đã chọn."
+          />
+        )}
       </ScrollView>
     </View>
   );
