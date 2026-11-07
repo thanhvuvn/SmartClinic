@@ -90,7 +90,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onContinue }) => {
               size={15}
               color={COLORS.secondary}
             />
-            <Text style={styles.trustText}>Bác sĩ chuẩn đoán</Text>
+            <Text style={styles.trustText}>Bác sĩ chuyên khoa</Text>
           </View>
           <View style={styles.trustDividerDot} />
           <View style={styles.trustItem}>
