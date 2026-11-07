@@ -93,6 +93,7 @@ export const SegmentedControl: React.FC<SegmentedControlProps> = ({
             accessibilityRole="tab"
             accessibilityLabel={opt.label}
             accessibilityState={{ selected: active }}
+            hitSlop={TOUCH.hitSlopSm}
             style={[
               styles.boxTab,
               active &&
@@ -166,6 +167,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: TOUCH.min,
     paddingVertical: 9,
     paddingHorizontal: 8,
     borderRadius: RADIUS.sm,
@@ -226,7 +228,7 @@ const styles = StyleSheet.create({
   chipItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 38,
+    minHeight: TOUCH.min,
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: RADIUS.full,

@@ -151,6 +151,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    minWidth: TOUCH.min,
+    minHeight: TOUCH.min,
     backgroundColor: COLORS.surfaceContainerLow,
     paddingHorizontal: 10,
     paddingVertical: 8,

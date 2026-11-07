@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, TYPOGRAPHY } from '../../theme';
+import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, TOUCH, TYPOGRAPHY } from '../../theme';
 import { PATIENT_PROFILE } from '../../data/mockData';
 import { Badge } from '../common/Badge';
 import { AppButton } from '../common/AppButton';
@@ -76,6 +76,7 @@ export const PatientMasterIdentityCard: React.FC<PatientMasterIdentityCardProps>
             <TouchableOpacity
               onPress={() => setIsMasked((prev) => !prev)}
               style={styles.eyeToggleBtn}
+              hitSlop={TOUCH.hitSlopMd}
               accessibilityRole="button"
               accessibilityLabel={
                 isMasked
@@ -115,6 +116,7 @@ export const PatientMasterIdentityCard: React.FC<PatientMasterIdentityCardProps>
           style={styles.qrBox}
           activeOpacity={0.8}
           onPress={onQrPress}
+          hitSlop={TOUCH.hitSlopSm}
           accessibilityRole="button"
           accessibilityLabel="Mở mã QR y tế cá nhân"
         >
@@ -202,6 +204,7 @@ export const VssIDInsuranceCard: React.FC<VssIDInsuranceCardProps> = ({
         <TouchableOpacity
           onPress={() => setIsMasked((prev) => !prev)}
           style={styles.vssidEyeBtn}
+          hitSlop={TOUCH.hitSlopSm}
           accessibilityRole="button"
           accessibilityLabel={isMasked ? 'Hiện mã số BHYT' : 'Ẩn mã số BHYT'}
         >
@@ -448,10 +451,12 @@ const styles = StyleSheet.create({
   eyeToggleBtn: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 36,
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.full,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     gap: 4,
     borderWidth: 1,
     borderColor: COLORS.borderSubtle,
@@ -462,9 +467,9 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
   },
   vssidEyeBtn: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: TOUCH.min,
+    height: TOUCH.min,
+    borderRadius: TOUCH.min / 2,
     backgroundColor: 'rgba(255,255,255,0.18)',
     alignItems: 'center',
     justifyContent: 'center',
@@ -477,6 +482,8 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   qrBox: {
+    minWidth: TOUCH.min,
+    minHeight: TOUCH.min,
     backgroundColor: COLORS.primaryContainer,
     borderRadius: RADIUS.md,
     paddingHorizontal: 10,

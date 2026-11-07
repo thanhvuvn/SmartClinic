@@ -749,9 +749,9 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   mapCircleBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: TOUCH.min,
+    height: TOUCH.min,
+    borderRadius: TOUCH.min / 2,
     backgroundColor: COLORS.surfaceContainer,
     alignItems: 'center',
     justifyContent: 'center',

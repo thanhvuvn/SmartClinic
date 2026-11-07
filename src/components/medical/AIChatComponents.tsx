@@ -548,6 +548,7 @@ const styles = StyleSheet.create({
   promptChip: {
     flexDirection: 'row',
     alignItems: 'center',
+    minHeight: TOUCH.min,
     backgroundColor: COLORS.surface,
     borderWidth: 1,
     borderColor: '#E2E8F0',
@@ -576,9 +577,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   attachBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: TOUCH.min,
+    height: TOUCH.min,
+    borderRadius: TOUCH.min / 2,
     backgroundColor: COLORS.surfaceContainerLow,
     alignItems: 'center',
     justifyContent: 'center',
