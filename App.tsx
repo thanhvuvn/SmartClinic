@@ -61,6 +61,10 @@ function AppContent() {
     slot?: any;
     consultMode?: string;
     paymentMethod?: PaymentMethodType;
+    patient?: {
+      name: string;
+      meta: string;
+    };
   }>({});
   const { width } = useWindowDimensions();
   const isTablet = width > 700;
@@ -106,11 +110,13 @@ function AppContent() {
 
   const handleOpenDoctor = (doc: DoctorItem) => {
     setSelectedDoctor(doc);
+    setBookingInfo((prev) => ({ ...prev, patient: undefined }));
     navigateTo('doctorDetail');
   };
 
   const handleOpenBooking = (doc: DoctorItem) => {
     setSelectedDoctor(doc);
+    setBookingInfo((prev) => ({ ...prev, patient: undefined }));
     navigateTo('bookingSlot');
   };
 
@@ -203,6 +209,7 @@ function AppContent() {
             day={bookingInfo.day}
             slot={bookingInfo.slot}
             consultMode={bookingInfo.consultMode}
+            patient={bookingInfo.patient}
             onBack={() => goBack('bookingSlot')}
             onPaymentSuccess={(method) => {
               setBookingInfo((prev) => ({ ...prev, paymentMethod: method }));
@@ -243,6 +250,16 @@ function AppContent() {
             onSelectChild={() => navigateTo('childEHR')}
             onAddMember={() => navigateTo('addFamilyMember')}
             onNavigate={navigateTo}
+            onBookForMember={(member) => {
+              setBookingInfo((prev) => ({
+                ...prev,
+                patient: {
+                  name: member.name,
+                  meta: `${member.bhyt ? `BHYT: ${member.bhyt.split(' ')[0]} • ` : ''}${member.relation}`,
+                },
+              }));
+              navigateTo('bookingSlot');
+            }}
           />
         );
       case 'childEHR':

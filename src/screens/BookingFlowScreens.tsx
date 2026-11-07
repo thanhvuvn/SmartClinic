@@ -18,6 +18,7 @@ import {
   SPECIALTIES,
   HOSPITALS,
   APPOINTMENTS,
+  PATIENT_PROFILE,
 } from '../data/mockData';
 import {
   AppHeader,
@@ -423,6 +424,10 @@ export interface BookingPaymentScreenProps {
   day?: any;
   slot?: TimeSlotItem;
   consultMode?: string;
+  patient?: {
+    name: string;
+    meta: string;
+  };
   onBack: () => void;
   onPaymentSuccess: (method: PaymentMethodType) => void;
 }
@@ -432,6 +437,7 @@ export const BookingPaymentScreen: React.FC<BookingPaymentScreenProps> = ({
   day,
   slot,
   consultMode = 'clinic',
+  patient,
   onBack,
   onPaymentSuccess,
 }) => {
@@ -529,10 +535,11 @@ export const BookingPaymentScreen: React.FC<BookingPaymentScreenProps> = ({
               <View style={styles.paymentInfoCol}>
                 <Text style={styles.paymentInfoCap}>BỆNH NHÂN</Text>
                 <Text style={styles.paymentInfoVal} numberOfLines={1}>
-                  Nguyễn Văn Vũ
+                  {patient?.name || PATIENT_PROFILE.name}
                 </Text>
                 <Text style={styles.paymentInfoSub} numberOfLines={1}>
-                  BHYT: GD479 • Nam (32T)
+                  {patient?.meta ||
+                    `BHYT: ${PATIENT_PROFILE.bhytCode.split(' ')[0]} • ${PATIENT_PROFILE.gender} (${PATIENT_PROFILE.age}T)`}
                 </Text>
               </View>
             </View>

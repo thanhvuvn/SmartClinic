@@ -14,7 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../theme';
 import { DOCTORS, PATIENT_PROFILE, PRESCRIPTION_DRUGS } from '../data/mockData';
-import { useAppContext } from '../context/AppContext';
+import { useAppContext, FamilyMemberItem } from '../context/AppContext';
 import { openGoogleMapsDirections } from '../utils/mapNavigation';
 import { shareAppointmentTicket } from '../utils/shareUtils';
 import {
@@ -303,7 +303,8 @@ export const FamilyProfilesScreen: React.FC<{
   onSelectChild?: () => void;
   onAddMember?: () => void;
   onNavigate?: (routeKey: string) => void;
-}> = ({ onBack, onSelectChild, onAddMember, onNavigate }) => {
+  onBookForMember?: (member: FamilyMemberItem) => void;
+}> = ({ onBack, onSelectChild, onAddMember, onNavigate, onBookForMember }) => {
   const { familyMembers } = useAppContext();
 
   return (
@@ -367,7 +368,13 @@ export const FamilyProfilesScreen: React.FC<{
               size="sm"
               fullWidth={false}
               style={{ flex: 1 }}
-              onPress={() => onNavigate?.('bookingSlot')}
+              onPress={() => {
+                if (onBookForMember && familyMembers[0]) {
+                  onBookForMember(familyMembers[0]);
+                } else {
+                  onNavigate?.('bookingSlot');
+                }
+              }}
             />
           </View>
         </LinearGradient>
@@ -380,42 +387,57 @@ export const FamilyProfilesScreen: React.FC<{
         />
 
         {familyMembers.map((mem) => (
-          <TouchableOpacity
-            key={mem.id}
-            activeOpacity={0.85}
-            onPress={onSelectChild}
-            accessibilityRole="button"
-            accessibilityLabel={`Hồ sơ ${mem.name}, ${mem.relation}`}
-            style={[styles.card, SHADOWS.sm]}
-          >
-            <View style={styles.rowBetween}>
-              <Text style={[styles.docName, { flex: 1 }]} numberOfLines={1}>
-                {mem.name}
-              </Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                <Badge label={mem.badge} variant="blue" />
-                <Ionicons
-                  name="chevron-forward"
-                  size={16}
-                  color={COLORS.textMuted}
-                  importantForAccessibility="no"
-                />
+          <View key={mem.id} style={[styles.card, SHADOWS.sm]}>
+            <TouchableOpacity
+              activeOpacity={0.85}
+              onPress={onSelectChild}
+              accessibilityRole="button"
+              accessibilityLabel={`Hồ sơ ${mem.name}, ${mem.relation}`}
+            >
+              <View style={styles.rowBetween}>
+                <Text style={[styles.docName, { flex: 1 }]} numberOfLines={1}>
+                  {mem.name}
+                </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <Badge label={mem.badge} variant="blue" />
+                  <Ionicons
+                    name="chevron-forward"
+                    size={16}
+                    color={COLORS.textMuted}
+                    importantForAccessibility="no"
+                  />
+                </View>
               </View>
-            </View>
-            <Text style={styles.docSub}>
-              {mem.relation} • {mem.code} • Nhóm máu {mem.blood}
-            </Text>
-            <View style={styles.memberNoteBox}>
-              <Ionicons
-                name="medical-outline"
-                size={14}
-                color={COLORS.secondary}
-              />
-              <Text style={styles.memberNoteText} numberOfLines={1}>
-                {mem.note}
+              <Text style={styles.docSub}>
+                {mem.relation} • {mem.code} • Nhóm máu {mem.blood}
               </Text>
+              <View style={styles.memberNoteBox}>
+                <Ionicons
+                  name="medical-outline"
+                  size={14}
+                  color={COLORS.secondary}
+                />
+                <Text style={styles.memberNoteText} numberOfLines={1}>
+                  {mem.note}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <View style={{ marginTop: 10 }}>
+              <AppButton
+                title={`Đặt lịch khám cho ${mem.name}`}
+                variant="tonal"
+                size="sm"
+                leftIcon="calendar-outline"
+                onPress={() => {
+                  if (onBookForMember) {
+                    onBookForMember(mem);
+                  } else {
+                    onNavigate?.('bookingSlot');
+                  }
+                }}
+              />
             </View>
-          </TouchableOpacity>
+          </View>
         ))}
 
         <AppButton
