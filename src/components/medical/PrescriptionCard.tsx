@@ -147,14 +147,12 @@ export const ActivePrescriptionCard: React.FC<ActivePrescriptionCardProps> = ({
 export interface LabImagingCardProps {
   onViewDicom?: () => void;
   onDownloadPdf?: () => void;
-  onVerifySignature?: () => void;
   style?: ViewStyle;
 }
 
 export const LabImagingCard: React.FC<LabImagingCardProps> = ({
   onViewDicom,
   onDownloadPdf,
-  onVerifySignature,
   style,
 }) => {
   return (
@@ -183,22 +181,16 @@ export const LabImagingCard: React.FC<LabImagingCardProps> = ({
       </View>
 
       <View style={styles.labFooterRow}>
-        <TouchableOpacity
-          style={styles.signatureRow}
-          activeOpacity={0.75}
-          onPress={onVerifySignature}
-          accessibilityRole="button"
-          accessibilityLabel="Trạng thái đã duyệt chẩn đoán hình ảnh"
-        >
+        <View style={styles.signatureRow}>
           <Ionicons
             name="checkmark-done-circle-outline"
             size={16}
             color={COLORS.primary}
           />
           <Text style={styles.signatureText} numberOfLines={1}>
-            Đã duyệt CĐHA
+            BS. Lê Thu Trang duyệt
           </Text>
-        </TouchableOpacity>
+        </View>
 
         <View style={styles.labBtnsRow}>
           <TouchableOpacity

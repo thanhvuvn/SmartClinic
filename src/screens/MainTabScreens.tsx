@@ -483,7 +483,12 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
         <AnimatedEntry delay={40} direction="up">
           <PatientMasterIdentityCard
             onQrPress={() => onNavigate('bookingSuccess')}
-            onBhytPress={() => onNavigate('familyProfiles')}
+            onBhytPress={() =>
+              Alert.alert(
+                'Thông tin thẻ BHYT (80%)',
+                `Mã thẻ: ${PATIENT_PROFILE.bhytCode}\nNơi ĐKKCB ban đầu: ${PATIENT_PROFILE.bhytHospital}\nHạn sử dụng: ${PATIENT_PROFILE.bhytExpiry}`
+              )
+            }
             style={{ marginBottom: 16 }}
           />
         </AnimatedEntry>
@@ -551,7 +556,6 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
                   msg: 'Kết quả chụp MRI & xét nghiệm máu đã được tải về máy.',
                 })
               }
-              onVerifySignature={() => onNavigate('teleconsult')}
             />
           </AnimatedEntry>
         )}
@@ -974,13 +978,23 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
         showsVerticalScrollIndicator={false}
       >
         <ProfileHeaderCard
-          onEditPress={() => onNavigate('addFamilyMember')}
+          onEditPress={() =>
+            Alert.alert(
+              'Hồ sơ cá nhân đã xác thực',
+              `Hồ sơ ${PATIENT_PROFILE.name} (${PATIENT_PROFILE.patientCode}) đã đồng bộ định danh eKYC. Để quản lý hồ sơ người thân, vui lòng chọn mục Hồ sơ Gia đình.`
+            )
+          }
           onQrPress={() => onNavigate('bookingSuccess')}
           style={{ marginBottom: 16 }}
         />
 
         <VssIDInsuranceCard
-          onDetailPress={() => onNavigate('familyProfiles')}
+          onDetailPress={() =>
+            Alert.alert(
+              'Chi tiết thẻ BHYT điện tử',
+              `Mã thẻ: ${PATIENT_PROFILE.bhytCode}\nMức hưởng: 80% chi phí KCB BHYT\nNơi ĐKKCB ban đầu: ${PATIENT_PROFILE.bhytHospital}\nHạn thẻ: ${PATIENT_PROFILE.bhytExpiry}`
+            )
+          }
           style={{ marginBottom: 18 }}
         />
 
