@@ -37,9 +37,9 @@ export const AIHeroBanner: React.FC<AIHeroBannerProps> = ({
 
       <View style={styles.heroTopRow}>
         <Badge
-          label="AI Powered • Chẩn đoán sơ bộ"
+          label="Hỗ trợ sàng lọc triệu chứng"
           variant="glass"
-          icon="sparkles"
+          icon="medkit-outline"
         />
         <View style={styles.readyBadge}>
           <PulsingDot color="#86F2E4" size={6} />
@@ -49,8 +49,7 @@ export const AIHeroBanner: React.FC<AIHeroBannerProps> = ({
 
       <Text style={styles.heroTitle}>Bạn đang gặp vấn đề sức khỏe gì?</Text>
       <Text style={styles.heroDesc}>
-        Mô tả triệu chứng để AI phân tích và gợi ý chuyên khoa, bác sĩ phù hợp
-        trong 30 giây.
+        Mô tả triệu chứng để nhận gợi ý chuyên khoa và bác sĩ phù hợp tham khảo.
       </Text>
 
       <View style={styles.heroBottomRow}>
@@ -58,15 +57,15 @@ export const AIHeroBanner: React.FC<AIHeroBannerProps> = ({
           title="Hỏi AI ngay"
           variant="white"
           size="md"
-          leftIcon="sparkles"
+          leftIcon="chatbubble-ellipses-outline"
           rightIcon="arrow-forward"
           fullWidth={false}
           onPress={onAskAIPress}
           style={styles.askBtn}
         />
         <View style={styles.accuracyRow}>
-          <Ionicons name="checkmark-circle" size={16} color="#86F2E4" />
-          <Text style={styles.accuracyText}>Độ chính xác 98%</Text>
+          <Ionicons name="information-circle-outline" size={16} color="#86F2E4" />
+          <Text style={styles.accuracyText}>Gợi ý chuyên khoa tham khảo</Text>
         </View>
       </View>
     </LinearGradient>
