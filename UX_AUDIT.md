@@ -147,47 +147,47 @@
 
   ---
 
-  ### 🟠 MỨC P1 — TRẢI NGHIỆM NGƯỜI LỚN TUỔI, BỐ CỤC, VÙNG BẤM >= 44PT & TRẠNG THÁI (13 LỖI — CHIA THÀNH ĐỢT 2A & ĐỢT 2B)
+  ### 🟠 MỨC P1 — TRẢI NGHIỆM NGƯỜI LỚN TUỔI, BỐ CỤC, VÙNG BẤM >= 44PT & TRẠNG THÁI (13 LỖI — ✅ ĐÃ HOÀN THÀNH ĐỢT 2A & ĐỢT 2B)
 
   #### **Phân nhóm Đợt 2:**
-  - **Đợt 2a (`ux/phase-2a` — ✅ Đã hoàn thành):** `P1-04` (`497aa2f`), `P1-06` (`813631e`), `A-11` (`807b71c`), `P1-01` (`648b384`), `P1-13` (`51110b2`)
-  - **Đợt 2b (`ux/phase-2b`):** `P1-03`, `P1-05`, `P1-07`, `P1-08`, `P1-09`, `P1-10`, `P1-11`, `P1-12` *(+ `P1-02` làm sau)*
+  - **Đợt 2a (`ux/phase-2a` — ✅ Đã hoàn thành & Merge vào `main`):** `P1-04` (`497aa2f`), `P1-06` (`813631e`), `A-11` (`807b71c`), `P1-01` (`648b384`), `P1-13` (`51110b2`)
+  - **Đợt 2b (`ux/phase-2b` — ✅ Đã hoàn thành):** `P1-03` (`75f897c`), `P1-05` (`a77d054`), `P1-07` (`3ec0e89`), `P1-08` (`ac0b8ef`), `P1-09` (`ed84c0d`), `P1-10` (`c911be9`), `P1-11` (`da19c18`), `P1-12` (`732266f`), `P1-02` (`5ecca16`)
 
   1. **`[P1-01]` ✅ *(Commit `648b384`)* Đưa Lịch hẹn sắp tới lên đầu Trang chủ, thu gọn `AIHeroBanner` và giảm lối vào trùng lặp:**
     - **Vị trí:** `src/screens/MainTabScreens.tsx:154-255` và `src/components/medical/AIHeroBanner.tsx:21-74`
     - **Cách sửa:** Đưa khối `"Lịch khám sắp tới"` lên ngay dưới thanh Tìm kiếm; thu gọn `AIHeroBanner` còn một dải gọn (tiêu đề ngắn + nút `"Hỏi AI"`, bỏ vòng tròn trang trí) và rút gọn lưới `quickServices` từ 6 ô xuống 4 ô (`Nhật ký thuốc`, `Hồ sơ Gia đình`, `Tủ thuốc nhà`, `Kết quả CĐHA`) xếp 2×2.
-  2. **`[P1-02]` Chuông thông báo trên `HomeGreetingHeader` mở đúng danh sách thông báo:**
-    - **Vị trí:** `src/screens/MainTabScreens.tsx:151` và `src/components/navigation/AppHeader.tsx:182-195`
-    - **Cách sửa:** Khi bấm biểu tượng chuông thông báo trên Header Trang chủ, hiển thị thông báo y tế thay vì nhảy thẳng vào màn hình `medLog`.
-  3. **`[P1-03]` Ghi rõ nguồn trích xuất bác sĩ (với ngày sinh động theo ngày hiện tại) cho thẻ `AIClinicalInsightCard`:**
-    - **Vị trí:** `src/components/medical/AIHeroBanner.tsx:150-194`
-    - **Cách sửa:** Ghi rõ nguồn dưới tiêu đề và nội dung: `"Tóm tắt từ kết luận khám gần nhất của TS. BS. Lê Thu Trang (Khoa Nội Thần Kinh)"`, sử dụng ngày tính động từ thời gian hiện tại.
+  2. **`[P1-02]` ✅ *(Commit `5ecca16`)* Chuông thông báo trên `HomeGreetingHeader` mở đúng danh sách thông báo:**
+    - **Vị trí:** `src/screens/MainTabScreens.tsx:214, 450-600` và `src/components/navigation/AppHeader.tsx:182-195`
+    - **Cách sửa:** Khi bấm biểu tượng chuông thông báo trên Header Trang chủ, hiển thị sheet danh sách thông báo y tế (Lịch hẹn sắp tới, Nhắc uống thuốc, Kết quả MRI & Xét nghiệm) thay vì nhảy thẳng vào màn hình `medLog`.
+  3. **`[P1-03]` ✅ *(Commit `75f897c`)* Ghi rõ nguồn trích xuất bác sĩ (với ngày sinh động theo ngày hiện tại) cho thẻ `AIClinicalInsightCard`:**
+    - **Vị trí:** `src/components/medical/AIHeroBanner.tsx:110-165`
+    - **Cách sửa:** Ghi rõ nguồn dưới tiêu đề và nội dung: `"Tóm tắt từ kết luận khám gần nhất của TS. BS. Lê Thu Trang (Khoa Nội Thần Kinh)"`, sử dụng ngày tính động từ thời gian hiện tại (`formatRelativeDay`).
   4. **`[P1-04]` ✅ *(Commit `497aa2f`)* Nâng chiều cao `AppButton size="sm"` từ `40pt` lên chuẩn `44pt` (`TOUCH.min`):**
     - **Vị trí:** `src/components/common/AppButton.tsx:55-59`, `src/screens/PharmacyAndMedicationScreens.tsx:570-577`, `src/screens/RoleDashboards.tsx:1155-1158`
     - **Cách sửa:** Đổi `heightMap.sm` thành `TOUCH.min` (`44pt`), đồng thời nâng `confirmBtnWrap` ở `MedicationLogScreen` lên `minHeight: TOUCH.min` và căn chỉnh `docActionRow` ở `RoleDashboards`.
-  5. **`[P1-05]` Xử lý các điều hướng sai đích trên `EHRScreen` và `ProfileSettingsScreen` (không tạo xác nhận chữ ký số giả):**
-    - **Vị trí:** `src/screens/MainTabScreens.tsx:466, 534, 934` và `src/components/medical/TimelineAndSpecialty.tsx:266-274`
-    - **Cách sửa:** Bỏ nút `"Xác thực chữ ký số"` giả trên `LabImagingCard` (hoặc đổi nhãn thành `"Xem chi tiết kết quả"` dẫn tới `labImagingResults`); sửa nút `"BHYT: 80%"` và `"Sửa hồ sơ"` đúng ngữ cảnh.
+  5. **`[P1-05]` ✅ *(Commit `a77d054`)* Xử lý các điều hướng sai đích trên `EHRScreen` và `ProfileSettingsScreen` (không tạo xác nhận chữ ký số giả):**
+    - **Vị trí:** `src/screens/MainTabScreens.tsx:500-560, 955` và `src/components/medical/PrescriptionCard.tsx:123-163`
+    - **Cách sửa:** Bỏ nút `"Xác thực chữ ký số"` giả trên `LabImagingCard`; sửa nút `"BHYT: 80%"` và `"Sửa hồ sơ"` đúng ngữ cảnh.
   6. **`[P1-06]` ✅ *(Commit `813631e`)* Nâng vùng chạm các nút icon tròn (`AppHeader`, `PatientEHRCard`, `HospitalCard`, `DoctorDetailScreen`, `AIChatComponents`) và các chip lọc (`SegmentedControl`) lên `>= 44x44pt`:**
     - **Vị trí:** `AppHeader.tsx:219-285, 327-335`, `PatientEHRCard.tsx:76-94, 114-123, 202-213, 448-487`, `HospitalCard.tsx:150-160`, `BookingFlowScreens.tsx:751-758`, `AIChatComponents.tsx:548-585`, `SegmentedControl.tsx:89-103, 164-172, 226-233`
     - **Cách sửa:** Nâng kích thước các nút tròn và chip lọc lên `TOUCH.min` (`44pt`) hoặc `minHeight: 36` + `hitSlop={TOUCH.hitSlopMd}`.
-  7. **`[P1-07]` Đổi `textMuted` / `placeholder` sang `#5B646E` (đạt tương phản `>= 5.45:1` trên cả 3 nền), tăng cỡ chữ nhỏ (`9–11pt`) và nới `maxFontSizeMultiplier` trên `BottomTabBar`:**
-    - **Vị trí:** `src/theme/index.ts:30, 32`, `BottomTabBar.tsx:90, 128`, `AIChatComponents.tsx:380, 388`, `HospitalCard.tsx:124`, `HospitalMapModal.tsx:388`
+  7. **`[P1-07]` ✅ *(Commit `3ec0e89`)* Đổi `textMuted` / `placeholder` sang `#5B646E` (đạt tương phản `>= 5.45:1` trên cả 3 nền), tăng cỡ chữ nhỏ (`9–11pt`) và nới `maxFontSizeMultiplier` trên `BottomTabBar`:**
+    - **Vị trí:** `src/theme/index.ts:30, 32`, `BottomTabBar.tsx:90, 128`, `AIChatComponents.tsx:380, 388, 521`, `HospitalCard.tsx:126-166`, `HospitalMapModal.tsx:482-688`
     - **Cách sửa:** Đổi `textMuted: '#5B646E'` và `placeholder: '#5B646E'` (đạt **6.01:1** trên `#FFFFFF`, **5.71:1** trên `#FAF8FF`, **5.45:1** trên `#F2F3FF`); nới `maxFontSizeMultiplier` trên `BottomTabBar.tsx:90` lên `1.4`; nâng cỡ chữ tin nhắn chat lên `14.5pt` và các nhãn `9–10pt` lên tối thiểu `12pt`.
-  8. **`[P1-08]` Loại bỏ cặp nút lặp trên `PostConsultSummaryScreen` và `BookingSuccessScreen`:**
-    - **Vị trí:** `src/screens/TelehealthAndFamilyScreens.tsx:254-280, 1084-1099`
-    - **Cách sửa:** Xóa 2 nút lặp bên dưới `ActivePrescriptionCard` trong `PostConsultSummaryScreen`; trên `BookingSuccessScreen`, đổi nút `"Xem kết quả & Đơn thuốc mẫu"` thành `"Xem lịch khám của tôi"`.
-  9. **`[P1-09]` Bổ sung `EmptyState` cho các danh sách có thể rỗng (`AppointmentsScreen` tab Đã khám / Đã hủy, `EHRScreen` tab Đơn thuốc):**
-    - **Vị trí:** `src/screens/MainTabScreens.tsx:496-516, 699-754`
+  8. **`[P1-08]` ✅ *(Commit `ac0b8ef`)* Loại bỏ cặp nút lặp trên `PostConsultSummaryScreen` và `BookingSuccessScreen`:**
+    - **Vị trí:** `src/screens/TelehealthAndFamilyScreens.tsx:278-294, 1126-1149`
+    - **Cách sửa:** Xóa 2 nút lặp bên dưới `ActivePrescriptionCard` trong `PostConsultSummaryScreen`; trên `BookingSuccessScreen`, chuẩn hóa nút `"Xem lịch khám của tôi"`.
+  9. **`[P1-09]` ✅ *(Commit `ed84c0d`)* Bổ sung `EmptyState` cho các danh sách có thể rỗng (`AppointmentsScreen` tab Đã khám / Đã hủy, `EHRScreen` tab Đơn thuốc):**
+    - **Vị trí:** `src/screens/MainTabScreens.tsx:521-549, 729-797`
     - **Cách sửa:** Chỉ bổ sung `EmptyState` khi mảng rỗng (không tạo `loading`/`error` giả khi chưa có API).
-  10. **`[P1-10]` Bổ sung thuộc tính trợ năng (`accessibilityRole`, `accessibilityState`) cho bộ chọn ngày/giờ khám và phương thức thanh toán:**
-      - **Vị trí:** `src/components/medical/BookingSlotSelector.tsx:45-145` và `src/screens/BookingFlowScreens.tsx:594-646`
+  10. **`[P1-10]` ✅ *(Commit `c911be9`)* Bổ sung thuộc tính trợ năng (`accessibilityRole`, `accessibilityState`) cho bộ chọn ngày/giờ khám và phương thức thanh toán:**
+      - **Vị trí:** `src/components/common/Animations.tsx:73-121`, `src/components/medical/DateTimeSlotPicker.tsx:37-146` và `src/screens/BookingFlowScreens.tsx:590-605`
       - **Cách sửa:** Gắn `accessibilityRole="button"` / `"radio"` và `accessibilityState={{ selected }}` cho từng ngày khám, khung giờ khám và phương thức thanh toán.
-  11. **`[P1-11]` Thu gọn thẻ thông tin bác sĩ trên đầu màn hình `TeleconsultationScreen`:**
-      - **Vị trí:** `src/screens/TelehealthAndFamilyScreens.tsx:860-906`
+  11. **`[P1-11]` ✅ *(Commit `da19c18`)* Thu gọn thẻ thông tin bác sĩ trên đầu màn hình `TeleconsultationScreen`:**
+      - **Vị trí:** `src/screens/TelehealthAndFamilyScreens.tsx:886-935`
       - **Cách sửa:** Rút gọn thanh thông tin ca tư vấn và bỏ các badge `"TRỰC TUYẾN"` / `"Bác sĩ online"` lặp 3 lần.
-  12. **`[P1-12]` *(Chuyển từ P0-07)* Truyền người khám đã chọn qua route state tới `BookingPaymentScreen`:**
-      - **Vị trí:** `App.tsx`, `src/screens/TelehealthAndFamilyScreens.tsx:397-404` (`FamilyProfilesScreen`), và `src/screens/BookingFlowScreens.tsx:530-536` (`BookingPaymentScreen`)
+  12. **`[P1-12]` ✅ *(Commit `732266f`)* *(Chuyển từ P0-07)* Truyền người khám đã chọn qua route state tới `BookingPaymentScreen`:**
+      - **Vị trí:** `App.tsx`, `src/screens/TelehealthAndFamilyScreens.tsx:301-445` (`FamilyProfilesScreen`), và `src/screens/BookingFlowScreens.tsx:421-545` (`BookingPaymentScreen`)
       - **Cách sửa:** Khi bấm `"Đặt lịch khám"` từ hồ sơ một thành viên trong `FamilyProfilesScreen`, lưu thành viên được chọn vào state điều hướng tại `App.tsx` và truyền xuống `BookingPaymentScreen` để hiển thị đúng tên, tuổi, mã BHYT của người khám (mặc định là chủ tài khoản `PATIENT_PROFILE` nếu đặt từ Trang chủ) thay vì thêm bộ chọn trực tiếp ở màn hình thanh toán.
   13. **`[P1-13]` ✅ *(Commit `51110b2`)* Danh sách lịch hẹn sắp tới (Trang chủ và tab Lịch khám) xếp theo thời gian gần nhất trước:**
       - **Vị trí:** `src/screens/MainTabScreens.tsx:70-105, 137-140, 628-630`
@@ -251,8 +251,8 @@
   | **Đợt 1a (`P0`)** | `ux/phase-1a` | `P0-01`, `P0-02`, `P0-03`, `P0-08`, `P0-10` | ✅ **Đã hoàn thành & Merge vào `main`** | `ec10863` (`P0-01`), `627499c` (`P0-02`), `e83d17c` (`P0-03`), `3dd4282` (`P0-08`), `633a030` (`P0-10`) |
   | **Đợt 1b (`P0`)** | `ux/phase-1b` | `P0-04`, `P0-05`, `P0-06`, `P0-09` | ✅ **Đã hoàn thành & Merge vào `main`** | `7df173b` (`P0-04`), `2857ef9` (`P0-05`), `01f488f` (`P0-06`), `09dc390` (`P0-09`) |
   | **Cấu hình Lint** | `chore/eslint` | Cài đặt `eslint@^9.0.0`, `eslint-config-expo@~58.0.4` | ✅ **Đã hoàn thành & Merge vào `main`** | `e966631` (`chore: add eslint (expo) devDependencies`) |
-  | **Đợt 2a (`P1`)** | `ux/phase-2a` | `Bước 0 (docs)`, `P1-04`, `P1-06`, `A-11`, `P1-01`, `P1-13` | ✅ **Đã hoàn thành (Chờ nghiệm thu)** | `57ddca7` (`Bước 0`), `497aa2f` (`P1-04`), `813631e` (`P1-06`), `807b71c` (`A-11`), `648b384` (`P1-01`), `51110b2` (`P1-13`) |
-  | **Đợt 2b (`P1`)** | *(Chưa tạo)* | `P1-03`, `P1-05`, `P1-07`, `P1-08`, `P1-09`, `P1-10`, `P1-11`, `P1-12` *(+ `P1-02` làm sau)* | ⏸️ **Chờ duyệt sau Đợt 2a** | — |
+  | **Đợt 2a (`P1`)** | `ux/phase-2a` | `Bước 0 (docs)`, `P1-04`, `P1-06`, `A-11`, `P1-01`, `P1-13` | ✅ **Đã hoàn thành & Merge vào `main`** | `57ddca7` (`Bước 0`), `497aa2f` (`P1-04`), `813631e` (`P1-06`), `807b71c` (`A-11`), `648b384` (`P1-01`), `51110b2` (`P1-13`) |
+  | **Đợt 2b (`P1`)** | `ux/phase-2b` | `P1-03`, `P1-05`, `P1-07`, `P1-08`, `P1-09`, `P1-10`, `P1-11`, `P1-12`, `P1-02` | ✅ **Đã hoàn thành (Chờ nghiệm thu)** | `75f897c` (`P1-03`), `a77d054` (`P1-05`), `3ec0e89` (`P1-07`), `ac0b8ef` (`P1-08`), `ed84c0d` (`P1-09`), `c911be9` (`P1-10`), `da19c18` (`P1-11`), `732266f` (`P1-12`), `5ecca16` (`P1-02`) |
   | **Đợt 3 (`P2`)** | *(Chưa tạo)* | `P2-01` → `P2-08` + Phụ lục còn lại | ⏸️ **Chờ duyệt** | — |
 
   ---
