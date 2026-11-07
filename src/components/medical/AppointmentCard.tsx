@@ -106,17 +106,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             </View>
           </View>
         ) : (
-          <TouchableOpacity
-            style={styles.waitingRoomPill}
-            onPress={() => onPrimaryPress?.(appointment)}
-            accessibilityRole="button"
-            accessibilityLabel={`Chat với bác sĩ ${doctor.name}`}
-          >
-            <Ionicons name="chatbubbles-outline" size={14} color="#FFFFFF" />
-            <Text style={styles.waitingRoomText} numberOfLines={1}>
-              Chat Bác sĩ
-            </Text>
-          </TouchableOpacity>
+          <Badge label="Khám trực tuyến" variant="teal" showDot />
         )}
       </View>
 
@@ -128,42 +118,10 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
             <Text style={[styles.roomText, { flex: 1 }]} numberOfLines={1}>
               {appointment.room}
             </Text>
-            <TouchableOpacity
-              onPress={() =>
-                openGoogleMapsDirections({
-                  name: doctor.hospital,
-                  address: doctor.address,
-                  latitude: doctor.latitude,
-                  longitude: doctor.longitude,
-                })
-              }
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 4,
-                backgroundColor: COLORS.primaryContainer,
-                paddingHorizontal: 8,
-                paddingVertical: 4,
-                borderRadius: RADIUS.sm,
-              }}
-              accessibilityRole="button"
-              accessibilityLabel={`Chỉ đường Google Maps tới ${doctor.hospital}`}
-            >
-              <Ionicons name="navigate" size={12} color={COLORS.primary} />
-              <Text
-                style={{
-                  fontSize: 11,
-                  fontWeight: '800',
-                  color: COLORS.primary,
-                }}
-              >
-                Chỉ đường
-              </Text>
-            </TouchableOpacity>
           </View>
 
           <View style={styles.qrCodeRow}>
-            <View style={{ flex: 1, minWidth: 0, marginRight: 8 }}>
+            <View style={{ flex: 1, minWidth: 0 }}>
               <Text style={styles.codeLabel} numberOfLines={1}>
                 MÃ PHIẾU HẸN
               </Text>
@@ -171,16 +129,6 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
                 {appointment.code}
               </Text>
             </View>
-            <TouchableOpacity
-              style={styles.qrBtn}
-              activeOpacity={0.8}
-              onPress={() => onPrimaryPress?.(appointment)}
-              accessibilityRole="button"
-              accessibilityLabel={`Mở mã QR check-in phiếu hẹn ${appointment.code}`}
-            >
-              <Ionicons name="qr-code-outline" size={14} color={COLORS.primary} />
-              <Text style={styles.qrBtnText}>Check-in QR</Text>
-            </TouchableOpacity>
           </View>
 
           <View style={styles.actionRow}>
@@ -191,7 +139,14 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
               leftIcon="map-outline"
               fullWidth={false}
               style={{ flex: 1 }}
-              onPress={() => onSecondaryPress?.(appointment)}
+              onPress={() =>
+                openGoogleMapsDirections({
+                  name: doctor.hospital,
+                  address: doctor.address,
+                  latitude: doctor.latitude,
+                  longitude: doctor.longitude,
+                })
+              }
             />
             <AppButton
               title="Xem phiếu hẹn"
@@ -203,27 +158,43 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({
               onPress={() => onPrimaryPress?.(appointment)}
             />
           </View>
+
+          {onSecondaryPress && (
+            <AppButton
+              title="Hủy lịch"
+              variant="outline"
+              size="md"
+              leftIcon="close-circle-outline"
+              style={{ marginTop: 8 }}
+              onPress={() => onSecondaryPress(appointment)}
+            />
+          )}
         </>
       )}
 
-      {/* Video Consultation Actions */}
+      {/* Online Consultation Actions — Main button "Vào phòng tư vấn", no "Chỉ đường" */}
       {!isClinic && (
-        <View style={styles.videoFooterRow}>
-          <TouchableOpacity
-            style={styles.cancelLink}
-            onPress={() => onSecondaryPress?.(appointment)}
-          >
-            <Ionicons name="close-circle-outline" size={15} color={COLORS.error} />
-            <Text style={styles.cancelText}>Hủy lịch</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.detailLink}
+        <View style={styles.actionRow}>
+          {onSecondaryPress && (
+            <AppButton
+              title="Hủy lịch"
+              variant="outline"
+              size="md"
+              leftIcon="close-circle-outline"
+              fullWidth={false}
+              style={{ flex: 1 }}
+              onPress={() => onSecondaryPress(appointment)}
+            />
+          )}
+          <AppButton
+            title="Vào phòng tư vấn"
+            variant="primary"
+            size="md"
+            leftIcon="chatbubbles-outline"
+            fullWidth={false}
+            style={{ flex: 1 }}
             onPress={() => onPrimaryPress?.(appointment)}
-          >
-            <Text style={styles.detailText}>Chi tiết cuộc hẹn</Text>
-            <Ionicons name="chevron-forward" size={14} color={COLORS.primary} />
-          </TouchableOpacity>
+          />
         </View>
       )}
     </View>

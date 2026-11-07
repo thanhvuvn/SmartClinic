@@ -661,16 +661,12 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
                     }}
                     onSecondaryPress={(item) => {
                       Alert.alert(
-                        'Tùy chọn lịch hẹn',
-                        `${item.doctor.name} (${item.code})\n${item.timeRange}\n${item.room || item.doctor.hospital}`,
+                        'Xác nhận hủy lịch hẹn?',
+                        `Bạn có chắc chắn muốn hủy lịch hẹn ${item.code} với ${item.doctor.name} (${item.timeRange}) không?`,
                         [
                           { text: 'Đóng', style: 'cancel' },
                           {
-                            text: 'Xem Bác sĩ',
-                            onPress: () => onSelectDoctor(item.doctor),
-                          },
-                          {
-                            text: 'Hủy lịch hẹn này',
+                            text: 'Xác nhận hủy',
                             style: 'destructive',
                             onPress: () => {
                               cancelAppointment(item.id);
