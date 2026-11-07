@@ -900,12 +900,18 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
   onNavigate,
   onSwitchTab,
 }) => {
+  const { appointments, familyMembers, resetAppData } = useAppContext();
   const [pillReminder, setPillReminder] = useState(true);
   const [aptAlert, setAptAlert] = useState(true);
   const [labAlert, setLabAlert] = useState(true);
   const [aiCare, setAiCare] = useState(true);
   const [dndMode, setDndMode] = useState(true);
   const [biometric, setBiometric] = useState(true);
+  const [resetToast, setResetToast] = useState(false);
+
+  const upcomingCount = appointments.filter(
+    (a) => a.status === 'upcoming'
+  ).length;
 
   return (
     <View style={styles.screen}>
@@ -953,7 +959,9 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
               </View>
               <Badge label="Gần nhất" variant="blue" />
             </View>
-            <Text style={[styles.statBigNum, { color: COLORS.primary }]}>2</Text>
+            <Text style={[styles.statBigNum, { color: COLORS.primary }]}>
+              {upcomingCount}
+            </Text>
             <Text style={styles.statBoxTitle} numberOfLines={1}>
               Lịch hẹn sắp tới
             </Text>
@@ -1118,8 +1126,8 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
           <SettingLinkRow
             icon="people-outline"
             title="Hồ sơ người thân trong gia đình"
-            subtitle="Đang quản lý 3 hồ sơ phụ (Mẹ, Vợ, Con)"
-            badgeLabel="3 thành viên"
+            subtitle={`Đang quản lý ${familyMembers.length} hồ sơ phụ (Đồng bộ VssID)`}
+            badgeLabel={`${familyMembers.length} thành viên`}
             onPress={() => onNavigate('familyProfiles')}
           />
           <SettingLinkRow
@@ -1135,6 +1143,29 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
             subtitle="Xuất file PDF kết quả khám & đơn thuốc gần nhất"
             isDownload
             onPress={() => onNavigate('postConsultSummary')}
+          />
+          <SettingLinkRow
+            icon="refresh-circle-outline"
+            title="Khôi phục dữ liệu mẫu ban đầu"
+            subtitle="Xóa bộ nhớ AsyncStorage & đưa lịch hẹn, đơn thuốc về mặc định"
+            badgeLabel="Local Storage"
+            onPress={() =>
+              Alert.alert(
+                'Khôi phục dữ liệu mặc định?',
+                'Toàn bộ lịch hẹn mới đặt, người thân vừa thêm và thuốc bác sĩ vừa kê trong bộ nhớ máy sẽ được đặt lại về ban đầu.',
+                [
+                  { text: 'Hủy', style: 'cancel' },
+                  {
+                    text: 'Khôi phục',
+                    style: 'destructive',
+                    onPress: async () => {
+                      await resetAppData();
+                      setResetToast(true);
+                    },
+                  },
+                ]
+              )
+            }
           />
         </View>
 
@@ -1174,6 +1205,13 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
           Tiêu chuẩn an toàn dữ liệu y tế HL7/FHIR & Bộ Y Tế Việt Nam
         </Text>
       </ScrollView>
+
+      <ToastBanner
+        visible={resetToast}
+        title="Đã khôi phục dữ liệu mặc định"
+        message="Bộ nhớ lưu trữ trên thiết bị (AsyncStorage) đã được làm mới."
+        onDismiss={() => setResetToast(false)}
+      />
     </View>
   );
 };

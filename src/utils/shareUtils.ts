@@ -101,3 +101,4 @@ export async function shareDoctorProfile(doctor: DoctorItem): Promise<void> {
     Alert.alert('Không thể chia sẻ', 'Thiết bị không hỗ trợ chia sẻ hồ sơ bác sĩ.');
   }
 }
+

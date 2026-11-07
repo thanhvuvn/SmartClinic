@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import {
   APPOINTMENTS,
   AppointmentItem,
@@ -12,6 +12,11 @@ import {
   TIME_SLOTS,
   TimeSlotItem,
 } from '../data/mockData';
+import {
+  storageService,
+  bookingService,
+  ehrService,
+} from '../services/apiClient';
 
 export interface FamilyMemberItem {
   id: string;
@@ -71,10 +76,12 @@ interface AppContextValue {
   setDiagnosisNote: (note: string) => void;
   doctors: DoctorItem[];
 
-  // 5. Security & Privacy (PII Masking state)
+  // 5. Security & Privacy (PII Masking state) + Storage Persistence
   isPiiMasked: boolean;
   togglePiiMask: () => void;
   patientProfile: typeof PATIENT_PROFILE;
+  isHydrated: boolean;
+  resetAppData: () => Promise<void>;
 }
 
 const INITIAL_FAMILY_MEMBERS: FamilyMemberItem[] = [
@@ -177,6 +184,67 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   );
   const [doctors] = useState<DoctorItem[]>(DOCTORS);
   const [isPiiMasked, setIsPiiMasked] = useState<boolean>(true);
+  const [isHydrated, setIsHydrated] = useState<boolean>(false);
+  const hydratedRef = useRef<boolean>(false);
+
+  // 1. Khôi phục dữ liệu đã lưu trong AsyncStorage khi mở ứng dụng
+  useEffect(() => {
+    let mounted = true;
+    storageService.loadPersistedState().then((saved) => {
+      if (!mounted) return;
+      if (saved) {
+        if (Array.isArray(saved.appointments) && saved.appointments.length > 0) {
+          setAppointments(saved.appointments);
+        }
+        if (saved.latestBooking) {
+          setLatestBooking(saved.latestBooking);
+        }
+        if (saved.takenMap) {
+          setTakenMap(saved.takenMap);
+        }
+        if (Array.isArray(saved.familyMembers) && saved.familyMembers.length > 0) {
+          setFamilyMembers(saved.familyMembers);
+        }
+        if (Array.isArray(saved.prescriptions) && saved.prescriptions.length > 0) {
+          setPrescriptions(saved.prescriptions);
+        }
+        if (saved.diagnosisNote) {
+          setDiagnosisNote(saved.diagnosisNote);
+        }
+        if (typeof saved.isPiiMasked === 'boolean') {
+          setIsPiiMasked(saved.isPiiMasked);
+        }
+      }
+      hydratedRef.current = true;
+      setIsHydrated(true);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // 2. Tự động lưu mọi thay đổi xuống AsyncStorage
+  useEffect(() => {
+    if (!hydratedRef.current) return;
+    storageService.savePersistedState({
+      appointments,
+      latestBooking,
+      takenMap,
+      familyMembers,
+      prescriptions,
+      diagnosisNote,
+      isPiiMasked,
+      updatedAt: new Date().toISOString(),
+    });
+  }, [
+    appointments,
+    latestBooking,
+    takenMap,
+    familyMembers,
+    prescriptions,
+    diagnosisNote,
+    isPiiMasked,
+  ]);
 
   const createBooking = ({
     doctor,
@@ -231,6 +299,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
 
     setLatestBooking(newTicket);
     setAppointments((prev) => [newApt, ...prev]);
+    bookingService.syncNewAppointment(newApt);
     return newTicket;
   };
 
@@ -247,6 +316,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
           : apt
       )
     );
+    bookingService.syncCancelAppointment(appointmentId);
   };
 
   const completeAppointment = (appointmentId: string) => {
@@ -299,10 +369,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       id: `rx-${Date.now()}`,
     };
     setPrescriptions((prev) => [newDrug, ...prev]);
+    ehrService.syncPrescriptionDrug(newDrug, diagnosisNote);
   };
 
   const togglePiiMask = () => {
     setIsPiiMasked((prev) => !prev);
+  };
+
+  const resetAppData = async () => {
+    await storageService.resetAllData();
+    setAppointments(INITIAL_APPOINTMENTS);
+    setLatestBooking(DEFAULT_TICKET);
+    setTakenMap({ morning: true, afternoon: true, evening: false });
+    setFamilyMembers(INITIAL_FAMILY_MEMBERS);
+    setPrescriptions(PRESCRIPTION_DRUGS);
+    setDiagnosisNote(
+      'Đau đầu căng thẳng (Tension headache) / Rối loạn vận mạch não nhẹ'
+    );
+    setIsPiiMasked(true);
   };
 
   return (
@@ -325,6 +409,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         isPiiMasked,
         togglePiiMask,
         patientProfile: PATIENT_PROFILE,
+        isHydrated,
+        resetAppData,
       }}
     >
       {children}
