@@ -377,15 +377,15 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 4,
   },
   msgText: {
-    fontSize: 13,
-    lineHeight: 19,
+    fontSize: 14.5,
+    lineHeight: 21,
     color: COLORS.textPrimary,
   },
   msgTextUser: {
     color: '#FFFFFF',
   },
   msgTime: {
-    fontSize: 10,
+    fontSize: 12,
     color: COLORS.textMuted,
     alignSelf: 'flex-end',
     marginTop: 6,
@@ -518,7 +518,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   aiFeeLabel: {
-    fontSize: 10,
+    fontSize: 12,
     color: COLORS.textSecondary,
   },
   aiFeeVal: {

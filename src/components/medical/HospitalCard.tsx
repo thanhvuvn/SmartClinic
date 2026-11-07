@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   distanceText: {
-    fontSize: TYPOGRAPHY.size.xxs,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.primary,
   },
@@ -138,12 +138,12 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   ratingText: {
-    fontSize: TYPOGRAPHY.size.xxs,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '800',
     color: '#B45309',
   },
   tagText: {
-    fontSize: TYPOGRAPHY.size.xxs,
+    fontSize: TYPOGRAPHY.size.xs,
     color: COLORS.textMuted,
     flexShrink: 1,
   },
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   mapBtnText: {
-    fontSize: TYPOGRAPHY.size.xxs,
+    fontSize: TYPOGRAPHY.size.xs,
     fontWeight: '700',
     color: COLORS.primary,
   },

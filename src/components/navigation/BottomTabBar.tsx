@@ -87,7 +87,7 @@ export const BottomTabBar: React.FC<BottomTabBarProps> = ({
                 isActive ? styles.labelActive : styles.labelInactive,
               ]}
               numberOfLines={1}
-              maxFontSizeMultiplier={1.2}
+              maxFontSizeMultiplier={1.4}
             >
               {tab.label}
             </Text>
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primaryContainer,
   },
   label: {
-    fontSize: 11,
+    fontSize: 12,
   },
   labelActive: {
     fontWeight: '700',

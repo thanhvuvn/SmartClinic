@@ -27,9 +27,9 @@ export const COLORS = {
   // Text & Icons
   textPrimary: '#131B2E',
   textSecondary: '#3F4850',
-  textMuted: '#707881',
+  textMuted: '#5B646E',
   textOnPrimary: '#FFFFFF',
-  placeholder: '#707881',
+  placeholder: '#5B646E',
 
   // Borders & Outlines
   outline: '#BFC7D2',

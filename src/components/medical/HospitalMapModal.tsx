@@ -481,7 +481,7 @@ const styles = StyleSheet.create({
   },
   districtTag: {
     position: 'absolute',
-    fontSize: 9,
+    fontSize: 12,
     fontWeight: '800',
     color: '#0369A1',
     backgroundColor: 'rgba(255,255,255,0.75)',
@@ -505,7 +505,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   userLabelText: {
-    fontSize: 9,
+    fontSize: 12,
     fontWeight: '700',
     color: '#FFFFFF',
   },
@@ -536,10 +536,10 @@ const styles = StyleSheet.create({
     borderColor: '#FFFFFF',
   },
   mapPinText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '800',
     color: COLORS.primary,
-    maxWidth: 110,
+    maxWidth: 120,
   },
   mapPinDot: {
     width: 6,
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   coordText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
@@ -581,7 +581,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   openFullMapText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
     color: '#FFFFFF',
   },
@@ -646,7 +646,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   sectionMiniLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '800',
     color: COLORS.textMuted,
     letterSpacing: 0.6,
@@ -682,7 +682,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   modeEta: {
-    fontSize: 10,
+    fontSize: 12,
     color: COLORS.textMuted,
     marginTop: 1,
   },
