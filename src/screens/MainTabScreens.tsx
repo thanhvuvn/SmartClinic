@@ -523,20 +523,28 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
             <SectionHeader
               title="Đơn thuốc đang điều trị"
               leftIcon="medkit-outline"
-              badgeText="Ngày 2/7"
+              badgeText={prescriptions.length > 0 ? 'Ngày 2/7' : undefined}
               badgeVariant="teal"
               actionText="Tủ thuốc"
               onActionPress={() => onNavigate('medicineCabinet')}
             />
-            <ActivePrescriptionCard
-              doctor={DOCTORS[0]}
-              prescriptionCode="#DT-241029-01"
-              date="29/10/2024"
-              drugs={prescriptions}
-              onViewOriginal={() => onNavigate('rxDetail')}
-              onBuyMedicine={() => onNavigate('medicineCabinet')}
-              onReminderPress={() => onNavigate('medLog')}
-            />
+            {prescriptions.length > 0 ? (
+              <ActivePrescriptionCard
+                doctor={DOCTORS[0]}
+                prescriptionCode="#DT-241029-01"
+                date="29/10/2024"
+                drugs={prescriptions}
+                onViewOriginal={() => onNavigate('rxDetail')}
+                onBuyMedicine={() => onNavigate('medicineCabinet')}
+                onReminderPress={() => onNavigate('medLog')}
+              />
+            ) : (
+              <EmptyState
+                icon="document-text-outline"
+                title="Chưa có đơn thuốc điện tử"
+                description="Đơn thuốc bác sĩ kê sau mỗi lần khám sẽ tự động lưu trữ tại đây."
+              />
+            )}
           </AnimatedEntry>
         )}
 
@@ -719,60 +727,78 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
         )}
 
         {statusTab === 'completed' &&
-          completedList.map((apt) => (
-            <View key={apt.id} style={[styles.sectionCard, SHADOWS.sm]}>
-              <View style={styles.statBoxTop}>
-                <Badge label={`Hoàn thành • ${apt.code}`} variant="teal" showDot />
-                <Badge label={apt.statusBadge} variant="blue" />
+          (completedList.length > 0 ? (
+            completedList.map((apt) => (
+              <View key={apt.id} style={[styles.sectionCard, SHADOWS.sm]}>
+                <View style={styles.statBoxTop}>
+                  <Badge label={`Hoàn thành • ${apt.code}`} variant="teal" showDot />
+                  <Badge label={apt.statusBadge} variant="blue" />
+                </View>
+                <Text style={styles.sectionCardTitle}>
+                  Khám Chuyên khoa {apt.doctor.specialty} — {apt.doctor.name}
+                </Text>
+                <Text style={styles.sectionCardSub}>
+                  Chẩn đoán: Đau nửa đầu Migraine (G43.0) • Thời gian: {apt.timeRange}
+                </Text>
+                <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
+                  <AppButton
+                    title="Kết quả & Đơn thuốc"
+                    variant="primary"
+                    size="sm"
+                    leftIcon="document-text-outline"
+                    fullWidth={false}
+                    style={{ flex: 1 }}
+                    onPress={() => onNavigate('postConsultSummary')}
+                  />
+                  <AppButton
+                    title="Chat với Bác sĩ"
+                    variant="tonal"
+                    size="sm"
+                    leftIcon="chatbubbles-outline"
+                    fullWidth={false}
+                    style={{ flex: 1 }}
+                    onPress={() => onNavigate('teleconsult')}
+                  />
+                </View>
               </View>
-              <Text style={styles.sectionCardTitle}>
-                Khám Chuyên khoa {apt.doctor.specialty} — {apt.doctor.name}
-              </Text>
-              <Text style={styles.sectionCardSub}>
-                Chẩn đoán: Đau nửa đầu Migraine (G43.0) • Thời gian: {apt.timeRange}
-              </Text>
-              <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
-                <AppButton
-                  title="Kết quả & Đơn thuốc"
-                  variant="primary"
-                  size="sm"
-                  leftIcon="document-text-outline"
-                  fullWidth={false}
-                  style={{ flex: 1 }}
-                  onPress={() => onNavigate('postConsultSummary')}
-                />
-                <AppButton
-                  title="Chat với Bác sĩ"
-                  variant="tonal"
-                  size="sm"
-                  leftIcon="chatbubbles-outline"
-                  fullWidth={false}
-                  style={{ flex: 1 }}
-                  onPress={() => onNavigate('teleconsult')}
-                />
-              </View>
-            </View>
+            ))
+          ) : (
+            <EmptyState
+              icon="checkmark-done-circle-outline"
+              title="Chưa Có Lịch Sử Đã Khám"
+              description="Các cuộc hẹn sau khi hoàn tất tư vấn sẽ được lưu trữ tại đây."
+              actionTitle="Đặt Lịch Khám Ngay"
+              onActionPress={onBookNew}
+            />
           ))}
 
         {statusTab === 'cancelled' &&
-          cancelledList.map((apt) => (
-            <View key={apt.id} style={[styles.sectionCard, SHADOWS.sm]}>
-              <Badge label={`Đã hủy • ${apt.code}`} variant="danger" />
-              <Text style={[styles.sectionCardTitle, { marginTop: 8 }]}>
-                Khám {apt.doctor.specialty} — {apt.doctor.name}
-              </Text>
-              <Text style={styles.sectionCardSub}>
-                Khung giờ: {apt.timeRange} • {apt.doctor.hospital}
-              </Text>
-              <AppButton
-                title="Đặt lại lịch khám này"
-                variant="outline"
-                size="sm"
-                leftIcon="refresh-outline"
-                onPress={() => onSelectDoctor(apt.doctor)}
-                style={{ marginTop: 12 }}
-              />
-            </View>
+          (cancelledList.length > 0 ? (
+            cancelledList.map((apt) => (
+              <View key={apt.id} style={[styles.sectionCard, SHADOWS.sm]}>
+                <Badge label={`Đã hủy • ${apt.code}`} variant="danger" />
+                <Text style={[styles.sectionCardTitle, { marginTop: 8 }]}>
+                  Khám {apt.doctor.specialty} — {apt.doctor.name}
+                </Text>
+                <Text style={styles.sectionCardSub}>
+                  Khung giờ: {apt.timeRange} • {apt.doctor.hospital}
+                </Text>
+                <AppButton
+                  title="Đặt lại lịch khám này"
+                  variant="outline"
+                  size="sm"
+                  leftIcon="refresh-outline"
+                  onPress={() => onSelectDoctor(apt.doctor)}
+                  style={{ marginTop: 12 }}
+                />
+              </View>
+            ))
+          ) : (
+            <EmptyState
+              icon="close-circle-outline"
+              title="Không Có Lịch Hẹn Đã Hủy"
+              description="Bạn chưa có lịch hẹn khám bệnh nào bị hủy."
+            />
           ))}
 
         {/* Need more consultation banner */}
