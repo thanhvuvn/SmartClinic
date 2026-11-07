@@ -53,7 +53,7 @@ export const AppButton: React.FC<AppButtonProps> = ({
   textStyle,
 }) => {
   const heightMap: Record<ButtonSize, number> = {
-    sm: 40,
+    sm: TOUCH.min,
     md: 46,
     lg: 52,
   };

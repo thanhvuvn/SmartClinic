@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../theme';
+import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TOUCH, TYPOGRAPHY } from '../theme';
 import { PRESCRIPTION_DRUGS } from '../data/mockData';
 import { useAppContext } from '../context/AppContext';
 import { sharePrescription } from '../utils/shareUtils';
@@ -571,6 +571,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: TOUCH.min,
+    paddingHorizontal: SPACING.md,
     paddingVertical: 10,
     borderRadius: RADIUS.md,
     gap: 6,

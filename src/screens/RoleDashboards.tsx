@@ -1154,7 +1154,8 @@ const styles = StyleSheet.create({
   },
   docActionRow: {
     flexDirection: 'row',
-    gap: 10,
+    alignItems: 'center',
+    gap: 8,
   },
   aptRowTop: {
     flexDirection: 'row',
