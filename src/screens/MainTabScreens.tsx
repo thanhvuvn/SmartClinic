@@ -21,6 +21,7 @@ import {
   APPOINTMENTS,
   PRESCRIPTION_DRUGS,
   PATIENT_PROFILE,
+  AppointmentItem,
   DoctorItem,
   HospitalItem,
 } from '../data/mockData';
@@ -66,6 +67,43 @@ import {
   HospitalCardSkeleton,
 } from '../components';
 
+const getAppointmentSortTimestamp = (apt: AppointmentItem): number => {
+  const combined = `${apt.timeRange} ${apt.dateLabel}`;
+  const timeMatch = combined.match(/(\d{1,2}):(\d{2})/);
+  const hours = timeMatch ? parseInt(timeMatch[1], 10) : 0;
+  const minutes = timeMatch ? parseInt(timeMatch[2], 10) : 0;
+
+  const fullDateMatch = combined.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+  if (fullDateMatch) {
+    const day = parseInt(fullDateMatch[1], 10);
+    const month = parseInt(fullDateMatch[2], 10) - 1;
+    const year = parseInt(fullDateMatch[3], 10);
+    return new Date(year, month, day, hours, minutes).getTime();
+  }
+
+  const codeMatch = apt.code.match(/#(?:SC|KB)-(\d{2})(\d{2})(\d{2})-/);
+  if (codeMatch) {
+    const year = 2000 + parseInt(codeMatch[1], 10);
+    const month = parseInt(codeMatch[2], 10) - 1;
+    const day = parseInt(codeMatch[3], 10);
+    return new Date(year, month, day, hours, minutes).getTime();
+  }
+
+  const shortDateMatch = combined.match(/(\d{2})\/(\d{2})(?!\/)/);
+  if (shortDateMatch) {
+    const day = parseInt(shortDateMatch[1], 10);
+    const month = parseInt(shortDateMatch[2], 10) - 1;
+    return new Date(2024, month, day, hours, minutes).getTime();
+  }
+
+  return hours * 60 + minutes;
+};
+
+const sortUpcomingAppointments = (list: AppointmentItem[]): AppointmentItem[] =>
+  [...list].sort(
+    (a, b) => getAppointmentSortTimestamp(a) - getAppointmentSortTimestamp(b)
+  );
+
 export interface HomeScreenProps {
   onSelectDoctor: (doctor: DoctorItem) => void;
   onBookDoctor: (doctor: DoctorItem) => void;
@@ -96,9 +134,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     }, 850);
   };
 
-  // Filter upcoming appointments to show on Home
-  const upcomingAppointments = appointments.filter(
-    (a) => a.status === 'upcoming'
+  // Filter and sort upcoming appointments (nearest first) to show on Home
+  const upcomingAppointments = sortUpcomingAppointments(
+    appointments.filter((a) => a.status === 'upcoming')
   ).slice(0, 2);
 
   const selectedSpecialtyObj = SPECIALTIES.find((s) => s.id === selectedSpecialty);
@@ -587,7 +625,9 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
   const [statusTab, setStatusTab] = useState('upcoming');
   const [cancelToast, setCancelToast] = useState<string | null>(null);
 
-  const upcomingList = appointments.filter((a) => a.status === 'upcoming');
+  const upcomingList = sortUpcomingAppointments(
+    appointments.filter((a) => a.status === 'upcoming')
+  );
   const completedList = appointments.filter((a) => a.status === 'completed');
   const cancelledList = appointments.filter((a) => a.status === 'cancelled');
 
