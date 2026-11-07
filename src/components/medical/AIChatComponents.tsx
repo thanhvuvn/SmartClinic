@@ -29,11 +29,11 @@ export const AIMedicalTriageBanner: React.FC<{ style?: ViewStyle }> = ({
       <View style={styles.triagePill}>
         <PulsingDot color={COLORS.secondaryDark} size={6} />
         <Text style={styles.triagePillText}>
-          AI Powered Medical Triage • Độ chính xác định hướng cao
+          Hỗ trợ Sàng lọc Triệu chứng • Thông tin tham khảo ban đầu
         </Text>
       </View>
       <Text style={styles.triageSub}>
-        Trợ lý AI hỗ trợ định hướng chăm sóc sức khỏe ban đầu
+        Trợ lý AI gợi ý chuyên khoa phù hợp, không thay thế bác sĩ khám bệnh
       </Text>
     </View>
   </AnimatedEntry>
@@ -113,13 +113,13 @@ export const AIClinicalResponseCard: React.FC<AIClinicalResponseCardProps> = ({
         <View style={styles.analysisCard}>
           <View style={styles.analysisHeader}>
             <Ionicons name="shield-half-outline" size={16} color={COLORS.primary} />
-            <Text style={styles.analysisTitle}>Phân tích sơ bộ</Text>
+            <Text style={styles.analysisTitle}>Sàng lọc triệu chứng tham khảo</Text>
           </View>
           <Text style={styles.analysisBody}>
             Dựa trên triệu chứng đau nửa đầu thái dương kèm chóng mặt kéo dài 2
             ngày và tăng khi tập trung màn hình, có thể liên quan đến căng thẳng
-            thần kinh (Tension Headache) hoặc thiểu năng tuần hoàn não thoáng
-            qua. Cần theo dõi thêm chỉ số huyết áp và thời gian nghỉ ngơi mắt.
+            thần kinh hoặc rối loạn tuần hoàn não thoáng qua. Bạn nên khám chuyên
+            khoa để bác sĩ kiểm tra trực tiếp.
           </Text>
         </View>
 
@@ -136,7 +136,7 @@ export const AIClinicalResponseCard: React.FC<AIClinicalResponseCardProps> = ({
                 Đau đầu, chóng mặt, rối loạn tiền đình
               </Text>
             </View>
-            <Badge label="Phù hợp 96%" variant="teal" />
+            <Badge label="Chuyên khoa gợi ý" variant="teal" />
           </View>
         </View>
 
