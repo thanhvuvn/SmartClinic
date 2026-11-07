@@ -605,30 +605,29 @@ export const AddEditFamilyMemberScreen: React.FC<{ onBack?: () => void }> = ({
         contentContainerStyle={styles.scrollPad}
         keyboardShouldPersistTaps="handled"
       >
-        {/* AI Quick Scan Banner */}
-        <LinearGradient
-          colors={GRADIENTS.primaryTeal}
-          style={[styles.heroCard, SHADOWS.sm]}
-        >
+        {/* Quick Scan Banner — Coming Soon (No fake OCR) */}
+        <View style={[styles.card, SHADOWS.sm]}>
           <View style={styles.rowBetween}>
-            <Badge label="Công nghệ AI OCR" variant="glass" icon="scan" />
-            <Badge label="Khớp cổng VssID" variant="teal" />
+            <Badge label="Sắp ra mắt" variant="surface" icon="time-outline" />
+            <Badge label="Hỗ trợ thẻ BHYT / CCCD" variant="teal" />
           </View>
-          <Text style={[styles.whiteTitle, { marginTop: 8 }]}>
-            Quét CCCD hoặc Thẻ BHYT
+          <Text style={[styles.docName, { marginTop: 8 }]}>
+            Quét mã QR trên CCCD hoặc Thẻ BHYT
           </Text>
-          <Text style={styles.whiteSub}>
-            Tự động điền 8 mục hồ sơ chính xác 99.8% trong 3 giây.
+          <Text style={styles.docSub}>
+            Tính năng quét tự động từ thẻ đang được phát triển. Hiện tại vui
+            lòng nhập trực tiếp thông tin người thân bên dưới.
           </Text>
           <AppButton
-            title="Quét thẻ ngay"
-            variant="white"
+            title="Tính năng quét thẻ sắp ra mắt"
+            variant="tonal"
             size="sm"
             leftIcon="camera-outline"
+            disabled
             fullWidth={false}
             style={{ marginTop: 10, alignSelf: 'flex-start' }}
           />
-        </LinearGradient>
+        </View>
 
         {/* Relationship 1-Row Dropdown Selector */}
         <SectionHeader title="Mối quan hệ với bạn *" />
