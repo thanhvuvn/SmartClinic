@@ -587,7 +587,7 @@ export const BookingPaymentScreen: React.FC<BookingPaymentScreenProps> = ({
             subtitle="Hỗ trợ BHYT quốc gia và các cổng thanh toán bảo mật"
           />
 
-          <View style={{ gap: 10, marginBottom: 16 }}>
+          <View style={{ gap: 10, marginBottom: 16 }} accessibilityRole="radiogroup">
             {paymentOptions.map((opt) => {
               const isSelected = selectedMethod === opt.id;
               return (
@@ -595,6 +595,9 @@ export const BookingPaymentScreen: React.FC<BookingPaymentScreenProps> = ({
                   key={opt.id}
                   activeScale={0.97}
                   onPress={() => setSelectedMethod(opt.id)}
+                  accessibilityRole="radio"
+                  accessibilityLabel={`${opt.title}. ${opt.sub}`}
+                  accessibilityState={{ selected: isSelected, checked: isSelected }}
                 >
                   <View
                     style={[

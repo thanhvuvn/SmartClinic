@@ -77,6 +77,7 @@ export interface PressableScaleProps {
   style?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;
   accessibilityRole?: any;
+  accessibilityState?: any;
 }
 
 export const PressableScale: React.FC<PressableScaleProps> = ({
@@ -86,6 +87,7 @@ export const PressableScale: React.FC<PressableScaleProps> = ({
   style,
   accessibilityLabel,
   accessibilityRole = 'button',
+  accessibilityState,
 }) => {
   const scale = useRef(new Animated.Value(1)).current;
 
@@ -114,6 +116,7 @@ export const PressableScale: React.FC<PressableScaleProps> = ({
       onPress={onPress}
       accessibilityRole={accessibilityRole}
       accessibilityLabel={accessibilityLabel}
+      accessibilityState={accessibilityState}
     >
       <Animated.View style={[style, { transform: [{ scale }] }]}>
         {children}

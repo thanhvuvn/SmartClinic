@@ -39,7 +39,9 @@ export const HorizontalDateSelector: React.FC<HorizontalDateSelectorProps> = ({
             <View
               key={day.id}
               style={[styles.dayCard, styles.dayCardFull]}
-              accessibilityState={{ disabled: true }}
+              accessibilityRole="button"
+              accessibilityLabel={`${day.dayLabel}, ngày ${day.dateNumber}, Kín lịch`}
+              accessibilityState={{ disabled: true, selected: false }}
             >
               <Text style={[styles.dayLabel, styles.dayTextDisabled]}>{day.dayLabel}</Text>
               <Text style={[styles.dateNum, styles.dayTextDisabled]}>{day.dateNumber}</Text>
@@ -54,6 +56,7 @@ export const HorizontalDateSelector: React.FC<HorizontalDateSelectorProps> = ({
             onPress={() => onSelectDay(day.id)}
             accessibilityRole="button"
             accessibilityLabel={`${day.dayLabel}, ngày ${day.dateNumber}, Còn ${day.slotsAvailable} chỗ`}
+            accessibilityState={{ selected: isSelected }}
           >
             <View
               style={[
@@ -124,7 +127,9 @@ export const TimeSlotGrid: React.FC<TimeSlotGridProps> = ({
         <View
           key={slot.id}
           style={[styles.slotBtn, styles.slotBooked]}
-          accessibilityState={{ disabled: true }}
+          accessibilityRole="button"
+          accessibilityLabel={`Khung giờ ${slot.time}, Đã kín`}
+          accessibilityState={{ disabled: true, selected: false }}
         >
           <Text style={[styles.slotTimeText, styles.slotTimeBooked]}>{slot.time}</Text>
         </View>
@@ -138,6 +143,7 @@ export const TimeSlotGrid: React.FC<TimeSlotGridProps> = ({
         onPress={() => onSelectSlot(slot)}
         accessibilityRole="button"
         accessibilityLabel={`Khung giờ ${slot.time}`}
+        accessibilityState={{ selected: isSelected }}
       >
         <View
           style={[
