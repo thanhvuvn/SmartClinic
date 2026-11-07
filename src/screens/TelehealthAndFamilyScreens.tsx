@@ -277,7 +277,7 @@ export const BookingSuccessScreen: React.FC<{
 
         {/* Section 6: Bottom Navigation Action Stack */}
         <AppButton
-          title="Xem Lịch Khám Của Tôi"
+          title="Xem lịch khám của tôi"
           variant="primary"
           size="lg"
           leftIcon="calendar-outline"
@@ -285,7 +285,7 @@ export const BookingSuccessScreen: React.FC<{
           style={{ marginBottom: 10 }}
         />
         <AppButton
-          title="Về Trang Chủ"
+          title="Về trang chủ"
           variant="tonal"
           size="lg"
           leftIcon="home-outline"
@@ -1124,22 +1124,6 @@ export const PostConsultSummaryScreen: React.FC<{
         />
 
         {/* Next Actions */}
-        <AppButton
-          title="Xem chi tiết đơn thuốc"
-          variant="primary"
-          size="lg"
-          leftIcon="document-text-outline"
-          onPress={() => onNavigate?.('rxDetail')}
-          style={{ marginBottom: 10 }}
-        />
-        <AppButton
-          title="Mở lịch nhắc uống thuốc"
-          variant="secondary"
-          size="lg"
-          leftIcon="alarm-outline"
-          onPress={() => onNavigate?.('medLog')}
-          style={{ marginBottom: 10 }}
-        />
         <AppButton
           title="Quay lại Chat với Bác sĩ"
           variant="outline"
