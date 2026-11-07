@@ -11,7 +11,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, GRADIENTS, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../../theme';
 import { Badge } from '../common/Badge';
 import { AppButton } from '../common/AppButton';
-import { PulsingDot } from '../common/Animations';
 
 export interface AIHeroBannerProps {
   onAskAIPress?: () => void;
@@ -29,44 +28,27 @@ export const AIHeroBanner: React.FC<AIHeroBannerProps> = ({
       end={{ x: 1, y: 1 }}
       style={[styles.heroCard, SHADOWS.md, style]}
     >
-      {/* Subtle decorative glow circle in corner */}
-      <View style={styles.glowCircle} pointerEvents="none" />
-      <View style={styles.watermarkIcon} pointerEvents="none">
-        <Ionicons name="sparkles" size={110} color="rgba(255,255,255,0.06)" />
-      </View>
-
-      <View style={styles.heroTopRow}>
-        <Badge
-          label="Hỗ trợ sàng lọc triệu chứng"
-          variant="glass"
-          icon="medkit-outline"
-        />
-        <View style={styles.readyBadge}>
-          <PulsingDot color="#86F2E4" size={6} />
-          <Text style={styles.readyText}>24/7 Sẵn sàng</Text>
+      <View style={styles.heroCompactRow}>
+        <View style={styles.heroCompactLeft}>
+          <Badge
+            label="Hỗ trợ sàng lọc triệu chứng"
+            variant="glass"
+            icon="medkit-outline"
+            style={{ marginBottom: 6 }}
+          />
+          <Text style={styles.heroTitle}>
+            Gợi ý chuyên khoa tham khảo từ triệu chứng
+          </Text>
         </View>
-      </View>
-
-      <Text style={styles.heroTitle}>Bạn đang gặp vấn đề sức khỏe gì?</Text>
-      <Text style={styles.heroDesc}>
-        Mô tả triệu chứng để nhận gợi ý chuyên khoa và bác sĩ phù hợp tham khảo.
-      </Text>
-
-      <View style={styles.heroBottomRow}>
         <AppButton
-          title="Hỏi AI ngay"
+          title="Hỏi AI"
           variant="white"
-          size="md"
+          size="sm"
           leftIcon="chatbubble-ellipses-outline"
-          rightIcon="arrow-forward"
           fullWidth={false}
           onPress={onAskAIPress}
           style={styles.askBtn}
         />
-        <View style={styles.accuracyRow}>
-          <Ionicons name="information-circle-outline" size={16} color="#86F2E4" />
-          <Text style={styles.accuracyText}>Gợi ý chuyên khoa tham khảo</Text>
-        </View>
       </View>
     </LinearGradient>
   );
@@ -195,85 +177,31 @@ export const AIClinicalInsightCard: React.FC<AIClinicalInsightCardProps> = ({
 const styles = StyleSheet.create({
   heroCard: {
     borderRadius: RADIUS.lg,
-    padding: SPACING.lg,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md,
     overflow: 'hidden',
     position: 'relative',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.18)',
   },
-  glowCircle: {
-    position: 'absolute',
-    top: -40,
-    right: -40,
-    width: 140,
-    height: 140,
-    borderRadius: 70,
-    backgroundColor: 'rgba(134, 242, 228, 0.15)',
-  },
-  watermarkIcon: {
-    position: 'absolute',
-    right: -15,
-    bottom: -20,
-  },
-  heroTopRow: {
+  heroCompactRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    gap: 6,
-    marginBottom: SPACING.md,
+    gap: SPACING.md,
   },
-  readyBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: RADIUS.full,
-    gap: 5,
-  },
-  onlinePulseDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#86F2E4',
-  },
-  readyText: {
-    fontSize: TYPOGRAPHY.micro,
-    color: '#FFFFFF',
-    fontWeight: '700',
+  heroCompactLeft: {
+    flex: 1,
+    minWidth: 0,
   },
   heroTitle: {
-    fontSize: TYPOGRAPHY.h2,
+    fontSize: TYPOGRAPHY.body,
     fontWeight: '800',
     color: COLORS.textOnPrimary,
-    marginBottom: 6,
-  },
-  heroDesc: {
-    fontSize: TYPOGRAPHY.bodySm,
-    lineHeight: TYPOGRAPHY.lineHeight.normal,
-    color: 'rgba(255,255,255,0.88)',
-    marginBottom: SPACING.lg,
-  },
-  heroBottomRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    gap: SPACING.sm,
   },
   askBtn: {
-    paddingHorizontal: SPACING.lg,
-  },
-  accuracyRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-  },
-  accuracyText: {
-    fontSize: TYPOGRAPHY.caption,
-    fontWeight: '600',
-    color: COLORS.textOnPrimary,
+    paddingHorizontal: SPACING.md,
+    flexShrink: 0,
   },
   promoCard: {
     flexDirection: 'row',

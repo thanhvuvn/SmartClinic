@@ -129,29 +129,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     );
   });
 
-  // Quick Services data — 6 items for 2×3 grid
+  // Quick Services data — 4 items for 2×2 grid
   const quickServices = [
-    {
-      icon: 'calendar-outline' as const,
-      title: 'Đặt lịch khám',
-      sub: 'Đặt khám nhanh',
-      route: 'booking',
-      color: COLORS.textOnPrimary,
-      bg: COLORS.primary,
-    },
-    {
-      icon: 'chatbubbles-outline' as const,
-      title: 'Chat Bác sĩ',
-      sub: 'Tư vấn trực tuyến',
-      route: 'teleconsult',
-      color: COLORS.primary,
-      bg: COLORS.primaryContainer,
-    },
     {
       icon: 'alarm-outline' as const,
       title: 'Nhật ký thuốc',
       sub: 'Nhắc cữ uống',
       route: 'medLog',
+      color: COLORS.secondary,
+      bg: COLORS.tintTeal,
+    },
+    {
+      icon: 'people-outline' as const,
+      title: 'Hồ sơ Gia đình',
+      sub: 'Mẹ, Vợ & Bé',
+      route: 'familyProfiles',
       color: COLORS.secondary,
       bg: COLORS.tintTeal,
     },
@@ -162,14 +154,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       route: 'medicineCabinet',
       color: COLORS.primary,
       bg: COLORS.primaryContainer,
-    },
-    {
-      icon: 'people-outline' as const,
-      title: 'Hồ sơ Gia đình',
-      sub: 'Mẹ, Vợ & Bé',
-      route: 'familyProfiles',
-      color: COLORS.secondary,
-      bg: COLORS.tintTeal,
     },
     {
       icon: 'flask-outline' as const,
@@ -216,54 +200,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           />
         </AnimatedEntry>
 
-        {/* Quick Services ABOVE AI Banner — 2×3 grid with tactile PressableScale */}
-        <AnimatedEntry delay={70}>
-          <SectionHeader
-            title="Tiện ích Y tế thông minh"
-            subtitle="Truy cập nhanh tư vấn bác sĩ, nhắc thuốc & hồ sơ gia đình"
-          />
-          {refreshing ? (
-            <QuickServicesSkeleton />
-          ) : (
-            <View style={styles.quickServiceGrid}>
-              {quickServices.map((srv) => (
-                <PressableScale
-                  key={srv.route}
-                  onPress={() =>
-                    srv.route === 'booking'
-                      ? onBookDoctor(DOCTORS[0])
-                      : onNavigate(srv.route)
-                  }
-                  accessibilityRole="button"
-                  accessibilityLabel={`${srv.title}, ${srv.sub}`}
-                  style={[styles.quickServiceCard, SHADOWS.sm]}
-                >
-                  <View style={[styles.quickServiceIcon, { backgroundColor: srv.bg }]}>
-                    <Ionicons name={srv.icon} size={20} color={srv.color} />
-                  </View>
-                  <Text style={styles.quickServiceTitle} numberOfLines={1}>
-                    {srv.title}
-                  </Text>
-                  <Text style={styles.quickServiceSub} numberOfLines={1}>
-                    {srv.sub}
-                  </Text>
-                </PressableScale>
-              ))}
-            </View>
-          )}
-        </AnimatedEntry>
-
-        {/* AI Hero Banner */}
-        <AnimatedEntry delay={120}>
-          <AIHeroBanner
-            onAskAIPress={onAskAI}
-            style={{ marginBottom: SPACING.lg }}
-          />
-        </AnimatedEntry>
-
-        {/* Upcoming appointments section */}
+        {/* Upcoming appointments section placed immediately below SearchBar */}
         {upcomingAppointments.length > 0 && (
-          <AnimatedEntry delay={170}>
+          <AnimatedEntry delay={70}>
             <SectionHeader
               title="Lịch hẹn sắp tới"
               subtitle="Cuộc hẹn đã xác nhận của bạn"
@@ -284,6 +223,47 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             )}
           </AnimatedEntry>
         )}
+
+        {/* Compact AI Hero Banner */}
+        <AnimatedEntry delay={120}>
+          <AIHeroBanner
+            onAskAIPress={onAskAI}
+            style={{ marginBottom: SPACING.lg }}
+          />
+        </AnimatedEntry>
+
+        {/* Quick Services — 2×2 grid */}
+        <AnimatedEntry delay={170}>
+          <SectionHeader
+            title="Tiện ích Y tế thông minh"
+            subtitle="Truy cập nhanh tư vấn bác sĩ, nhắc thuốc & hồ sơ gia đình"
+          />
+          {refreshing ? (
+            <QuickServicesSkeleton />
+          ) : (
+            <View style={styles.quickServiceGrid}>
+              {quickServices.map((srv) => (
+                <PressableScale
+                  key={srv.route}
+                  onPress={() => onNavigate(srv.route)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${srv.title}, ${srv.sub}`}
+                  style={[styles.quickServiceCard, SHADOWS.sm]}
+                >
+                  <View style={[styles.quickServiceIcon, { backgroundColor: srv.bg }]}>
+                    <Ionicons name={srv.icon} size={20} color={srv.color} />
+                  </View>
+                  <Text style={styles.quickServiceTitle} numberOfLines={1}>
+                    {srv.title}
+                  </Text>
+                  <Text style={styles.quickServiceSub} numberOfLines={1}>
+                    {srv.sub}
+                  </Text>
+                </PressableScale>
+              ))}
+            </View>
+          )}
+        </AnimatedEntry>
 
         {/* Specialty Grid with interactive filtering */}
         <AnimatedEntry delay={220}>
@@ -1270,7 +1250,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.lg,
   },
   quickServiceCard: {
-    width: '31.5%',
+    width: '48.5%',
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.lg,
     padding: SPACING.sm,
