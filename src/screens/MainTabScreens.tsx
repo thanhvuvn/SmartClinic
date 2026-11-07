@@ -8,6 +8,7 @@ import {
   Platform,
   Alert,
   Linking,
+  Modal,
   StyleSheet,
   RefreshControl,
 } from 'react-native';
@@ -125,6 +126,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const [refreshing, setRefreshing] = useState(false);
   const [mapModalVisible, setMapModalVisible] = useState(false);
   const [selectedMapHospital, setSelectedMapHospital] = useState<HospitalItem | null>(null);
+  const [notificationsVisible, setNotificationsVisible] = useState(false);
   const insets = useSafeAreaInsets();
 
   const handleRefresh = () => {
@@ -211,7 +213,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           userName="Vũ"
           avatarUrl={PATIENT_PROFILE.avatar}
           onChatPress={onAskAI}
-          onNotificationPress={() => onNavigate('medLog')}
+          onNotificationPress={() => setNotificationsVisible(true)}
           onAvatarPress={onOpenProfile}
         />
       </View>
@@ -443,6 +445,161 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           onBookDoctor(matchedDoc);
         }}
       />
+
+      <Modal
+        visible={notificationsVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setNotificationsVisible(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(15, 23, 42, 0.5)',
+            justifyContent: 'flex-end',
+          }}
+        >
+          <TouchableOpacity
+            style={{ flex: 1 }}
+            activeOpacity={1}
+            onPress={() => setNotificationsVisible(false)}
+            accessibilityRole="button"
+            accessibilityLabel="Đóng thông báo"
+          />
+          <View
+            style={{
+              backgroundColor: COLORS.surface,
+              borderTopLeftRadius: RADIUS.xl,
+              borderTopRightRadius: RADIUS.xl,
+              padding: SPACING.lg,
+              paddingBottom: Math.max(insets.bottom, SPACING.lg),
+            }}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: SPACING.md,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: TYPOGRAPHY.size.lg,
+                  fontWeight: '800',
+                  color: COLORS.textPrimary,
+                }}
+              >
+                Thông báo y tế
+              </Text>
+              <TouchableOpacity
+                onPress={() => setNotificationsVisible(false)}
+                accessibilityRole="button"
+                accessibilityLabel="Đóng danh sách thông báo"
+                style={{
+                  minWidth: TOUCH.min,
+                  minHeight: TOUCH.min,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Ionicons name="close" size={22} color={COLORS.textSecondary} />
+              </TouchableOpacity>
+            </View>
+
+            {[
+              {
+                id: 'notif-apt',
+                icon: 'calendar-outline' as const,
+                color: COLORS.primary,
+                bg: COLORS.primaryContainer,
+                title: 'Nhắc lịch khám sắp tới (09:30)',
+                desc: 'Khám Nội Thần Kinh với TS. BS. Lê Thu Trang tại BV ĐHYD TP.HCM.',
+                route: 'appointments',
+              },
+              {
+                id: 'notif-med',
+                icon: 'alarm-outline' as const,
+                color: COLORS.secondary,
+                bg: COLORS.tintTeal,
+                title: 'Nhắc uống thuốc theo đơn',
+                desc: 'Paracetamol 500mg & Magnesi-B6 • Ghi nhận cữ uống trong ngày.',
+                route: 'medLog',
+              },
+              {
+                id: 'notif-lab',
+                icon: 'flask-outline' as const,
+                color: COLORS.primary,
+                bg: COLORS.surfaceContainerLow,
+                title: 'Đã có kết quả MRI & Xét nghiệm',
+                desc: 'Kết quả chụp cộng hưởng từ (MRI) sọ não và sinh hóa máu đã cập nhật.',
+                route: 'labImagingResults',
+              },
+            ].map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                activeOpacity={0.85}
+                accessibilityRole="button"
+                accessibilityLabel={`${item.title}. ${item.desc}`}
+                onPress={() => {
+                  setNotificationsVisible(false);
+                  onNavigate(item.route);
+                }}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  padding: SPACING.md,
+                  borderRadius: RADIUS.md,
+                  backgroundColor: COLORS.background,
+                  marginBottom: SPACING.sm,
+                  borderWidth: 1,
+                  borderColor: COLORS.borderSubtle,
+                }}
+              >
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 20,
+                    backgroundColor: item.bg,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: SPACING.md,
+                  }}
+                >
+                  <Ionicons name={item.icon} size={20} color={item.color} />
+                </View>
+                <View style={{ flex: 1, marginRight: SPACING.xs }}>
+                  <Text
+                    style={{
+                      fontSize: TYPOGRAPHY.body,
+                      fontWeight: '700',
+                      color: COLORS.textPrimary,
+                      marginBottom: 2,
+                    }}
+                  >
+                    {item.title}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: TYPOGRAPHY.caption,
+                      color: COLORS.textSecondary,
+                      lineHeight: 17,
+                    }}
+                  >
+                    {item.desc}
+                  </Text>
+                </View>
+                <Ionicons
+                  name="chevron-forward"
+                  size={18}
+                  color={COLORS.textMuted}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
