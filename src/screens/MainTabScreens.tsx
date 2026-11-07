@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../theme';
+import { COLORS, LAYOUT, RADIUS, SHADOWS, SPACING, TOUCH, TYPOGRAPHY } from '../theme';
 import {
   DOCTORS,
   SPECIALTIES,
@@ -1314,10 +1314,13 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.sm,
   },
   clearFilterBtn: {
-    paddingHorizontal: SPACING.md,
+    minHeight: TOUCH.min,
+    paddingHorizontal: SPACING.lg,
     paddingVertical: SPACING.xs,
     backgroundColor: COLORS.primaryContainer,
     borderRadius: RADIUS.full,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   clearFilterText: {
     fontSize: TYPOGRAPHY.size.xs,
