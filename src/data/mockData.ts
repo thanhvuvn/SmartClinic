@@ -94,7 +94,7 @@ export const SPECIALTIES: SpecialtyItem[] = [
   { id: 'surgery', name: 'Ngoại khoa', icon: 'bandage', bgColor: '#CCFBF1', iconColor: '#006A61' },
   { id: 'pediatrics', name: 'Nhi khoa', icon: 'happy', bgColor: '#E0EAFF', iconColor: '#006194' },
   { id: 'derma', name: 'Da liễu', icon: 'water', bgColor: '#CCFBF1', iconColor: '#006A61' },
-  { id: 'dental', name: 'Nha khoa', icon: 'sparkles', bgColor: '#E0EAFF', iconColor: '#006194' },
+  { id: 'dental', name: 'Nha khoa', icon: 'tooth-outline', bgColor: '#E0EAFF', iconColor: '#006194' },
   { id: 'eye', name: 'Mắt', icon: 'eye', bgColor: '#E0EAFF', iconColor: '#006194' },
   { id: 'neuro', name: 'Thần kinh', icon: 'pulse', bgColor: '#E0EAFF', iconColor: '#006194' },
 ];

@@ -6,7 +6,7 @@ import {
   StyleSheet,
   ViewStyle,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { COLORS, RADIUS, SHADOWS, TYPOGRAPHY } from '../../theme';
 import { SpecialtyItem } from '../../data/mockData';
 import { PressableScale } from '../common/Animations';
@@ -48,11 +48,19 @@ export const SpecialtyGrid: React.FC<SpecialtyGridProps> = ({
               ]}
               importantForAccessibility="no-hide-descendants"
             >
-              <Ionicons
-                name={item.icon as keyof typeof Ionicons.glyphMap}
-                size={22}
-                color={item.iconColor}
-              />
+              {item.icon === 'tooth-outline' ? (
+                <MaterialCommunityIcons
+                  name="tooth-outline"
+                  size={22}
+                  color={item.iconColor}
+                />
+              ) : (
+                <Ionicons
+                  name={item.icon as keyof typeof Ionicons.glyphMap}
+                  size={22}
+                  color={item.iconColor}
+                />
+              )}
             </View>
             <Text
               style={[
