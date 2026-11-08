@@ -35,14 +35,16 @@ export const MedicationLogScreen: React.FC<{
 }> = ({ onBack, onOpenPrescription, onOpenCabinet }) => {
   const { takenMap, toggleMedicationTaken } = useAppContext();
   const [toastVisible, setToastVisible] = useState(false);
+  const totalDoses = Object.keys(takenMap).length || 3;
   const takenCount = Object.values(takenMap).filter(Boolean).length;
+  const adherencePct = Math.round((takenCount / totalDoses) * 100);
 
   return (
     <View style={styles.screen}>
       <AppHeader
         title="Nhật Ký & Nhắc Uống Thuốc"
         subtitle="Nguyễn Văn Vũ (#BN-7824) • Phác đồ Đau nửa đầu vận mạch"
-        badgeText="94% tuân thủ"
+        badgeText={`${adherencePct}% hôm nay`}
         onBack={onBack}
       />
       <ScrollView contentContainerStyle={styles.scrollPad}>
@@ -53,7 +55,7 @@ export const MedicationLogScreen: React.FC<{
               <Text style={[styles.cardTitle, { flex: 1 }]} numberOfLines={1}>
                 Tuần 44 • Tháng 10/2024
               </Text>
-              <Badge label={`${takenCount}/3 cữ hôm nay`} variant="teal" />
+              <Badge label={`${takenCount}/${totalDoses} cữ hôm nay`} variant="teal" />
             </View>
             <View style={styles.weekRow}>
               {[

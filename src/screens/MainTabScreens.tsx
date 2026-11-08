@@ -1125,7 +1125,7 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
   onNavigate,
   onSwitchTab,
 }) => {
-  const { appointments, familyMembers, resetAppData } = useAppContext();
+  const { appointments, familyMembers, takenMap, resetAppData } = useAppContext();
   const [pillReminder, setPillReminder] = useState(true);
   const [aptAlert, setAptAlert] = useState(true);
   const [labAlert, setLabAlert] = useState(true);
@@ -1137,6 +1137,9 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
   const upcomingCount = appointments.filter(
     (a) => a.status === 'upcoming'
   ).length;
+  const totalDoses = Object.keys(takenMap).length || 3;
+  const takenCount = Object.values(takenMap).filter(Boolean).length;
+  const adherencePct = Math.round((takenCount / totalDoses) * 100);
 
   return (
     <View style={styles.screen}>
@@ -1219,14 +1222,14 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
               >
                 <Ionicons name="medkit-outline" size={16} color={COLORS.secondary} />
               </View>
-              <Badge label="94% chuẩn" variant="teal" />
+              <Badge label={`${takenCount}/${totalDoses} cữ (${adherencePct}%)`} variant="teal" />
             </View>
             <Text style={[styles.statBigNum, { color: COLORS.secondary }]}>1</Text>
             <Text style={styles.statBoxTitle} numberOfLines={1}>
               Toa thuốc đang uống
             </Text>
             <Text style={styles.statBoxSub} numberOfLines={1}>
-              3 cữ/ngày • Còn 5 ngày
+              {totalDoses} cữ/ngày • Còn 5 ngày
             </Text>
           </TouchableOpacity>
 
@@ -1294,7 +1297,7 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
                 Cài đặt thông báo & Nhắc nhở
               </Text>
               <Text style={styles.sectionCardSub}>
-                Hệ thống chăm sóc tự động y tế thông minh
+                Tuỳ chỉnh thông báo lịch khám và nhắc uống thuốc
               </Text>
             </View>
           </View>
@@ -1302,11 +1305,11 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
           <SettingToggleRow
             icon="medkit-outline"
             iconColor={COLORS.secondary}
-            title="Nhắc lịch uống thuốc thông minh"
-            description="Rung & âm báo riêng biệt trước 10 phút các cữ sáng (08:00), chiều (14:00), tối (21:00)."
+            title="Nhắc lịch uống thuốc"
+            description="Báo nhắc trước 10 phút các cữ sáng (08:00), chiều (14:00), tối (21:00)."
             value={pillReminder}
             onValueChange={setPillReminder}
-            footerNote="Chuông y tế độc quyền: MedAlert Melodic"
+            footerNote="Âm báo mặc định của thiết bị"
             footerActionLabel="Xem lịch thuốc"
             onFooterAction={() => onNavigate('medLog')}
           />
@@ -1314,7 +1317,7 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
           <SettingToggleRow
             icon="calendar-outline"
             title="Thông báo lịch hẹn & Khám bệnh"
-            description="Nhắc trước 24h & 2h kèm số thứ tự phòng khám thực tế và chỉ đường tự động check-in qua QR."
+            description="Nhắc trước 24 giờ và 2 giờ kèm thông tin phòng khám, số thứ tự."
             value={aptAlert}
             onValueChange={setAptAlert}
           />
@@ -1322,16 +1325,16 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
           <SettingToggleRow
             icon="document-text-outline"
             title="Kết quả xét nghiệm & Toa thuốc mới"
-            description="Thông báo tức thì khi bác sĩ cập nhật kết quả MRI, xét nghiệm máu hoặc xuất đơn thuốc điện tử."
+            description="Thông báo khi bác sĩ cập nhật kết quả chẩn đoán hình ảnh, xét nghiệm hoặc đơn thuốc."
             value={labAlert}
             onValueChange={setLabAlert}
           />
 
           <SettingToggleRow
-            icon="sparkles-outline"
+            icon="notifications-outline"
             iconColor={COLORS.secondary}
-            title="AI Health Assistant & Chăm sóc chủ động"
-            description="Lời khuyên theo dõi đau đầu theo nhịp sinh học, cảnh báo thời tiết giao mùa và tương tác dược động học."
+            title="Nhắc tái khám & Theo dõi điều trị"
+            description="Nhắc lịch tái khám định kỳ và lưu ý dùng thuốc theo hướng dẫn của bác sĩ điều trị."
             value={aiCare}
             onValueChange={setAiCare}
           />
