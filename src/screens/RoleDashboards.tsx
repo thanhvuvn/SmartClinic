@@ -18,6 +18,7 @@ import {
   PATIENT_PROFILE,
   PRESCRIPTION_DRUGS,
   SPECIALTIES,
+  formatRelativeDate,
 } from '../data/mockData';
 import { useAppContext } from '../context/AppContext';
 import {
@@ -86,8 +87,8 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
 
           <View style={styles.heroMetricsStrip}>
             <View style={styles.heroMetricItem}>
-              <Text style={styles.heroMetricVal}>99.98%</Text>
-              <Text style={styles.heroMetricLabel}>Uptime Server</Text>
+              <Text style={styles.heroMetricVal}>Hoạt động</Text>
+              <Text style={styles.heroMetricLabel}>Trạng thái hệ thống</Text>
             </View>
             <View style={styles.heroDivider} />
             <View style={styles.heroMetricItem}>
@@ -104,10 +105,10 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
       </AnimatedEntry>
 
       {/* 4 KPI Stat Cards */}
-      <AnimatedEntry delay={100} direction="up">
+      <AnimatedEntry delay={60} direction="up">
         <SectionHeader
           title="Số liệu vận hành hôm nay"
-          subtitle="Cập nhật thời gian thực (29/10/2024)"
+          subtitle={`Cập nhật ngày ${formatRelativeDate(0)}`}
         />
         <View style={styles.kpiGrid}>
           <View style={[styles.kpiCard, SHADOWS.sm]}>
