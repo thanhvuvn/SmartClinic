@@ -13,6 +13,7 @@ import { sharePrescription } from '../utils/shareUtils';
 import {
   AppHeader,
   AppButton,
+  AppInput,
   Badge,
   SectionHeader,
   SegmentedControl,
@@ -346,35 +347,40 @@ export const FamilyMedicineCabinetScreen: React.FC<{
   onBack?: () => void;
   onRefillNow?: () => void;
 }> = ({ onBack, onRefillNow }) => {
+  const { cabinetMeds, addCabinetMedicine } = useAppContext();
   const [filterKey, setFilterKey] = useState('all');
-  const cabinetMeds = [
-    {
-      name: 'Sibelium 5mg (Flunarizine)',
-      owner: 'Nguyễn Văn Vũ (Bản thân)',
-      stock: 'Còn 4 / 30 viên',
-      exp: 'HSD: 12/2026',
-      urgent: true,
-    },
-    {
-      name: 'Ginkgo Biloba 80mg',
-      owner: 'Nguyễn Văn Vũ (Bản thân)',
-      stock: 'Còn 18 / 30 viên',
-      exp: 'HSD: 08/2026',
-      urgent: false,
-    },
-    {
-      name: 'Amlodipine 5mg (Thuốc Huyết áp)',
-      owner: 'Bà Nguyễn Thị Mai (Mẹ • 62T)',
-      stock: 'Còn 22 / 30 viên',
-      exp: 'HSD: 05/2027',
-      urgent: false,
-    },
-  ];
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [medName, setMedName] = useState('');
+  const [medOwner, setMedOwner] = useState('Nguyễn Văn Vũ (Bản thân)');
+  const [medStock, setMedStock] = useState('Còn 30 / 30 viên');
+  const [medExp, setMedExp] = useState('HSD: 12/2027');
+  const [medUrgent, setMedUrgent] = useState(false);
+  const [nameError, setNameError] = useState('');
+  const [addedToast, setAddedToast] = useState<string | null>(null);
+
   const filteredMeds = cabinetMeds.filter((m) => {
     if (filterKey === 'urgent') return m.urgent;
     if (filterKey === 'normal') return !m.urgent;
     return true;
   });
+
+  const handleSaveMedicine = () => {
+    if (!medName.trim()) {
+      setNameError('Vui lòng nhập tên thuốc và hàm lượng');
+      return;
+    }
+    setNameError('');
+    addCabinetMedicine({
+      name: medName.trim(),
+      owner: medOwner.trim() || 'Nguyễn Văn Vũ (Bản thân)',
+      stock: medStock.trim() || 'Còn 30 / 30 viên',
+      exp: medExp.trim() || 'HSD: 12/2027',
+      urgent: medUrgent,
+    });
+    setAddedToast(`Đã thêm "${medName.trim()}" vào Tủ thuốc gia đình`);
+    setMedName('');
+    setShowAddForm(false);
+  };
 
   return (
     <View style={styles.screen}>
@@ -404,8 +410,8 @@ export const FamilyMedicineCabinetScreen: React.FC<{
               Sibelium 5mg (Flunarizine) chỉ còn 4 viên
             </Text>
             <Text style={styles.subText}>
-              Đủ dùng đến 31/10/2024. Bạn nên đặt lịch tái khám hoặc hỏi ý kiến
-              TS. BS. Lê Thu Trang trước khi mua thêm.
+              Bạn nên đặt lịch tái khám hoặc hỏi ý kiến TS. BS. Lê Thu Trang
+              trước khi mua thêm.
             </Text>
             <AppButton
               title="Nhắn tin hỏi Bác sĩ"
@@ -420,8 +426,71 @@ export const FamilyMedicineCabinetScreen: React.FC<{
 
         <SectionHeader
           title="Thuốc đang lưu trữ trong gia đình"
-          subtitle="Nguyễn Văn Vũ • Bé Bảo Nam • Bà Nguyễn Thị Mai"
+          actionText={showAddForm ? 'Đóng biểu mẫu' : '+ Thêm thuốc'}
+          onActionPress={() => setShowAddForm((prev) => !prev)}
         />
+
+        {showAddForm && (
+          <View style={[styles.card, SHADOWS.sm]}>
+            <Text style={[styles.cardTitle, { marginBottom: 10 }]}>
+              Thêm thuốc mới vào tủ thuốc nhà
+            </Text>
+            <AppInput
+              label="TÊN THUỐC & HÀM LƯỢNG (*)"
+              placeholder="VD: Paracetamol 500mg"
+              value={medName}
+              onChangeText={(val) => {
+                setMedName(val);
+                if (nameError) setNameError('');
+              }}
+              error={nameError}
+              leftIcon="medkit-outline"
+            />
+            <AppInput
+              label="NGƯỜI SỬ DỤNG"
+              placeholder="VD: Nguyễn Văn Vũ (Bản thân)"
+              value={medOwner}
+              onChangeText={setMedOwner}
+              leftIcon="person-outline"
+            />
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <View style={{ flex: 1 }}>
+                <AppInput
+                  label="SỐ LƯỢNG HIỆN CÓ"
+                  placeholder="Còn 20 / 30 viên"
+                  value={medStock}
+                  onChangeText={setMedStock}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <AppInput
+                  label="HẠN SỬ DỤNG"
+                  placeholder="HSD: 12/2027"
+                  value={medExp}
+                  onChangeText={setMedExp}
+                />
+              </View>
+            </View>
+            <SegmentedControl
+              variant="chips"
+              selectedKey={medUrgent ? 'urgent' : 'normal'}
+              onSelect={(k) => setMedUrgent(k === 'urgent')}
+              options={[
+                { key: 'normal', label: 'Đủ dùng' },
+                { key: 'urgent', label: 'Sắp hết (Cần mua thêm)' },
+              ]}
+              style={{ marginBottom: 12 }}
+            />
+            <AppButton
+              title="Lưu vào Tủ thuốc gia đình"
+              variant="primary"
+              size="md"
+              leftIcon="checkmark-circle-outline"
+              onPress={handleSaveMedicine}
+            />
+          </View>
+        )}
+
         <SegmentedControl
           variant="chips"
           selectedKey={filterKey}
@@ -442,7 +511,7 @@ export const FamilyMedicineCabinetScreen: React.FC<{
 
         {filteredMeds.length > 0 ? (
           filteredMeds.map((med, idx) => (
-            <AnimatedEntry key={med.name} delay={100 + idx * 60} direction="up">
+            <AnimatedEntry key={med.id} delay={40 + idx * 30} direction="up">
               <View style={[styles.card, SHADOWS.sm]}>
                 <View style={styles.rowBetween}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
@@ -470,6 +539,12 @@ export const FamilyMedicineCabinetScreen: React.FC<{
           />
         )}
       </ScrollView>
+      <ToastBanner
+        visible={!!addedToast}
+        title="Cập nhật tủ thuốc"
+        message={addedToast || ''}
+        onDismiss={() => setAddedToast(null)}
+      />
     </View>
   );
 };

@@ -4,7 +4,12 @@ import {
   DoctorItem,
   PrescriptionDrug,
 } from '../data/mockData';
-import { FamilyMemberItem, LatestBookingTicket } from '../context/AppContext';
+import {
+  DoctorReviewItem,
+  FamilyMemberItem,
+  LatestBookingTicket,
+  MedicineCabinetItem,
+} from '../context/AppContext';
 
 // ============================================================================
 // 1. CẤU HÌNH API & QUẢN LÝ PHIÊN ĐĂNG NHẬP (JWT ACCESS / REFRESH TOKEN)
@@ -39,6 +44,8 @@ export interface PersistedAppState {
   prescriptions: PrescriptionDrug[];
   diagnosisNote: string;
   isPiiMasked: boolean;
+  cabinetMeds?: MedicineCabinetItem[];
+  doctorReviews?: DoctorReviewItem[];
   updatedAt: string;
 }
 

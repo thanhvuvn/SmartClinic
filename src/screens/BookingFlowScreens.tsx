@@ -22,7 +22,6 @@ import {
   Badge,
   SegmentedControl,
   PatientReviewCard,
-  AppButton,
   StickyBottomBar,
   StepIndicator,
   BookingDoctorSummaryCard,
@@ -34,6 +33,7 @@ import {
 } from '../components';
 import { findHospitalForDoctor } from '../utils/mapNavigation';
 import { shareDoctorProfile } from '../utils/shareUtils';
+import { useAppContext } from '../context/AppContext';
 
 export interface DoctorDetailScreenProps {
   doctor: DoctorItem;
@@ -46,11 +46,21 @@ export const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = ({
   onBack,
   onBookSlot,
 }) => {
+  const { doctorReviews } = useAppContext();
   const [selectedDay, setSelectedDay] = useState('d2');
   const [reviewFilter, setReviewFilter] = useState('all');
   const [mapModalVisible, setMapModalVisible] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
   const doctorHospital = findHospitalForDoctor(doctor);
+  const allDocReviews = doctorReviews.filter(
+    (r) => r.doctorId === doctor.id || doctor.id !== 'doc-1'
+  );
+  const filteredDocReviews = allDocReviews.filter((r) => {
+    if (reviewFilter === '5star') return r.rating === 5;
+    if (reviewFilter === 'recent')
+      return r.metaText.includes('Vừa xong') || r.metaText.includes('3 ngày');
+    return true;
+  });
 
   return (
     <View style={styles.screen}>
@@ -200,7 +210,7 @@ export const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = ({
           <SectionHeader
             title="Đánh giá của bệnh nhân"
             leftIcon="star"
-            actionText={`${doctor.rating} / 5 (${doctor.reviewCount})`}
+            actionText={`${doctor.rating} / 5 (${doctor.reviewCount + Math.max(0, allDocReviews.length - 2)})`}
           />
 
           <SegmentedControl
@@ -208,36 +218,30 @@ export const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = ({
             selectedKey={reviewFilter}
             onSelect={setReviewFilter}
             options={[
-              { key: 'all', label: `Tất cả (${doctor.reviewCount})` },
-              { key: 'photo', label: 'Có hình ảnh' },
-              { key: '5star', label: '5 sao (168)' },
+              { key: 'all', label: `Tất cả (${allDocReviews.length})` },
+              {
+                key: '5star',
+                label: `5 sao (${allDocReviews.filter((r) => r.rating === 5).length})`,
+              },
               { key: 'recent', label: 'Gần đây' },
             ]}
             style={{ marginBottom: 12 }}
           />
 
-          <PatientReviewCard
-            initials="HN"
-            initialsBg={COLORS.primaryContainer}
-            authorName="Nguyễn Hoàng Nam"
-            metaText="3 ngày trước • Khám Đau đầu thái dương"
-            comment="Bác sĩ Trang tư vấn rất kỹ lưỡng và ân cần, giải thích rõ nguyên nhân tôi bị đau đầu thái dương do stress công việc. Uống thuốc theo toa 2 ngày đã đỡ hẳn."
-          />
-
-          <PatientReviewCard
-            initials="MT"
-            initialsBg={COLORS.secondaryContainer}
-            authorName="Trần Minh Tâm"
-            metaText="1 tuần trước • Khám Tiền đình & MRI"
-            comment="Bác sĩ giải thích cặn kẽ kết quả chụp MRI và hướng dẫn tập luyện giảm áp lực mắt, thái độ nhẹ nhàng chu đáo."
-          />
-
-          <AppButton
-            title={`Xem tất cả ${doctor.reviewCount} đánh giá`}
-            variant="tonal"
-            size="sm"
-            rightIcon="chevron-forward"
-          />
+          {filteredDocReviews.map((rev, idx) => (
+            <PatientReviewCard
+              key={rev.id}
+              initials={rev.initials}
+              initialsBg={
+                idx % 2 === 0
+                  ? COLORS.primaryContainer
+                  : COLORS.secondaryContainer
+              }
+              authorName={rev.authorName}
+              metaText={`${rev.metaText} • ${rev.rating}★`}
+              comment={rev.comment}
+            />
+          ))}
         </View>
 
         {/* Clinic Guarantee Badge */}

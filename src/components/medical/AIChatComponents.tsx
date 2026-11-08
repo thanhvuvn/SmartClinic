@@ -97,12 +97,26 @@ export const AITypingIndicator: React.FC = () => (
 export interface AIClinicalResponseCardProps {
   doctors: DoctorItem[];
   onBookDoctor?: (doc: DoctorItem) => void;
+  analysisText?: string;
+  specialtyName?: string;
+  specialtyDesc?: string;
+  specialtyIcon?: keyof typeof Ionicons.glyphMap;
+  urgencyLevel?: 'emergency' | 'soon' | 'routine';
+  onEmergencyCall?: () => void;
 }
 
 export const AIClinicalResponseCard: React.FC<AIClinicalResponseCardProps> = ({
   doctors,
   onBookDoctor,
+  analysisText = 'Dựa trên triệu chứng đau nửa đầu thái dương kèm chóng mặt kéo dài 2 ngày và tăng khi tập trung màn hình, có thể liên quan đến căng thẳng thần kinh hoặc rối loạn tuần hoàn não thoáng qua. Bạn nên khám chuyên khoa để bác sĩ kiểm tra trực tiếp.',
+  specialtyName = 'Nội Thần Kinh',
+  specialtyDesc = 'Đau đầu, chóng mặt, rối loạn tiền đình',
+  specialtyIcon = 'pulse',
+  urgencyLevel = 'soon',
+  onEmergencyCall,
 }) => {
+  const isEmergency = urgencyLevel === 'emergency';
+
   return (
     <View style={styles.msgRow}>
       <View style={styles.botAvatar}>
@@ -111,17 +125,44 @@ export const AIClinicalResponseCard: React.FC<AIClinicalResponseCardProps> = ({
 
       <View style={styles.clinicalContainer}>
         {/* Preliminary Analysis Box */}
-        <View style={styles.analysisCard}>
+        <View
+          style={[
+            styles.analysisCard,
+            isEmergency && {
+              borderColor: COLORS.error,
+              backgroundColor: COLORS.tintRed,
+            },
+          ]}
+        >
           <View style={styles.analysisHeader}>
-            <Ionicons name="shield-half-outline" size={16} color={COLORS.primary} />
-            <Text style={styles.analysisTitle}>Sàng lọc triệu chứng tham khảo</Text>
+            <Ionicons
+              name={isEmergency ? 'alert-circle' : 'shield-half-outline'}
+              size={16}
+              color={isEmergency ? COLORS.error : COLORS.primary}
+            />
+            <Text
+              style={[
+                styles.analysisTitle,
+                isEmergency && { color: COLORS.error },
+              ]}
+            >
+              {isEmergency
+                ? 'Cảnh báo dấu hiệu cần cấp cứu y tế'
+                : 'Sàng lọc triệu chứng tham khảo'}
+            </Text>
           </View>
-          <Text style={styles.analysisBody}>
-            Dựa trên triệu chứng đau nửa đầu thái dương kèm chóng mặt kéo dài 2
-            ngày và tăng khi tập trung màn hình, có thể liên quan đến căng thẳng
-            thần kinh hoặc rối loạn tuần hoàn não thoáng qua. Bạn nên khám chuyên
-            khoa để bác sĩ kiểm tra trực tiếp.
-          </Text>
+          <Text style={styles.analysisBody}>{analysisText}</Text>
+
+          {isEmergency && onEmergencyCall && (
+            <AppButton
+              title="Gọi Cấp Cứu 115 Ngay"
+              variant="danger"
+              size="sm"
+              leftIcon="call-outline"
+              onPress={onEmergencyCall}
+              style={{ marginTop: 10 }}
+            />
+          )}
         </View>
 
         {/* Recommended Specialty */}
@@ -129,15 +170,18 @@ export const AIClinicalResponseCard: React.FC<AIClinicalResponseCardProps> = ({
           <Text style={styles.sectionCap}>CHUYÊN KHOA KHUYẾN NGHỊ</Text>
           <View style={styles.specialtyRecommendBox}>
             <View style={styles.specIconBox}>
-              <Ionicons name="pulse" size={18} color={COLORS.primary} />
+              <Ionicons name={specialtyIcon} size={18} color={COLORS.primary} />
             </View>
             <View style={{ flex: 1, marginHorizontal: 10 }}>
-              <Text style={styles.specTitle}>Nội Thần Kinh</Text>
+              <Text style={styles.specTitle}>{specialtyName}</Text>
               <Text style={styles.specSub} numberOfLines={1}>
-                Đau đầu, chóng mặt, rối loạn tiền đình
+                {specialtyDesc}
               </Text>
             </View>
-            <Badge label="Chuyên khoa gợi ý" variant="teal" />
+            <Badge
+              label={isEmergency ? 'Khám khẩn' : 'Chuyên khoa gợi ý'}
+              variant={isEmergency ? 'danger' : 'teal'}
+            />
           </View>
         </View>
 

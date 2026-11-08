@@ -6,6 +6,7 @@ import {
   DaySlotItem,
   DOCTORS,
   DoctorItem,
+  formatRelativeDate,
   PATIENT_PROFILE,
   PRESCRIPTION_DRUGS,
   PrescriptionDrug,
@@ -42,6 +43,25 @@ export interface LatestBookingTicket {
   paymentMethod: string;
 }
 
+export interface MedicineCabinetItem {
+  id: string;
+  name: string;
+  owner: string;
+  stock: string;
+  exp: string;
+  urgent: boolean;
+}
+
+export interface DoctorReviewItem {
+  id: string;
+  doctorId: string;
+  initials: string;
+  authorName: string;
+  metaText: string;
+  comment: string;
+  rating: number;
+}
+
 interface AppContextValue {
   // 1. Appointments & Booking
   appointments: AppointmentItem[];
@@ -76,13 +96,73 @@ interface AppContextValue {
   setDiagnosisNote: (note: string) => void;
   doctors: DoctorItem[];
 
-  // 5. Security & Privacy (PII Masking state) + Storage Persistence
+  // 5. Medicine Cabinet & Doctor Reviews
+  cabinetMeds: MedicineCabinetItem[];
+  addCabinetMedicine: (med: Omit<MedicineCabinetItem, 'id'>) => void;
+  doctorReviews: DoctorReviewItem[];
+  addDoctorReview: (review: {
+    doctorId: string;
+    rating: number;
+    comment: string;
+  }) => void;
+
+  // 6. Security & Privacy (PII Masking state) + Storage Persistence
   isPiiMasked: boolean;
   togglePiiMask: () => void;
   patientProfile: typeof PATIENT_PROFILE;
   isHydrated: boolean;
   resetAppData: () => Promise<void>;
 }
+
+const INITIAL_CABINET_MEDS: MedicineCabinetItem[] = [
+  {
+    id: 'cab-1',
+    name: 'Sibelium 5mg (Flunarizine)',
+    owner: 'Nguyễn Văn Vũ (Bản thân)',
+    stock: 'Còn 4 / 30 viên',
+    exp: 'HSD: 12/2026',
+    urgent: true,
+  },
+  {
+    id: 'cab-2',
+    name: 'Ginkgo Biloba 80mg',
+    owner: 'Nguyễn Văn Vũ (Bản thân)',
+    stock: 'Còn 18 / 30 viên',
+    exp: 'HSD: 08/2026',
+    urgent: false,
+  },
+  {
+    id: 'cab-3',
+    name: 'Amlodipine 5mg (Thuốc Huyết áp)',
+    owner: 'Bà Trần Thị Lan (Mẹ • 62T)',
+    stock: 'Còn 22 / 30 viên',
+    exp: 'HSD: 05/2027',
+    urgent: false,
+  },
+];
+
+const INITIAL_DOCTOR_REVIEWS: DoctorReviewItem[] = [
+  {
+    id: 'rev-1',
+    doctorId: 'doc-1',
+    initials: 'HN',
+    authorName: 'Nguyễn Hoàng Nam',
+    metaText: '3 ngày trước • Khám Đau đầu thái dương',
+    comment:
+      'Bác sĩ Trang tư vấn rất kỹ lưỡng và ân cần, giải thích rõ nguyên nhân tôi bị đau đầu thái dương do stress công việc. Uống thuốc theo toa 2 ngày đã đỡ hẳn.',
+    rating: 5,
+  },
+  {
+    id: 'rev-2',
+    doctorId: 'doc-1',
+    initials: 'MT',
+    authorName: 'Trần Minh Tâm',
+    metaText: '1 tuần trước • Khám Tiền đình & MRI',
+    comment:
+      'Bác sĩ giải thích cặn kẽ kết quả chụp MRI và hướng dẫn tập luyện giảm áp lực mắt, thái độ nhẹ nhàng chu đáo.',
+    rating: 5,
+  },
+];
 
 const INITIAL_FAMILY_MEMBERS: FamilyMemberItem[] = [
   {
@@ -183,6 +263,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     'Đau đầu căng thẳng (Tension headache) / Rối loạn vận mạch não nhẹ'
   );
   const [doctors] = useState<DoctorItem[]>(DOCTORS);
+  const [cabinetMeds, setCabinetMeds] =
+    useState<MedicineCabinetItem[]>(INITIAL_CABINET_MEDS);
+  const [doctorReviews, setDoctorReviews] = useState<DoctorReviewItem[]>(
+    INITIAL_DOCTOR_REVIEWS
+  );
   const [isPiiMasked, setIsPiiMasked] = useState<boolean>(true);
   const [isHydrated, setIsHydrated] = useState<boolean>(false);
   const hydratedRef = useRef<boolean>(false);
@@ -214,6 +299,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         if (typeof saved.isPiiMasked === 'boolean') {
           setIsPiiMasked(saved.isPiiMasked);
         }
+        if (Array.isArray(saved.cabinetMeds) && saved.cabinetMeds.length > 0) {
+          setCabinetMeds(saved.cabinetMeds);
+        }
+        if (Array.isArray(saved.doctorReviews) && saved.doctorReviews.length > 0) {
+          setDoctorReviews(saved.doctorReviews);
+        }
       }
       hydratedRef.current = true;
       setIsHydrated(true);
@@ -234,6 +325,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       prescriptions,
       diagnosisNote,
       isPiiMasked,
+      cabinetMeds,
+      doctorReviews,
       updatedAt: new Date().toISOString(),
     });
   }, [
@@ -244,6 +337,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     prescriptions,
     diagnosisNote,
     isPiiMasked,
+    cabinetMeds,
+    doctorReviews,
   ]);
 
   const createBooking = ({
@@ -371,6 +466,40 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     ehrService.syncPrescriptionDrug(newDrug, diagnosisNote);
   };
 
+  const addCabinetMedicine = (med: Omit<MedicineCabinetItem, 'id'>) => {
+    setCabinetMeds((prev) => [
+      {
+        ...med,
+        id: `cab-${prev.length + 1}`,
+      },
+      ...prev,
+    ]);
+  };
+
+  const addDoctorReview = (review: {
+    doctorId: string;
+    rating: number;
+    comment: string;
+  }) => {
+    const words = PATIENT_PROFILE.name.trim().split(' ');
+    const initials =
+      words.length >= 2
+        ? `${words[words.length - 2][0]}${words[words.length - 1][0]}`.toUpperCase()
+        : 'NV';
+    setDoctorReviews((prev) => [
+      {
+        id: `rev-${prev.length + 1}`,
+        doctorId: review.doctorId,
+        initials,
+        authorName: PATIENT_PROFILE.name,
+        metaText: `Vừa xong (${formatRelativeDate(0)}) • Đã xác thực khám`,
+        comment: review.comment.trim(),
+        rating: review.rating,
+      },
+      ...prev,
+    ]);
+  };
+
   const togglePiiMask = () => {
     setIsPiiMasked((prev) => !prev);
   };
@@ -385,6 +514,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     setDiagnosisNote(
       'Đau đầu căng thẳng (Tension headache) / Rối loạn vận mạch não nhẹ'
     );
+    setCabinetMeds(INITIAL_CABINET_MEDS);
+    setDoctorReviews(INITIAL_DOCTOR_REVIEWS);
     setIsPiiMasked(true);
   };
 
@@ -405,6 +536,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         diagnosisNote,
         setDiagnosisNote,
         doctors,
+        cabinetMeds,
+        addCabinetMedicine,
+        doctorReviews,
+        addDoctorReview,
         isPiiMasked,
         togglePiiMask,
         patientProfile: PATIENT_PROFILE,

@@ -285,6 +285,7 @@ function AppContent() {
           <PostConsultSummaryScreen
             onBack={() => goBack('main')}
             onNavigate={navigateTo}
+            onRebookDoctor={handleOpenBooking}
           />
         );
       case 'labImagingResults':

@@ -14,8 +14,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../theme';
 import {
   DOCTORS,
+  DoctorItem,
   PATIENT_PROFILE,
-  PRESCRIPTION_DRUGS,
   formatRelativeDate,
 } from '../data/mockData';
 import { useAppContext, FamilyMemberItem } from '../context/AppContext';
@@ -1086,8 +1086,27 @@ export const TeleconsultationScreen: React.FC<{
 export const PostConsultSummaryScreen: React.FC<{
   onBack?: () => void;
   onNavigate?: (routeKey: string) => void;
-}> = ({ onBack, onNavigate }) => {
+  onRebookDoctor?: (doctor: DoctorItem) => void;
+}> = ({ onBack, onNavigate, onRebookDoctor }) => {
+  const { prescriptions, addDoctorReview } = useAppContext();
   const doctor = DOCTORS[0];
+  const [rating, setRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const [reviewToast, setReviewToast] = useState(false);
+
+  const handleSubmitReview = () => {
+    const text =
+      reviewComment.trim() ||
+      'Bác sĩ khám rất tận tâm, giải thích kỹ lưỡng và kê đơn thuốc rõ ràng.';
+    addDoctorReview({
+      doctorId: doctor.id,
+      rating,
+      comment: text,
+    });
+    setReviewSubmitted(true);
+    setReviewToast(true);
+  };
 
   return (
     <View style={styles.screen}>
@@ -1123,26 +1142,99 @@ export const PostConsultSummaryScreen: React.FC<{
             giờ mỗi đêm.
           </Text>
           <Text style={styles.checkItemText}>
-            • Tái khám sau 2 tuần hoặc nhắn tin trực tiếp cho bác sĩ nếu cơn đau
-            tăng nặng.
+            • Tái khám sau 2 tuần ({formatRelativeDate(12)}) hoặc nhắn tin trực
+            tiếp cho bác sĩ nếu cơn đau tăng nặng.
           </Text>
+
+          <AppButton
+            title={`Đặt lịch tái khám với ${doctor.name}`}
+            variant="tonal"
+            size="sm"
+            leftIcon="calendar-outline"
+            onPress={() => onRebookDoctor?.(doctor)}
+            style={{ marginTop: 12 }}
+          />
         </View>
 
         {/* E-Prescription Card */}
         <SectionHeader
           title="Đơn Thuốc Điện Tử Đã Kê"
-          badgeText="3 thuốc"
+          badgeText={`${prescriptions.length} thuốc`}
           badgeVariant="blue"
         />
         <ActivePrescriptionCard
           doctor={doctor}
           prescriptionCode="#DT-241029-01"
           date={formatRelativeDate(-2)}
-          drugs={PRESCRIPTION_DRUGS}
+          drugs={prescriptions}
           onViewOriginal={() => onNavigate?.('rxDetail')}
           onBuyMedicine={() => onNavigate?.('medicineCabinet')}
           onReminderPress={() => onNavigate?.('medLog')}
         />
+
+        {/* Doctor Review Card */}
+        <View style={[styles.card, SHADOWS.sm]}>
+          <View style={styles.rowBetween}>
+            <Text style={styles.docName}>Đánh giá chất lượng khám</Text>
+            <Badge
+              label={reviewSubmitted ? 'Đã gửi đánh giá ✓' : 'Xác thực ca khám'}
+              variant={reviewSubmitted ? 'teal' : 'blue'}
+            />
+          </View>
+          <Text style={[styles.docSub, { marginTop: 4 }]}>
+            Nhận xét của bạn sẽ hiển thị trên hồ sơ của {doctor.name}
+          </Text>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 8,
+              marginVertical: 12,
+            }}
+          >
+            {[1, 2, 3, 4, 5].map((star) => (
+              <TouchableOpacity
+                key={star}
+                onPress={() => !reviewSubmitted && setRating(star)}
+                disabled={reviewSubmitted}
+                style={{ minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' }}
+                accessibilityRole="button"
+                accessibilityLabel={`Chấm ${star} sao`}
+              >
+                <Ionicons
+                  name={star <= rating ? 'star' : 'star-outline'}
+                  size={26}
+                  color={COLORS.warning}
+                />
+              </TouchableOpacity>
+            ))}
+            <Text style={[styles.docName, { marginLeft: 4 }]}>{rating}.0 / 5</Text>
+          </View>
+
+          {!reviewSubmitted ? (
+            <>
+              <AppInput
+                label="NHẬN XÉT CỦA BẠN"
+                placeholder="Chia sẻ trải nghiệm khám với bác sĩ..."
+                value={reviewComment}
+                onChangeText={setReviewComment}
+                leftIcon="chatbox-ellipses-outline"
+              />
+              <AppButton
+                title="Gửi đánh giá bác sĩ"
+                variant="primary"
+                size="sm"
+                leftIcon="send-outline"
+                onPress={handleSubmitReview}
+              />
+            </>
+          ) : (
+            <Text style={styles.checkItemText}>
+              Cảm ơn bạn đã gửi đánh giá! Nhận xét đã được cập nhật vào trang thông tin của bác sĩ.
+            </Text>
+          )}
+        </View>
 
         {/* Next Actions */}
         <AppButton
@@ -1153,6 +1245,12 @@ export const PostConsultSummaryScreen: React.FC<{
           onPress={() => onNavigate?.('teleconsult')}
         />
       </ScrollView>
+      <ToastBanner
+        visible={reviewToast}
+        title="Đã gửi đánh giá"
+        message={`Cảm ơn bạn đã chấm ${rating} sao cho ${doctor.name}`}
+        onDismiss={() => setReviewToast(false)}
+      />
     </View>
   );
 };

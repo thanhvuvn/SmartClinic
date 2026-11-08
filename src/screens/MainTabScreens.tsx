@@ -902,13 +902,13 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
                     onPress={() => onNavigate('postConsultSummary')}
                   />
                   <AppButton
-                    title="Chat với Bác sĩ"
+                    title="Đặt lịch tái khám"
                     variant="tonal"
                     size="sm"
-                    leftIcon="chatbubbles-outline"
+                    leftIcon="calendar-outline"
                     fullWidth={false}
                     style={{ flex: 1 }}
-                    onPress={() => onNavigate('teleconsult')}
+                    onPress={() => onSelectDoctor(apt.doctor)}
                   />
                 </View>
               </View>
@@ -983,47 +983,197 @@ export interface AIAssistantScreenProps {
   onBookDoctor: (doctor: DoctorItem) => void;
 }
 
+interface AIChatThreadItem {
+  id: string;
+  sender: 'user' | 'ai';
+  text?: string;
+  time: string;
+  clinicalCard?: {
+    analysisText: string;
+    specialtyName: string;
+    specialtyDesc: string;
+    specialtyIcon: keyof typeof Ionicons.glyphMap;
+    urgencyLevel: 'emergency' | 'soon' | 'routine';
+    doctors: DoctorItem[];
+  };
+}
+
+const analyzeMedicalSymptom = (
+  rawText: string
+): Omit<AIChatThreadItem, 'id' | 'sender' | 'time'> => {
+  const q = rawText.toLowerCase();
+
+  // 1. Dấu hiệu cấp cứu (Red Flags)
+  if (
+    q.includes('cấp cứu') ||
+    q.includes('khó thở') ||
+    q.includes('đau ngực dữ dội') ||
+    q.includes('tê yếu') ||
+    q.includes('méo miệng') ||
+    q.includes('nói đớ') ||
+    q.includes('co giật') ||
+    q.includes('ngất')
+  ) {
+    return {
+      clinicalCard: {
+        urgencyLevel: 'emergency',
+        analysisText:
+          'CẢNH BÁO ĐỎ: Các dấu hiệu như đau ngực dữ dội, khó thở, tê yếu nửa người, méo miệng, nói đớ hoặc sốt cao co giật là tình trạng cấp cứu nội/ngoại khoa tối khẩn. Vui lòng gọi 115 hoặc nhờ người thân đưa đến Khoa Cấp cứu gần nhất ngay lập tức.',
+        specialtyName: 'Cấp Cứu & Thần Kinh - Tim Mạch',
+        specialtyDesc: 'Can thiệp đột quỵ & tim mạch khẩn cấp 24/7',
+        specialtyIcon: 'medkit',
+        doctors: [DOCTORS[1], DOCTORS[0]],
+      },
+    };
+  }
+
+  // 2. Hỏi về thuốc giảm đau & cảnh báo dị ứng hồ sơ EHR
+  if (q.includes('thuốc') || q.includes('giảm đau') || q.includes('liều')) {
+    return {
+      text: `Lưu ý an toàn dược lâm sàng: Hồ sơ bệnh án của bạn có ghi nhận tiền sử DỊ ỨNG NHÓM NSAIDs (Ibuprofen). Bạn tuyệt đối không tự ý mua các thuốc giảm đau kháng viêm nhóm NSAIDs. Nếu cần giảm đau tạm thời, hãy tham khảo ý kiến bác sĩ chuyên khoa trước khi dùng Paracetamol đúng liều lượng theo cân nặng.`,
+    };
+  }
+
+  // 3. Hỏi về chế độ ăn uống / kiêng cử
+  if (q.includes('kiêng') || q.includes('ăn uống') || q.includes('sinh hoạt')) {
+    return {
+      text: 'Hướng dẫn chăm sóc & sinh hoạt tại nhà:\n• Hạn chế cà phê, trà đặc, rượu bia và thức ăn chế biến sẵn chứa nhiều muối/bột ngọt.\n• Uống đủ 1.8 – 2 lít nước ấm mỗi ngày.\n• Áp dụng quy tắc 20-20-20 khi nhìn màn hình máy tính và ngủ trước 23:00.',
+    };
+  }
+
+  // 4. Triệu chứng Tim mạch & Huyết áp
+  if (
+    q.includes('tim') ||
+    q.includes('tức ngực') ||
+    q.includes('hồi hộp') ||
+    q.includes('đánh trống ngực') ||
+    q.includes('huyết áp') ||
+    q.includes('mạch nhanh')
+  ) {
+    return {
+      clinicalCard: {
+        urgencyLevel: 'soon',
+        analysisText:
+          'Triệu chứng tức ngực, hồi hộp đánh trống ngực hoặc dao động huyết áp cần được kiểm tra điện tâm đồ (ECG) và siêu âm tim Doppler để loại trừ rối loạn nhịp hoặc thiếu máu cơ tim cục bộ.',
+        specialtyName: 'Tim Mạch',
+        specialtyDesc: 'Tăng huyết áp, mạch vành & rối loạn nhịp tim',
+        specialtyIcon: 'heart',
+        doctors: [DOCTORS[1]],
+      },
+    };
+  }
+
+  // 5. Triệu chứng Mắt / Nhãn khoa
+  if (
+    q.includes('mắt') ||
+    q.includes('nhìn mờ') ||
+    q.includes('mỏi mắt') ||
+    q.includes('khô mắt') ||
+    q.includes('nhức mắt') ||
+    q.includes('thị lực')
+  ) {
+    return {
+      clinicalCard: {
+        urgencyLevel: 'routine',
+        analysisText:
+          'Tình trạng mỏi mắt, khô rát hoặc nhìn mờ khi làm việc máy tính kéo dài thường liên quan đến Hội chứng thị giác màn hình (CVS) hoặc thay đổi độ khúc xạ. Bạn nên khám chuyên khoa Mắt để đo khúc xạ và soi đáy mắt.',
+        specialtyName: 'Mắt (Nhãn Khoa)',
+        specialtyDesc: 'Khúc xạ, khô mắt kỹ thuật số & võng mạc',
+        specialtyIcon: 'eye',
+        doctors: [DOCTORS[2]],
+      },
+    };
+  }
+
+  // 6. Triệu chứng Cột sống & Ngoại thần kinh
+  if (
+    q.includes('đau lưng') ||
+    q.includes('cột sống') ||
+    q.includes('thoát vị') ||
+    q.includes('cổ vai gáy') ||
+    q.includes('thần kinh tọa') ||
+    q.includes('tê chân') ||
+    q.includes('tê tay')
+  ) {
+    return {
+      clinicalCard: {
+        urgencyLevel: 'soon',
+        analysisText:
+          'Đau vùng cổ vai gáy hoặc đau thắt lưng lan xuống tay/chân là dấu hiệu gợi ý chèn ép rễ thần kinh hoặc thoát vị đĩa đệm cột sống. Bạn nên khám chuyên khoa Ngoại Thần kinh để đánh giá vận động và chụp cộng hưởng từ (MRI) khi cần.',
+        specialtyName: 'Ngoại Thần Kinh & Cột Sống',
+        specialtyDesc: 'Thoát vị đĩa đệm, đau thần kinh tọa & cột sống',
+        specialtyIcon: 'fitness',
+        doctors: [DOCTORS[3], DOCTORS[0]],
+      },
+    };
+  }
+
+  // 7. Mặc định / Triệu chứng Nội thần kinh (Đau đầu, chóng mặt, mất ngủ)
+  return {
+    clinicalCard: {
+      urgencyLevel: 'soon',
+      analysisText:
+        'Dựa trên mô tả triệu chứng của bạn, hệ thống định hướng sàng lọc ban đầu thuộc nhóm bệnh lý Nội Thần kinh (đau đầu vận mạch Migraine, rối loạn tiền đình hoặc căng thẳng thần kinh). Bạn nên đặt lịch khám để bác sĩ chuyên khoa thăm khám trực tiếp.',
+      specialtyName: 'Nội Thần Kinh',
+      specialtyDesc: 'Đau đầu, chóng mặt, rối loạn tiền đình & mất ngủ',
+      specialtyIcon: 'pulse',
+      doctors: [DOCTORS[0], DOCTORS[3]],
+    },
+  };
+};
+
 export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({
   onBookDoctor,
 }) => {
+  const { patientProfile } = useAppContext();
+  const displayName = patientProfile.name || PATIENT_PROFILE.name;
   const [inputMsg, setInputMsg] = useState('');
   const [showSampleThread, setShowSampleThread] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
-  const [extraMessages, setExtraMessages] = useState<
-    { id: string; sender: 'user' | 'ai'; text: string; time: string }[]
-  >([]);
+  const [extraMessages, setExtraMessages] = useState<AIChatThreadItem[]>([]);
   const chatScrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
+
+  const getCurrentTimeStr = () => {
+    const now = new Date();
+    return `${String(now.getHours()).padStart(2, '0')}:${String(
+      now.getMinutes()
+    ).padStart(2, '0')}`;
+  };
 
   const handleSend = (customText?: string) => {
     const content = (customText ?? inputMsg).trim();
     if (!content || isTyping) return;
+    const timeStr = getCurrentTimeStr();
+
     setExtraMessages((prev) => [
       ...prev,
-      { id: Date.now().toString(), sender: 'user', text: content, time: '09:44' },
+      { id: `usr-${prev.length + 1}`, sender: 'user', text: content, time: timeStr },
     ]);
     if (!customText) setInputMsg('');
 
-    // TODO: Replace simulated typing timeout and sample response with real AI triage backend API
+    // TODO: Replace simulated typing timeout and local symptom triage with real AI triage backend API
     setIsTyping(true);
     setTimeout(() => {
       chatScrollRef.current?.scrollToEnd({ animated: true });
     }, 80);
+
+    const analysisResult = analyzeMedicalSymptom(content);
 
     setTimeout(() => {
       setIsTyping(false);
       setExtraMessages((prev) => [
         ...prev,
         {
-          id: (Date.now() + 1).toString(),
+          id: `ai-${prev.length + 1}`,
           sender: 'ai',
-          text: 'Trợ lý AI đã ghi nhận thêm thông tin của bạn. Bạn nên hạn chế cà phê, uống đủ 2 lít nước/ngày và nghỉ mắt mỗi 45 phút làm việc máy tính. Nếu đau đầu kèm sốt cao hoặc tê yếu tay chân, cần đến cơ sở y tế ngay.',
-          time: '09:44',
+          time: getCurrentTimeStr(),
+          ...analysisResult,
         },
       ]);
       setTimeout(() => {
         chatScrollRef.current?.scrollToEnd({ animated: true });
       }, 100);
-    }, 550);
+    }, 500);
   };
 
   return (
@@ -1059,7 +1209,7 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({
 
         <AIChatBubble
           sender="ai"
-          message="Xin chào Vũ! Tôi là Trợ lý Y tế SmartClinic. Bạn đang gặp vấn đề sức khỏe hay có triệu chứng gì? Hãy mô tả chi tiết để tôi phân tích và gợi ý chuyên khoa phù hợp."
+          message={`Xin chào ${displayName}! Tôi là Trợ lý Y tế SmartClinic. Bạn đang gặp triệu chứng gì (đau đầu, tức ngực, mỏi mắt, đau lưng...)? Hãy mô tả hoặc chọn gợi ý bên dưới để tôi định hướng chuyên khoa và bác sĩ phù hợp.`}
           time="09:41"
         />
 
@@ -1078,25 +1228,42 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({
           </>
         )}
 
-        {extraMessages.map((m) => (
-          <AIChatBubble
-            key={m.id}
-            sender={m.sender}
-            message={m.text}
-            time={m.time}
-          />
-        ))}
+        {extraMessages.map((m) =>
+          m.clinicalCard ? (
+            <AIClinicalResponseCard
+              key={m.id}
+              analysisText={m.clinicalCard.analysisText}
+              specialtyName={m.clinicalCard.specialtyName}
+              specialtyDesc={m.clinicalCard.specialtyDesc}
+              specialtyIcon={m.clinicalCard.specialtyIcon}
+              urgencyLevel={m.clinicalCard.urgencyLevel}
+              doctors={m.clinicalCard.doctors}
+              onBookDoctor={onBookDoctor}
+              onEmergencyCall={() => Linking.openURL('tel:115')}
+            />
+          ) : (
+            <AIChatBubble
+              key={m.id}
+              sender={m.sender}
+              message={m.text || ''}
+              time={m.time}
+            />
+          )
+        )}
 
         {isTyping && <AITypingIndicator />}
 
         <QuickPromptChips
           prompts={[
-            { label: 'Tôi cần kiêng cử gì?', icon: 'restaurant-outline' },
             {
               label: 'Dấu hiệu cần cấp cứu',
               icon: 'medical-outline',
               danger: true,
             },
+            { label: 'Tức ngực, hồi hộp tim đập nhanh', icon: 'heart-outline' },
+            { label: 'Mỏi mắt, nhìn mờ khi dùng máy tính', icon: 'eye-outline' },
+            { label: 'Đau lưng lan xuống chân', icon: 'fitness-outline' },
+            { label: 'Tôi cần kiêng cử gì?', icon: 'restaurant-outline' },
             { label: 'Thuốc giảm đau tạm thời', icon: 'medkit-outline' },
           ]}
           onSelectPrompt={(txt) => handleSend(txt)}
