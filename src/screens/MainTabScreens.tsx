@@ -1151,7 +1151,6 @@ export const ProfileSettingsScreen: React.FC<ProfileSettingsScreenProps> = ({
             onPress: () => onNavigate('familyProfiles'),
           },
         ]}
-        showProfileIcon
       />
 
       <ScrollView

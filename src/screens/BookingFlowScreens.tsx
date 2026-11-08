@@ -83,7 +83,6 @@ export const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = ({
             onPress: () => setBookmarked((prev) => !prev),
           },
         ]}
-        showProfileIcon
       />
 
       <ScrollView
@@ -315,8 +314,6 @@ export const BookingSlotScreen: React.FC<BookingSlotScreenProps> = ({
       <AppHeader
         title="Chọn Thời Gian Khám"
         onBack={onBack}
-        rightActions={[{ icon: 'information-circle-outline' }]}
-        showProfileIcon
       />
 
       <ScrollView
@@ -488,7 +485,6 @@ export const BookingPaymentScreen: React.FC<BookingPaymentScreenProps> = ({
         title="Xác Nhận & Thanh Toán"
         subtitle="Bước cuối: Hoàn tất đặt lịch khám"
         onBack={onBack}
-        showProfileIcon
       />
 
       <ScrollView

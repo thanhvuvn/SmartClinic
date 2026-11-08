@@ -219,7 +219,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
       <AppHeader
         title="Đăng Nhập"
         onBack={onBack}
-        showProfileIcon
       />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -506,7 +505,6 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({
       <AppHeader
         title="Đăng Ký"
         onBack={onGoLogin}
-        showProfileIcon
       />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
