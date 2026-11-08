@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     height: 64,
     backgroundColor: COLORS.surface,
     borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
+    borderTopColor: COLORS.border,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',

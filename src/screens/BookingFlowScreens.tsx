@@ -961,7 +961,7 @@ const styles = StyleSheet.create({
   },
   paymentMethodCardActive: {
     borderColor: COLORS.primary,
-    backgroundColor: '#F0FDFA',
+    backgroundColor: COLORS.surfaceContainerLow,
   },
   paymentMethodLeft: {
     flexDirection: 'row',

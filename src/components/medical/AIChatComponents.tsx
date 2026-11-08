@@ -202,7 +202,7 @@ export const AIClinicalResponseCard: React.FC<AIClinicalResponseCardProps> = ({
 
         {/* Medical Disclaimer */}
         <View style={styles.disclaimerBox}>
-          <Ionicons name="warning-outline" size={15} color="#B45309" />
+          <Ionicons name="warning-outline" size={15} color={COLORS.warningText} />
           <Text style={styles.disclaimerText}>
             Lưu ý: Kết quả phân tích từ AI chỉ mang tính chất tham khảo định
             hướng chuyên khoa, không thay thế chẩn đoán lâm sàng của bác sĩ
@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
   triagePill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#CCFBF1',
+    backgroundColor: COLORS.tintTeal,
     borderRadius: RADIUS.full,
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#CCFBF1',
+    backgroundColor: COLORS.tintTeal,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 8,
