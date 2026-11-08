@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, RADIUS, SHADOWS, TYPOGRAPHY } from '../../theme';
-import { DoctorItem, PrescriptionDrug } from '../../data/mockData';
+import { DoctorItem, PrescriptionDrug, formatRelativeDate } from '../../data/mockData';
 import { Badge } from '../common/Badge';
 import { AppButton } from '../common/AppButton';
 
@@ -232,17 +232,17 @@ export const MedicalHistoryTimeline: React.FC<MedicalHistoryTimelineProps> = ({
 }) => {
   const items = [
     {
-      date: '29/10/2024',
+      date: formatRelativeDate(-2),
       tag: 'Lần khám mới nhất',
       title: 'Khám Chuyên khoa Thần kinh',
       doctor: 'Bác sĩ: TS. BS. Lê Thu Trang',
-      summaryLabel: 'Chẩn đoán sơ bộ & kết luận:',
+      summaryLabel: 'Chẩn đoán & kết luận của bác sĩ:',
       summaryValue:
         'Đau đầu căng thẳng (Tension headache) / Rối loạn vận mạch não nhẹ',
       active: true,
     },
     {
-      date: '15/06/2024',
+      date: formatRelativeDate(-45),
       tag: 'Hoàn thành',
       title: 'Khám Mắt tổng quát & Đo khúc xạ',
       doctor: 'Bác sĩ: ThS. BS. Nguyễn Minh Đức',
