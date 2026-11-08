@@ -8,10 +8,11 @@ import {
   Platform,
   StyleSheet,
   Animated,
+  Alert,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, GRADIENTS, RADIUS, SHADOWS, TYPOGRAPHY } from '../theme';
+import { COLORS, GRADIENTS, RADIUS, SHADOWS, TOUCH, TYPOGRAPHY } from '../theme';
 import {
   AppButton,
   AppHeader,
@@ -396,7 +397,17 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               <Text style={styles.rememberLabel}>Ghi nhớ đăng nhập</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity accessibilityRole="button" accessibilityLabel="Quên mật khẩu">
+            <TouchableOpacity
+              accessibilityRole="button"
+              accessibilityLabel="Quên mật khẩu"
+              style={{ minHeight: TOUCH.min, justifyContent: 'center' }}
+              onPress={() =>
+                Alert.alert(
+                  'Khôi phục mật khẩu',
+                  'Vui lòng liên hệ tổng đài hỗ trợ SmartClinic (1900 6888) hoặc mang CCCD tới quầy tiếp đón bệnh viện để cấp lại mật khẩu an toàn.'
+                )
+              }
+            >
               <Text style={styles.forgotText}>Quên mật khẩu?</Text>
             </TouchableOpacity>
           </View>
