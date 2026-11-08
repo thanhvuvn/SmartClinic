@@ -13,7 +13,12 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../theme';
-import { DOCTORS, PATIENT_PROFILE, PRESCRIPTION_DRUGS } from '../data/mockData';
+import {
+  DOCTORS,
+  PATIENT_PROFILE,
+  PRESCRIPTION_DRUGS,
+  formatRelativeDate,
+} from '../data/mockData';
 import { useAppContext, FamilyMemberItem } from '../context/AppContext';
 import { openGoogleMapsDirections } from '../utils/mapNavigation';
 import { shareAppointmentTicket } from '../utils/shareUtils';
@@ -1083,7 +1088,7 @@ export const PostConsultSummaryScreen: React.FC<{
         <View style={[styles.card, SHADOWS.sm]}>
           <View style={styles.rowBetween}>
             <Badge label="CHẨN ĐOÁN XÁC ĐỊNH" variant="teal" showDot />
-            <Text style={styles.capLabel}>29/10/2024 • 14:15</Text>
+            <Text style={styles.capLabel}>{formatRelativeDate(-2)} • 14:15</Text>
           </View>
           <Text style={[styles.docName, { marginTop: 8, fontSize: 16 }]}>
             G43.0 - Đau nửa đầu Migraine không có tiền triệu / Rối loạn giấc ngủ
@@ -1118,7 +1123,7 @@ export const PostConsultSummaryScreen: React.FC<{
         <ActivePrescriptionCard
           doctor={doctor}
           prescriptionCode="#DT-241029-01"
-          date="29/10/2024"
+          date={formatRelativeDate(-2)}
           drugs={PRESCRIPTION_DRUGS}
           onViewOriginal={() => onNavigate?.('rxDetail')}
           onBuyMedicine={() => onNavigate?.('medicineCabinet')}

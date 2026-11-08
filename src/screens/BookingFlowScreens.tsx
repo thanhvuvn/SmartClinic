@@ -186,7 +186,7 @@ export const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = ({
                   color={COLORS.primary}
                 />
                 <Text style={styles.shiftHeaderTitle}>
-                  Khung giờ Thứ 3 (29/10/2024)
+                  Khung giờ {BOOKING_DAYS[1].dayLabel} ({BOOKING_DAYS[1].fullDate})
                 </Text>
               </View>
               <Text style={styles.shiftHeaderRight}>Ca sáng & Chiều</Text>
@@ -351,7 +351,7 @@ export const BookingSlotScreen: React.FC<BookingSlotScreenProps> = ({
 
         <SectionHeader
           title="Chọn ngày khám"
-          badgeText="Tháng 10 - 11, 2024"
+          badgeText={`Tháng ${String(new Date().getMonth() + 1).padStart(2, '0')}/${new Date().getFullYear()}`}
           badgeVariant="blue"
           badgeIcon="calendar-outline"
         />

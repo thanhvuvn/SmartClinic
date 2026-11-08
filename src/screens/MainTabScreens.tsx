@@ -22,6 +22,7 @@ import {
   APPOINTMENTS,
   PRESCRIPTION_DRUGS,
   PATIENT_PROFILE,
+  formatRelativeDate,
   AppointmentItem,
   DoctorItem,
   HospitalItem,
@@ -684,7 +685,7 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
               <ActivePrescriptionCard
                 doctor={DOCTORS[0]}
                 prescriptionCode="#DT-241029-01"
-                date="29/10/2024"
+                date={formatRelativeDate(-2)}
                 drugs={prescriptions}
                 onViewOriginal={() => onNavigate('rxDetail')}
                 onBuyMedicine={() => onNavigate('medicineCabinet')}
@@ -725,7 +726,7 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
             <SectionHeader
               title="Lịch sử khám bệnh"
               leftIcon="calendar-outline"
-              actionText="Gần nhất: 29/10/2024"
+              actionText={`Gần nhất: ${formatRelativeDate(-2)}`}
               onActionPress={() => onNavigate('postConsultSummary')}
             />
             <MedicalHistoryTimeline

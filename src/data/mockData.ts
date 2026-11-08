@@ -274,12 +274,84 @@ export const HOSPITALS: HospitalItem[] = [
   },
 ];
 
+const WEEKDAY_LABELS = [
+  'Chủ Nhật',
+  'Thứ 2',
+  'Thứ 3',
+  'Thứ 4',
+  'Thứ 5',
+  'Thứ 6',
+  'Thứ 7',
+];
+
+export const formatRelativeDate = (offsetDays: number): string => {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yyyy = d.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+};
+
+export const getRelativeDayMeta = (offsetDays: number) => {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yyyy = d.getFullYear();
+  return {
+    dayLabel: WEEKDAY_LABELS[d.getDay()],
+    dateNumber: dd,
+    shortDate: `${dd}/${mm}`,
+    fullDate: `${dd}/${mm}/${yyyy}`,
+  };
+};
+
+const dayMinus1 = getRelativeDayMeta(-1);
+const day0 = getRelativeDayMeta(0);
+const dayPlus1 = getRelativeDayMeta(1);
+const dayPlus2 = getRelativeDayMeta(2);
+const dayPlus3 = getRelativeDayMeta(3);
+const dayPlus5 = getRelativeDayMeta(5);
+
 export const BOOKING_DAYS: DaySlotItem[] = [
-  { id: 'd1', dayLabel: 'Thứ 2', dateNumber: '28', fullDate: '28/10/2024', slotsAvailable: 0, isFull: true },
-  { id: 'd2', dayLabel: 'Thứ 3', dateNumber: '29', fullDate: '29/10/2024', badge: 'HÔM NAY', slotsAvailable: 7 },
-  { id: 'd3', dayLabel: 'Thứ 4', dateNumber: '30', fullDate: '30/10/2024', slotsAvailable: 6 },
-  { id: 'd4', dayLabel: 'Thứ 5', dateNumber: '31', fullDate: '31/10/2024', slotsAvailable: 4 },
-  { id: 'd5', dayLabel: 'Thứ 6', dateNumber: '01', fullDate: '01/11/2024', slotsAvailable: 8 },
+  {
+    id: 'd1',
+    dayLabel: dayMinus1.dayLabel,
+    dateNumber: dayMinus1.dateNumber,
+    fullDate: dayMinus1.fullDate,
+    slotsAvailable: 0,
+    isFull: true,
+  },
+  {
+    id: 'd2',
+    dayLabel: day0.dayLabel,
+    dateNumber: day0.dateNumber,
+    fullDate: day0.fullDate,
+    badge: 'HÔM NAY',
+    slotsAvailable: 7,
+  },
+  {
+    id: 'd3',
+    dayLabel: dayPlus1.dayLabel,
+    dateNumber: dayPlus1.dateNumber,
+    fullDate: dayPlus1.fullDate,
+    slotsAvailable: 6,
+  },
+  {
+    id: 'd4',
+    dayLabel: dayPlus2.dayLabel,
+    dateNumber: dayPlus2.dateNumber,
+    fullDate: dayPlus2.fullDate,
+    slotsAvailable: 4,
+  },
+  {
+    id: 'd5',
+    dayLabel: dayPlus3.dayLabel,
+    dateNumber: dayPlus3.dateNumber,
+    fullDate: dayPlus3.fullDate,
+    slotsAvailable: 8,
+  },
 ];
 
 export const TIME_SLOTS: TimeSlotItem[] = [
@@ -316,8 +388,8 @@ export const APPOINTMENTS: AppointmentItem[] = [
     id: 'apt-2',
     code: '#SC-241104-5120',
     doctor: DOCTORS[2],
-    dateLabel: 'Sau 5 ngày • 04/11',
-    timeRange: '14:00, Thứ Hai 04/11/2024',
+    dateLabel: `Sau 5 ngày • ${dayPlus5.shortDate}`,
+    timeRange: `14:00, ${dayPlus5.dayLabel} ${dayPlus5.fullDate}`,
     status: 'upcoming',
     mode: 'video',
     statusBadge: 'Chat trực tuyến',
