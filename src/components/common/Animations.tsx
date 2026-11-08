@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Animated,
   View,
@@ -11,7 +11,7 @@ import {
 import { COLORS, RADIUS, SHADOWS, SPACING } from '../../theme';
 
 // ==========================================
-// 1. FADE IN & SLIDE UP ENTRY ANIMATION
+// 1. FADE IN & SLIDE UP ENTRY ANIMATION (Operate Mode: <= 60ms delay, fast settle)
 // ==========================================
 export interface AnimatedEntryProps {
   children: React.ReactNode;
@@ -25,32 +25,34 @@ export interface AnimatedEntryProps {
 export const AnimatedEntry: React.FC<AnimatedEntryProps> = ({
   children,
   delay = 0,
-  duration = 360,
-  distance = 16,
+  duration = 180,
+  distance = 8,
   direction = 'up',
   style,
 }) => {
-  const opacity = useRef(new Animated.Value(0)).current;
-  const translate = useRef(
-    new Animated.Value(direction === 'up' ? distance : direction === 'down' ? -distance : 0)
-  ).current;
+  const effectiveDelay = Math.min(Math.max(delay, 0), 60);
+  const effectiveDuration = Math.min(Math.max(duration, 120), 220);
+  const [opacity] = useState(() => new Animated.Value(0));
+  const [translate] = useState(
+    () => new Animated.Value(direction === 'up' ? distance : direction === 'down' ? -distance : 0)
+  );
 
   useEffect(() => {
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: 1,
-        duration,
-        delay,
+        duration: effectiveDuration,
+        delay: effectiveDelay,
         useNativeDriver: true,
       }),
       Animated.timing(translate, {
         toValue: 0,
-        duration,
-        delay,
+        duration: effectiveDuration,
+        delay: effectiveDelay,
         useNativeDriver: true,
       }),
     ]).start();
-  }, [opacity, translate, delay, duration, distance, direction]);
+  }, [opacity, translate, effectiveDelay, effectiveDuration, distance, direction]);
 
   return (
     <Animated.View
@@ -89,7 +91,7 @@ export const PressableScale: React.FC<PressableScaleProps> = ({
   accessibilityRole = 'button',
   accessibilityState,
 }) => {
-  const scale = useRef(new Animated.Value(1)).current;
+  const [scale] = useState(() => new Animated.Value(1));
 
   const handlePressIn = () => {
     Animated.spring(scale, {
@@ -139,8 +141,8 @@ export const PulsingDot: React.FC<PulsingDotProps> = ({
   size = 8,
   style,
 }) => {
-  const pulse = useRef(new Animated.Value(1)).current;
-  const haloOpacity = useRef(new Animated.Value(0.6)).current;
+  const [pulse] = useState(() => new Animated.Value(1));
+  const [haloOpacity] = useState(() => new Animated.Value(0.6));
 
   useEffect(() => {
     const loop = Animated.loop(
@@ -221,7 +223,7 @@ export const SkeletonBox: React.FC<SkeletonBoxProps> = ({
   borderRadius = RADIUS.sm,
   style,
 }) => {
-  const shimmer = useRef(new Animated.Value(0.35)).current;
+  const [shimmer] = useState(() => new Animated.Value(0.35));
 
   useEffect(() => {
     const loop = Animated.loop(
@@ -326,9 +328,9 @@ export const QuickServicesSkeleton: React.FC = () => (
 // 5. TYPING DOTS (Staggered Chat Bounce)
 // ==========================================
 export const TypingDots: React.FC<{ color?: string }> = ({ color = COLORS.primary }) => {
-  const dot1 = useRef(new Animated.Value(0)).current;
-  const dot2 = useRef(new Animated.Value(0)).current;
-  const dot3 = useRef(new Animated.Value(0)).current;
+  const [dot1] = useState(() => new Animated.Value(0));
+  const [dot2] = useState(() => new Animated.Value(0));
+  const [dot3] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     const createBounce = (anim: Animated.Value, delay: number) =>
@@ -381,8 +383,8 @@ export const AnimatedSuccessBadge: React.FC<{ size?: number; color?: string; chi
   color = COLORS.secondary,
   children,
 }) => {
-  const scale = useRef(new Animated.Value(0.2)).current;
-  const opacity = useRef(new Animated.Value(0)).current;
+  const [scale] = useState(() => new Animated.Value(0.2));
+  const [opacity] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     Animated.parallel([

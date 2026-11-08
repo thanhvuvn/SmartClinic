@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -28,8 +28,8 @@ export interface SplashScreenProps {
 }
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onContinue }) => {
-  const logoScale = useRef(new Animated.Value(0.75)).current;
-  const progressAnim = useRef(new Animated.Value(0.15)).current;
+  const [logoScale] = useState(() => new Animated.Value(0.75));
+  const [progressAnim] = useState(() => new Animated.Value(0.15));
 
   useEffect(() => {
     Animated.parallel([
@@ -55,7 +55,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onContinue }) => {
   return (
     <LinearGradient colors={GRADIENTS.splashBg} style={styles.splashContainer}>
       {/* Top Subtle Trust Badge */}
-      <AnimatedEntry delay={100} direction="down">
+      <AnimatedEntry delay={20} direction="down">
         <View style={[styles.splashTopPill, SHADOWS.sm]}>
           <PulsingDot color={COLORS.secondary} size={6} />
           <Text style={styles.splashTopPillText}>HỆ THỐNG Y TẾ KỸ THUẬT SỐ</Text>
@@ -63,7 +63,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onContinue }) => {
       </AnimatedEntry>
 
       {/* Center Identity Block */}
-      <AnimatedEntry delay={250} direction="up" style={styles.splashCenter}>
+      <AnimatedEntry delay={40} direction="up" style={styles.splashCenter}>
         <Animated.View style={[styles.logoCircle, SHADOWS.lg, { transform: [{ scale: logoScale }] }]}>
           <Ionicons name="medical" size={44} color={COLORS.primary} />
           <View style={styles.sparkleBadge}>
@@ -105,7 +105,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onContinue }) => {
       </AnimatedEntry>
 
       {/* Bottom Loading & Compliance Block */}
-      <AnimatedEntry delay={400} direction="up" style={styles.splashBottom}>
+      <AnimatedEntry delay={60} direction="up" style={styles.splashBottom}>
         <View style={styles.progressTrack}>
           <Animated.View style={[styles.progressBarFill, { width: progressWidth }]}>
             <LinearGradient

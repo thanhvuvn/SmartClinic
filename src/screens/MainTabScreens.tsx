@@ -231,7 +231,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         }
       >
         {/* SearchBar with interactive search & clear */}
-        <AnimatedEntry delay={30}>
+        <AnimatedEntry delay={10}>
           <SearchBar
             value={search}
             onChangeText={setSearch}
@@ -242,7 +242,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
         {/* Upcoming appointments section placed immediately below SearchBar */}
         {upcomingAppointments.length > 0 && (
-          <AnimatedEntry delay={70}>
+          <AnimatedEntry delay={20}>
             <SectionHeader
               title="Lịch hẹn sắp tới"
               subtitle="Cuộc hẹn đã xác nhận của bạn"
@@ -265,7 +265,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         )}
 
         {/* Compact AI Hero Banner */}
-        <AnimatedEntry delay={120}>
+        <AnimatedEntry delay={30}>
           <AIHeroBanner
             onAskAIPress={onAskAI}
             style={{ marginBottom: SPACING.lg }}
@@ -273,7 +273,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </AnimatedEntry>
 
         {/* Quick Services — 2×2 grid */}
-        <AnimatedEntry delay={170}>
+        <AnimatedEntry delay={40}>
           <SectionHeader
             title="Tiện ích Y tế thông minh"
             subtitle="Truy cập nhanh tư vấn bác sĩ, nhắc thuốc & hồ sơ gia đình"
@@ -306,7 +306,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </AnimatedEntry>
 
         {/* Specialty Grid with interactive filtering */}
-        <AnimatedEntry delay={220}>
+        <AnimatedEntry delay={50}>
           <SectionHeader
             title="Chuyên khoa"
             subtitle="Chọn khoa để lọc bác sĩ theo nhu cầu"
@@ -324,7 +324,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </AnimatedEntry>
 
         {/* Featured Doctors filtered by search & specialty */}
-        <AnimatedEntry delay={270}>
+        <AnimatedEntry delay={60}>
           <SectionHeader
             title={
               selectedSpecialtyObj
@@ -390,7 +390,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </AnimatedEntry>
 
         {/* Promo Banner placed below Doctors for organic reading flow */}
-        <AnimatedEntry delay={320}>
+        <AnimatedEntry delay={60}>
           <PressableScale
             onPress={() => onBookDoctor(DOCTORS[0])}
             style={{ marginBottom: SPACING.lg }}
@@ -400,7 +400,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </AnimatedEntry>
 
         {/* Hospitals near you */}
-        <AnimatedEntry delay={370}>
+        <AnimatedEntry delay={60}>
           <SectionHeader
             title="Bệnh viện gần bạn"
             badgeText="TP. Hồ Chí Minh"
@@ -637,7 +637,7 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
         contentContainerStyle={styles.scrollPad}
         showsVerticalScrollIndicator={false}
       >
-        <AnimatedEntry delay={40} direction="up">
+        <AnimatedEntry delay={10} direction="up">
           <PatientMasterIdentityCard
             onQrPress={() => onNavigate('bookingSuccess')}
             onBhytPress={() =>
@@ -650,14 +650,14 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
           />
         </AnimatedEntry>
 
-        <AnimatedEntry delay={90} direction="up">
+        <AnimatedEntry delay={20} direction="up">
           <AIClinicalInsightCard
             onAskAIPress={onAskAI}
             style={{ marginBottom: 16 }}
           />
         </AnimatedEntry>
 
-        <AnimatedEntry delay={140} direction="up">
+        <AnimatedEntry delay={30} direction="up">
           <SegmentedControl
             variant="chips"
             selectedKey={filterKey}
@@ -676,7 +676,7 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
         </AnimatedEntry>
 
         {(filterKey === 'all' || filterKey === 'rx') && (
-          <AnimatedEntry delay={190} direction="up">
+          <AnimatedEntry delay={40} direction="up">
             <SectionHeader
               title="Đơn thuốc đang điều trị"
               leftIcon="medkit-outline"
@@ -706,7 +706,7 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
         )}
 
         {(filterKey === 'all' || filterKey === 'lab') && (
-          <AnimatedEntry delay={240} direction="up">
+          <AnimatedEntry delay={50} direction="up">
             <SectionHeader
               title="Xét nghiệm & Chẩn đoán hình ảnh"
               leftIcon="flask-outline"
@@ -726,7 +726,7 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
         )}
 
         {filterKey === 'all' && (
-          <AnimatedEntry delay={290} direction="up">
+          <AnimatedEntry delay={60} direction="up">
             <SectionHeader
               title="Lịch sử khám bệnh"
               leftIcon="calendar-outline"
@@ -740,7 +740,7 @@ export const EHRScreen: React.FC<EHRScreenProps> = ({
         )}
 
         {/* Upload External Record Card */}
-        <AnimatedEntry delay={340} direction="up">
+        <AnimatedEntry delay={60} direction="up">
           <View style={[styles.ocrCard, SHADOWS.sm]}>
             <View style={styles.ocrIconBox}>
               <Ionicons name="scan-outline" size={20} color="#FFFFFF" />
@@ -833,13 +833,13 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
 
         {statusTab === 'upcoming' && (
           <>
-            <AnimatedEntry delay={40} direction="up">
+            <AnimatedEntry delay={20} direction="up">
               <AIReminderCard style={{ marginBottom: 14 }} />
             </AnimatedEntry>
 
             {upcomingList.length > 0 ? (
               upcomingList.map((apt, idx) => (
-                <AnimatedEntry key={apt.id} delay={100 + idx * 70} direction="up">
+                <AnimatedEntry key={apt.id} delay={Math.min(60, 20 + idx * 20)} direction="up">
                   <AppointmentCard
                     appointment={apt}
                     onPrimaryPress={(item) => {
