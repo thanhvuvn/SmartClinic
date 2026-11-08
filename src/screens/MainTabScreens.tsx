@@ -245,7 +245,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <AnimatedEntry delay={20}>
             <SectionHeader
               title="Lịch hẹn sắp tới"
-              subtitle="Cuộc hẹn đã xác nhận của bạn"
               leftIcon="calendar-outline"
               actionText="Xem tất cả"
               onActionPress={() => onNavigate('appointments')}
@@ -274,10 +273,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
         {/* Quick Services — 2×2 grid */}
         <AnimatedEntry delay={40}>
-          <SectionHeader
-            title="Tiện ích Y tế thông minh"
-            subtitle="Truy cập nhanh tư vấn bác sĩ, nhắc thuốc & hồ sơ gia đình"
-          />
+          <SectionHeader title="Tiện ích Y tế" />
           {refreshing ? (
             <QuickServicesSkeleton />
           ) : (
@@ -309,7 +305,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <AnimatedEntry delay={50}>
           <SectionHeader
             title="Chuyên khoa"
-            subtitle="Chọn khoa để lọc bác sĩ theo nhu cầu"
             actionText={selectedSpecialty ? 'Bỏ lọc' : undefined}
             onActionPress={() => setSelectedSpecialty(null)}
           />
@@ -334,7 +329,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             subtitle={
               selectedSpecialtyObj
                 ? `Tìm thấy ${filteredDoctors.length} bác sĩ chuyên khoa`
-                : 'Chuyên gia đầu ngành sẵn sàng tư vấn'
+                : undefined
             }
             actionText={selectedSpecialty ? 'Xem tất cả' : undefined}
             onActionPress={() => setSelectedSpecialty(null)}
@@ -961,9 +956,9 @@ export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
         {/* Need more consultation banner */}
         <View style={styles.moreConsultBanner}>
           <View style={{ flex: 1, minWidth: 150, paddingRight: 10 }}>
-            <Text style={styles.moreConsultTitle}>Cần tư vấn thêm bác sĩ?</Text>
+            <Text style={styles.moreConsultTitle}>Đặt lịch hẹn khám mới</Text>
             <Text style={styles.moreConsultSub}>
-              Hơn 250+ chuyên gia đầu ngành sẵn sàng phục vụ
+              Chọn chuyên khoa và khung giờ phù hợp với bạn
             </Text>
           </View>
           <AppButton

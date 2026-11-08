@@ -170,7 +170,6 @@ export const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = ({
           <SectionHeader
             title="Lịch khám trong tuần"
             leftIcon="calendar-outline"
-            actionText="Cập nhật thời gian thực"
           />
           <HorizontalDateSelector
             days={BOOKING_DAYS}
@@ -589,10 +588,7 @@ export const BookingPaymentScreen: React.FC<BookingPaymentScreenProps> = ({
 
         {/* 3. Multi-Option Payment Selector */}
         <AnimatedEntry delay={140} direction="up">
-          <SectionHeader
-            title="Chọn phương thức thanh toán"
-            subtitle="Hỗ trợ BHYT quốc gia và các cổng thanh toán bảo mật"
-          />
+          <SectionHeader title="Chọn phương thức thanh toán" />
 
           <View style={{ gap: 10, marginBottom: 16 }} accessibilityRole="radiogroup">
             {paymentOptions.map((opt) => {
