@@ -104,11 +104,11 @@ export const AIReminderCard: React.FC<AIReminderCardProps> = ({ style }) => {
   return (
     <View style={[styles.reminderCard, style]}>
       <View style={styles.reminderIconCircle}>
-        <Ionicons name="sparkles" size={18} color={COLORS.secondary} />
+        <Ionicons name="notifications-outline" size={18} color={COLORS.secondary} />
       </View>
       <View style={styles.reminderContent}>
         <View style={styles.reminderTopRow}>
-          <Text style={styles.reminderBadgeText}>TRỢ LÝ AI NHẮC NHỞ</Text>
+          <Text style={styles.reminderBadgeText}>NHẮC NHỞ LỊCH KHÁM</Text>
           <View style={styles.greenDot} />
           <Text style={styles.reminderTimeText}>Hôm nay</Text>
         </View>

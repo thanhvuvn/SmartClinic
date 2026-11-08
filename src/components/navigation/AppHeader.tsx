@@ -160,7 +160,7 @@ export const HomeGreetingHeader: React.FC<HomeGreetingHeaderProps> = ({
           </View>
         </View>
         <View>
-          <Text style={styles.greetingTitle}>Xin chào, {userName} 👋</Text>
+          <Text style={styles.greetingTitle}>Xin chào, {userName}</Text>
           <Text style={styles.greetingSub}>{greetingSubtitle}</Text>
         </View>
       </TouchableOpacity>

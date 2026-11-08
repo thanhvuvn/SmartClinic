@@ -279,7 +279,7 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
                 {doc.degree}
               </Text>
               <Text style={styles.docHospitalLine} numberOfLines={1}>
-                🏥 {doc.hospital}
+                {doc.hospital}
               </Text>
               <Text style={styles.docMeta} numberOfLines={1}>
                 Phí khám: {doc.fee} • ★ {doc.rating} ({doc.reviewCount} lượt)
