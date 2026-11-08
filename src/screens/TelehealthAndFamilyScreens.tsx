@@ -233,17 +233,23 @@ export const BookingSuccessScreen: React.FC<{
               label: 'Chia Sẻ Phiếu',
               action: () => shareAppointmentTicket(latestBooking),
             },
-            {
-              icon: 'navigate-outline',
-              label: 'Chỉ Đường',
-              action: () =>
-                openGoogleMapsDirections({
-                  name: doctor.hospital,
-                  address: doctor.address,
-                  latitude: doctor.latitude,
-                  longitude: doctor.longitude,
-                }),
-            },
+            latestBooking.consultMode === 'chat'
+              ? {
+                  icon: 'videocam-outline',
+                  label: 'Phòng Tư Vấn',
+                  action: () => onNavigate?.('teleconsult'),
+                }
+              : {
+                  icon: 'navigate-outline',
+                  label: 'Chỉ Đường',
+                  action: () =>
+                    openGoogleMapsDirections({
+                      name: doctor.hospital,
+                      address: doctor.address,
+                      latitude: doctor.latitude,
+                      longitude: doctor.longitude,
+                    }),
+                },
           ].map((act) => (
             <TouchableOpacity
               key={act.label}
@@ -280,6 +286,16 @@ export const BookingSuccessScreen: React.FC<{
         </View>
 
         {/* Section 6: Bottom Navigation Action Stack */}
+        {latestBooking.consultMode === 'chat' && (
+          <AppButton
+            title="Vào phòng tư vấn trực tuyến"
+            variant="secondary"
+            size="lg"
+            leftIcon="videocam-outline"
+            onPress={() => onNavigate?.('teleconsult')}
+            style={{ marginBottom: 10 }}
+          />
+        )}
         <AppButton
           title="Xem lịch khám của tôi"
           variant="primary"
@@ -1178,7 +1194,7 @@ export const LabAndImagingResultsScreen: React.FC<{
             Cơ sở thực hiện: BV ĐHYD TP.HCM — Khoa CĐHA & Xét Nghiệm
           </Text>
           <Text style={styles.docSub}>
-            Thực hiện: 28/10/2024 08:45 • Trả kết quả: 10:15
+            Thực hiện: {formatRelativeDate(-1)} 08:45 • Trả kết quả: 10:15
           </Text>
 
           <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
@@ -1215,13 +1231,11 @@ export const LabAndImagingResultsScreen: React.FC<{
         />
 
         {tab === 'imaging' && (
-          /* PACS / DICOM Deep Diagnostic Imaging */
+          /* Diagnostic Imaging Results */
           <View style={[styles.card, SHADOWS.sm]}>
             <SectionHeader
               title="Cộng Hưởng Từ Sọ Não (MRI 1.5 Tesla)"
               subtitle="Vùng khảo sát: Sọ não & Mạch máu nội sọ (MRA)"
-              badgeText="PACS v4.2"
-              badgeVariant="blue"
             />
             <Text style={styles.checkItemText}>
               • Hệ thống não thất bên, não thất III và IV không giãn, cân đối qua
