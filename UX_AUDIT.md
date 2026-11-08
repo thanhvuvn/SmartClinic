@@ -195,31 +195,31 @@
 
   ---
 
-  ### 🟡 MỨC P2 — KHỬ "MÙI AI" (AI SLOP), SINH NGÀY DỮ LIỆU ĐỘNG & ĐỒNG BỘ TOKEN (8 LỖI — CHỜ DUYỆT ĐỢT 3)
+  ### 🟡 MỨC P2 — KHỬ "MÙI AI" (AI SLOP), SINH NGÀY DỮ LIỆU ĐỘNG & ĐỒNG BỘ TOKEN (8 LỖI — ✅ ĐÃ HOÀN THÀNH ĐỢT 3A)
 
-  1. **`[P2-01]` Giảm độ trễ chuỗi `AnimatedEntry` (`delay` lên tới `370ms`) theo chuẩn `Operate Mode`:**
+  1. **`[P2-01]` ✅ *(Commit `f2e506b`)* Giảm độ trễ chuỗi `AnimatedEntry` (`delay` lên tới `370ms`) theo chuẩn `Operate Mode`:**
     - **Vị trí:** `src/components/common/Animations.tsx:21-60` và các màn hình trong `src/screens/`
-    - **Cách sửa:** Rút ngắn thời gian animation và giới hạn `delay` tối đa `<= 60ms`.
-  2. **`[P2-02]` Xóa phụ đề quảng cáo thừa dưới các `SectionHeader`:**
-    - **Vị trí:** `src/screens/MainTabScreens.tsx:199, 231, 261, 316, 366, 761`, `src/screens/BookingFlowScreens.tsx:189, 587`
+    - **Cách sửa:** Rút ngắn thời gian animation (`duration <= 220ms`), giới hạn `delay` tối đa `<= 60ms` và xử lý triệt để 66 lỗi lint `react-hooks/refs`.
+  2. **`[P2-02]` ✅ *(Commit `07e7513`)* Xóa phụ đề quảng cáo thừa dưới các `SectionHeader`:**
+    - **Vị trí:** `src/screens/MainTabScreens.tsx:246-350, 956`, `src/screens/BookingFlowScreens.tsx:170, 589`
     - **Cách sửa:** Bỏ các `subtitle` mang tính khẩu hiệu marketing.
-  3. **`[P2-03]` Viết lại copy cài đặt và xóa các cụm từ tự bịa kiểu AI (`"Chuông y tế độc quyền: MedAlert Melodic"`, `"94% chuẩn"`, `"tương tác dược động học"`):**
-    - **Vị trí:** `src/screens/MainTabScreens.tsx:987, 1074, 1099` và `src/screens/PharmacyAndMedicationScreens.tsx:77`
-    - **Cách sửa:** Dùng ngôn từ y tế phổ thông, giản dị và tính toán phần trăm tuân thủ uống thuốc động từ `takenCount / doses.length`.
-  4. **`[P2-04]` Xóa emoji (`👋`, `🏥`) và giảm lạm dụng icon `sparkles` trên các thẻ hành chính:**
-    - **Vị trí:** `src/components/navigation/AppHeader.tsx:163`, `src/screens/RoleDashboards.tsx:279`, `src/components/medical/AIHeroBanner.tsx:126, 163`
+  3. **`[P2-03]` ✅ *(Commit `b2a17dc`)* Viết lại copy cài đặt và xóa các cụm từ tự bịa kiểu AI (`"Chuông y tế độc quyền: MedAlert Melodic"`, `"94% chuẩn"`, `"tương tác dược động học"`):**
+    - **Vị trí:** `src/screens/MainTabScreens.tsx:1123-1350` và `src/screens/PharmacyAndMedicationScreens.tsx:36-60`
+    - **Cách sửa:** Dùng ngôn từ y tế phổ thông, giản dị và tính toán phần trăm tuân thủ uống thuốc động từ `takenCount / totalDoses`.
+  4. **`[P2-04]` ✅ *(Commit `eff94ae`)* Xóa emoji (`👋`, `🏥`) và giảm lạm dụng icon `sparkles` trên các thẻ hành chính:**
+    - **Vị trí:** `src/components/navigation/AppHeader.tsx:163`, `src/screens/RoleDashboards.tsx:282`, `src/components/medical/AIHeroBanner.tsx:107-111`
     - **Cách sửa:** Xóa emoji và thay `sparkles` bằng icon y tế tiêu chuẩn.
-  5. **`[P2-05]` Dọn dẹp các nút chết trên `AppHeader` (`showProfileIcon`, `information-circle-outline` không có `onPress`):**
-    - **Vị trí:** `src/screens/AuthScreens.tsx:222, 505`, `src/screens/BookingFlowScreens.tsx:53-54, 318-319, 486`, `src/screens/MainTabScreens.tsx:926`
+  5. **`[P2-05]` ✅ *(Commit `00c1b2e`)* Dọn dẹp các nút chết trên `AppHeader` (`showProfileIcon`, `information-circle-outline` không có `onPress`):**
+    - **Vị trí:** `src/screens/AuthScreens.tsx:219, 505`, `src/screens/BookingFlowScreens.tsx:73-87, 314-319, 484-490`, `src/screens/MainTabScreens.tsx:1146-1155`
     - **Cách sửa:** Ẩn `showProfileIcon` và các icon header không có hành động.
-  6. **`[P2-06]` Sinh ngày tháng dữ liệu mẫu tự động theo ngày hiện tại (`new Date()`), không hardcode ngày cố định:**
+  6. **`[P2-06]` ✅ *(Commit `254f3d3`)* Sinh ngày tháng dữ liệu mẫu tự động theo ngày hiện tại (`new Date()`), không hardcode ngày cố định:**
     - **Vị trí:** `src/data/mockData.ts` và các màn hình hiển thị ngày khám / đơn thuốc / xét nghiệm
     - **Cách sửa:** Tạo hàm tiện ích `formatRelativeDate(offsetDays)` trong `mockData.ts` để sinh ngày khám sắp tới (`hôm nay`, `+1 ngày`, `+2 ngày`), ngày đơn thuốc (`-2 ngày`), ngày tái khám (`+12 ngày`) hoàn toàn động theo thời gian thực khi mở app.
-  7. **`[P2-07]` Thay thế các mã màu hex cứng bằng Design Token trong `src/theme/index.ts`:**
+  7. **`[P2-07]` ✅ *(Commit `873dcf7`)* Thay thế các mã màu hex cứng bằng Design Token trong `src/theme/index.ts`:**
     - **Vị trí:** `src/components/medical/AIChatComponents.tsx:205, 322, 352`, `src/screens/BookingFlowScreens.tsx:962`, `src/components/navigation/BottomTabBar.tsx:106`, `src/components/navigation/AppHeader.tsx:211`
-    - **Cách sửa:** Thay bằng `COLORS.tintTeal`, `COLORS.warningText`, `COLORS.border`, `COLORS.divider`.
-  8. **`[P2-08]` Đổi nhãn "Chẩn đoán sơ bộ & kết luận" trên `PrescriptionCard`:**
-    - **Vị trí:** `src/components/medical/PrescriptionCard.tsx:247`
+    - **Cách sửa:** Thay bằng `COLORS.tintTeal`, `COLORS.warningText`, `COLORS.border`, `COLORS.divider`, `COLORS.surfaceContainerLow`.
+  8. **`[P2-08]` ✅ *(Commit `7266660`)* Đổi nhãn "Chẩn đoán sơ bộ & kết luận" trên `PrescriptionCard`:**
+    - **Vị trí:** `src/components/medical/PrescriptionCard.tsx:239`
     - **Cách sửa:** Đổi nhãn `"Chẩn đoán sơ bộ & kết luận:"` thành `"Chẩn đoán & kết luận của bác sĩ:"` để phân biệt rõ kết luận chuyên môn của bác sĩ điều trị với sàng lọc triệu chứng.
 
   ---
@@ -252,8 +252,9 @@
   | **Đợt 1b (`P0`)** | `ux/phase-1b` | `P0-04`, `P0-05`, `P0-06`, `P0-09` | ✅ **Đã hoàn thành & Merge vào `main`** | `7df173b` (`P0-04`), `2857ef9` (`P0-05`), `01f488f` (`P0-06`), `09dc390` (`P0-09`) |
   | **Cấu hình Lint** | `chore/eslint` | Cài đặt `eslint@^9.0.0`, `eslint-config-expo@~58.0.4` | ✅ **Đã hoàn thành & Merge vào `main`** | `e966631` (`chore: add eslint (expo) devDependencies`) |
   | **Đợt 2a (`P1`)** | `ux/phase-2a` | `Bước 0 (docs)`, `P1-04`, `P1-06`, `A-11`, `P1-01`, `P1-13` | ✅ **Đã hoàn thành & Merge vào `main`** | `57ddca7` (`Bước 0`), `497aa2f` (`P1-04`), `813631e` (`P1-06`), `807b71c` (`A-11`), `648b384` (`P1-01`), `51110b2` (`P1-13`) |
-  | **Đợt 2b (`P1`)** | `ux/phase-2b` | `P1-03`, `P1-05`, `P1-07`, `P1-08`, `P1-09`, `P1-10`, `P1-11`, `P1-12`, `P1-02` | ✅ **Đã hoàn thành (Chờ nghiệm thu)** | `75f897c` (`P1-03`), `a77d054` (`P1-05`), `3ec0e89` (`P1-07`), `ac0b8ef` (`P1-08`), `ed84c0d` (`P1-09`), `c911be9` (`P1-10`), `da19c18` (`P1-11`), `732266f` (`P1-12`), `5ecca16` (`P1-02`) |
-  | **Đợt 3 (`P2`)** | *(Chưa tạo)* | `P2-01` → `P2-08` + Phụ lục còn lại | ⏸️ **Chờ duyệt** | — |
+  | **Đợt 2b (`P1`)** | `ux/phase-2b` | `P1-03`, `P1-05`, `P1-07`, `P1-08`, `P1-09`, `P1-10`, `P1-11`, `P1-12`, `P1-02` | ✅ **Đã hoàn thành & Merge vào `main`** | `75f897c` (`P1-03`), `a77d054` (`P1-05`), `3ec0e89` (`P1-07`), `ac0b8ef` (`P1-08`), `ed84c0d` (`P1-09`), `c911be9` (`P1-10`), `da19c18` (`P1-11`), `732266f` (`P1-12`), `5ecca16` (`P1-02`) |
+  | **Đợt 3a (`P2`)** | `ux/phase-3a` | `P2-01` → `P2-08` (+ xử lý 66 lỗi `react-hooks/refs`) | ✅ **Đã hoàn thành (Chờ nghiệm thu)** | `f2e506b` (`P2-01`), `07e7513` (`P2-02`), `b2a17dc` (`P2-03`), `eff94ae` (`P2-04`), `00c1b2e` (`P2-05`), `254f3d3` (`P2-06`), `873dcf7` (`P2-07`), `7266660` (`P2-08`) |
+  | **Đợt 3b (Phụ lục)** | *(Chưa tạo)* | Phụ lục còn lại (`A-01`, `A-02`, `A-03`, `A-05`, `A-06`, `A-07`, `A-08`, `A-09`, `A-10`, `A-12`, `A-13`) | ⏸️ **Chờ duyệt sau Đợt 3a** | — |
 
   ---
 
@@ -274,8 +275,8 @@
   | `@typescript-eslint/no-unused-vars` | 🟡 **Warning** | **38** | • `src/screens/BookingFlowScreens.tsx` (16)<br>• `src/components/medical/SpecialtyGrid.tsx` (3)<br>• `src/screens/RoleDashboards.tsx` (3)<br>• `src/components/medical/HospitalCard.tsx` (2)<br>• `src/screens/MainTabScreens.tsx` (2)<br>• `src/screens/PharmacyAndMedicationScreens.tsx` (2)<br>• `src/screens/TelehealthAndFamilyScreens.tsx` (2)<br>• `src/components/medical/AIHeroBanner.tsx` (1)<br>• `src/components/medical/AppointmentCard.tsx` (1)<br>• `src/components/medical/DateTimeSlotPicker.tsx` (1)<br>• `src/components/medical/DoctorCard.tsx` (1)<br>• `src/components/medical/HospitalMapModal.tsx` (1)<br>• `src/components/medical/PatientEHRCard.tsx` (1)<br>• `src/components/navigation/AppHeader.tsx` (1)<br>• `src/context/AppContext.tsx` (1) |
 
   ### 5.2. Đề xuất lộ trình xử lý nợ kỹ thuật Lint
-  - **`react-hooks/refs` (66 lỗi):** Xem lại và xử lý khi thực hiện mục **`P2-01`** (tối ưu `Animations.tsx` theo `Operate Mode`).
+  - **`react-hooks/refs` (66 lỗi):** ✅ **Đã xử lý triệt để (0 lỗi)** tại commit `f2e506b` (`P2-01`), giảm tổng số lỗi lint từ **69 lỗi** xuống còn **3 lỗi** (`40 problems: 3 errors, 37 warnings`).
   - **`react-hooks/purity` (`TelehealthAndFamilyScreens.tsx:850, 867` — 2 lỗi):** Sửa ở đợt sau.
-  - **`@typescript-eslint/no-unused-vars` (38 cảnh báo):** Dọn dẹp tập trung ở nhánh riêng `chore/cleanup-imports`.
+  - **`@typescript-eslint/no-unused-vars` (37 cảnh báo):** Dọn dẹp tập trung ở nhánh riêng `chore/cleanup-imports`.
 
 
