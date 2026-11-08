@@ -21,7 +21,7 @@ const TABS: TabItemConfig[] = [
   },
   {
     key: 'records',
-    label: 'Khám bệnh',
+    label: 'Hồ sơ',
     icon: 'medkit-outline',
     activeIcon: 'medkit',
   },
