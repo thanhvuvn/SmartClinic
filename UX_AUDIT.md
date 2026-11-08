@@ -254,16 +254,18 @@
   | **Đợt 2a (`P1`)** | `ux/phase-2a` | `Bước 0 (docs)`, `P1-04`, `P1-06`, `A-11`, `P1-01`, `P1-13` | ✅ **Đã hoàn thành & Merge vào `main`** | `57ddca7` (`Bước 0`), `497aa2f` (`P1-04`), `813631e` (`P1-06`), `807b71c` (`A-11`), `648b384` (`P1-01`), `51110b2` (`P1-13`) |
   | **Đợt 2b (`P1`)** | `ux/phase-2b` | `P1-03`, `P1-05`, `P1-07`, `P1-08`, `P1-09`, `P1-10`, `P1-11`, `P1-12`, `P1-02` | ✅ **Đã hoàn thành & Merge vào `main`** | `75f897c` (`P1-03`), `a77d054` (`P1-05`), `3ec0e89` (`P1-07`), `ac0b8ef` (`P1-08`), `ed84c0d` (`P1-09`), `c911be9` (`P1-10`), `da19c18` (`P1-11`), `732266f` (`P1-12`), `5ecca16` (`P1-02`) |
   | **Đợt 3a (`P2`)** | `ux/phase-3a` | `P2-01` → `P2-08` (+ xử lý 66 lỗi `react-hooks/refs`) | ✅ **Đã hoàn thành & Merge vào `main`** | `f2e506b` (`P2-01`), `07e7513` (`P2-02`), `b2a17dc` (`P2-03`), `eff94ae` (`P2-04`), `00c1b2e` (`P2-05`), `254f3d3` (`P2-06`), `873dcf7` (`P2-07`), `7266660` (`P2-08`) |
-  | **Đợt 3b (Phụ lục)** | `ux/phase-3b` | Phụ lục còn lại (`A-01`, `A-02`, `A-03`, `A-05`, `A-06`, `A-07`, `A-08`, `A-09`, `A-10`, `A-12`, `A-13`) | ✅ **Đã hoàn thành (Chờ nghiệm thu)** | `d80ae3e` (`A-01`), `38d9aa6` (`A-02, A-08, A-09`), `531d225` (`A-03, A-12`), `25eff43` (`A-05`), `b1869b4` (`A-06`), `9c749e5` (`A-07, A-10`), `d1862d6` (`A-13`) |
+  | **Đợt 3b (Phụ lục)** | `ux/phase-3b` | Phụ lục còn lại (`A-01`, `A-02`, `A-03`, `A-05`, `A-06`, `A-07`, `A-08`, `A-09`, `A-10`, `A-12`, `A-13`) | ✅ **Đã hoàn thành & Merge vào `main`** | `d80ae3e` (`A-01`), `38d9aa6` (`A-02, A-08, A-09`), `531d225` (`A-03, A-12`), `25eff43` (`A-05`), `b1869b4` (`A-06`), `9c749e5` (`A-07, A-10`), `d1862d6` (`A-13`) |
+  | **Dọn nợ kỹ thuật Lint** | `chore/cleanup-imports` | Xử lý nốt `react-hooks/purity` (2), `react-hooks/set-state-in-effect` (1) và `no-unused-vars` (37) | ✅ **Đã hoàn thành & Merge vào `main` (`0 errors / 0 warnings`)** | `01c36d2` (`chore(lint): resolve remaining react-hooks errors and remove all unused imports`) |
 
   ---
 
-  ## PHẦN 5: NỢ KỸ THUẬT LINT (BASELINE HIỆN TẠI: 69 LỖI / 38 CẢNH BÁO)
+  ## PHẦN 5: NỢ KỸ THUẬT LINT (ĐÃ XỬ LÝ TRIỆT ĐỂ: 0 LỖI / 0 CẢNH BÁO)
 
   > **Cấu hình kiểm tra:**
   > - `app.json`: Chưa bật `experiments.reactCompiler` (không có trường `experiments`). Tuy nhiên `eslint-config-expo@~58.0.4` mặc định tích hợp `eslint-plugin-react-hooks` v7 nên các rule của React Compiler (`react-hooks/refs`, `react-hooks/purity`, `react-hooks/set-state-in-effect`) vẫn được kích hoạt.
   > - `package.json`: `"expo": "~58.0.21"` khớp dòng SDK 58 với `"eslint-config-expo": "~58.0.4"`.
-  > - **Baseline hiện tại (`main` @ `e966631`):** **107 vấn đề = 69 lỗi (`error`) + 38 cảnh báo (`warning`)**.
+  > - **Baseline ban đầu (`main` @ `e966631`):** **107 vấn đề = 69 lỗi (`error`) + 38 cảnh báo (`warning`)**.
+  > - **Trạng thái hiện tại (`main`):** **0 vấn đề (`0 errors / 0 warnings`)**.
 
   ### 5.1. Danh sách Rule & File theo Baseline
 
@@ -271,12 +273,13 @@
   | :--- | :---: | :---: | :--- |
   | `react-hooks/refs` | 🔴 **Error** | **66** | • `src/components/common/Animations.tsx` (**56 lỗi** tại các dòng `33, 34, 53, 57, 59, 90, 139, 140, 173, 178, 180, 221, 326, 327, 328, 362, 381, 382, 398, 402`)<br>• `src/screens/AuthScreens.tsx` (**10 lỗi** tại các dòng `31, 32, 48, 50` trong `SplashScreen`) |
   | `react-hooks/purity` | 🔴 **Error** | **2** | • `src/screens/TelehealthAndFamilyScreens.tsx` (**2 lỗi** tại dòng `850` và `867` do gọi `Date.now()`) |
-  | `react-hooks/set-state-in-effect` | 🔴 **Error** | **1** | • `src/components/medical/HospitalMapModal.tsx` (**1 lỗi** tại dòng `93` do gọi `setRouteState('idle')` đồng bộ trong `useEffect`) |
+  | `react-hooks/set-state-in-effect` | 🔴 **Error** | **1** | • `src/components/medical/HospitalMapModal.tsx` (**1 lỗi** tại dòng `93` do gọi `setSelectedHosp` đồng bộ trong `useEffect`) |
   | `@typescript-eslint/no-unused-vars` | 🟡 **Warning** | **38** | • `src/screens/BookingFlowScreens.tsx` (16)<br>• `src/components/medical/SpecialtyGrid.tsx` (3)<br>• `src/screens/RoleDashboards.tsx` (3)<br>• `src/components/medical/HospitalCard.tsx` (2)<br>• `src/screens/MainTabScreens.tsx` (2)<br>• `src/screens/PharmacyAndMedicationScreens.tsx` (2)<br>• `src/screens/TelehealthAndFamilyScreens.tsx` (2)<br>• `src/components/medical/AIHeroBanner.tsx` (1)<br>• `src/components/medical/AppointmentCard.tsx` (1)<br>• `src/components/medical/DateTimeSlotPicker.tsx` (1)<br>• `src/components/medical/DoctorCard.tsx` (1)<br>• `src/components/medical/HospitalMapModal.tsx` (1)<br>• `src/components/medical/PatientEHRCard.tsx` (1)<br>• `src/components/navigation/AppHeader.tsx` (1)<br>• `src/context/AppContext.tsx` (1) |
 
-  ### 5.2. Đề xuất lộ trình xử lý nợ kỹ thuật Lint
-  - **`react-hooks/refs` (66 lỗi):** ✅ **Đã xử lý triệt để (0 lỗi)** tại commit `f2e506b` (`P2-01`), giảm tổng số lỗi lint từ **69 lỗi** xuống còn **3 lỗi** (`40 problems: 3 errors, 37 warnings`).
-  - **`react-hooks/purity` (`TelehealthAndFamilyScreens.tsx:850, 867` — 2 lỗi):** Sửa ở đợt sau.
-  - **`@typescript-eslint/no-unused-vars` (37 cảnh báo):** Dọn dẹp tập trung ở nhánh riêng `chore/cleanup-imports`.
+  ### 5.2. Kết quả xử lý nợ kỹ thuật Lint
+  - **`react-hooks/refs` (66 lỗi):** ✅ **Đã xử lý triệt để (0 lỗi)** tại commit `f2e506b` (`P2-01`).
+  - **`react-hooks/purity` (`TelehealthAndFamilyScreens.tsx` — 2 lỗi):** ✅ **Đã xử lý triệt để (0 lỗi)** tại commit `01c36d2` (dùng ID tăng tuần tự theo `prev.length` thay cho `Date.now()`).
+  - **`react-hooks/set-state-in-effect` (`HospitalMapModal.tsx` — 1 lỗi):** ✅ **Đã xử lý triệt để (0 lỗi)** tại commit `01c36d2` (suy dẫn `selectedHosp` trực tiếp từ `manualSelection` và `initialHospital` thay vì gọi `setState` đồng bộ trong `useEffect`).
+  - **`@typescript-eslint/no-unused-vars` (37 cảnh báo):** ✅ **Đã dọn sạch (0 cảnh báo)** trên 15 file tại commit `01c36d2` trên nhánh `chore/cleanup-imports`.
 
 
