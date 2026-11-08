@@ -8,6 +8,7 @@ import {
   ScrollView,
   StyleSheet,
   ViewStyle,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, RADIUS, SHADOWS, TOUCH } from '../../theme';
@@ -275,6 +276,12 @@ export const ChatBottomInputBar: React.FC<ChatBottomInputBarProps> = ({
         accessibilityRole="button"
         accessibilityLabel="Đính kèm tệp hoặc hình ảnh"
         hitSlop={TOUCH.hitSlopSm}
+        onPress={() =>
+          Alert.alert(
+            'Tính năng sắp ra mắt',
+            'Tính năng gửi ảnh/giọng nói sắp ra mắt trong bản cập nhật tới.'
+          )
+        }
       >
         <Ionicons name="attach-outline" size={20} color={COLORS.textSecondary} />
       </TouchableOpacity>
@@ -283,6 +290,12 @@ export const ChatBottomInputBar: React.FC<ChatBottomInputBarProps> = ({
         accessibilityRole="button"
         accessibilityLabel="Nhập bằng giọng nói"
         hitSlop={TOUCH.hitSlopSm}
+        onPress={() =>
+          Alert.alert(
+            'Tính năng sắp ra mắt',
+            'Tính năng gửi ảnh/giọng nói sắp ra mắt trong bản cập nhật tới.'
+          )
+        }
       >
         <Ionicons name="mic-outline" size={19} color={COLORS.textSecondary} />
       </TouchableOpacity>

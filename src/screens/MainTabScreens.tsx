@@ -1034,12 +1034,11 @@ export const AIAssistantScreen: React.FC<AIAssistantScreenProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <AppHeader
-        title="AI Health Assistant"
-        subtitle="Trợ lý y tế thông minh AI"
+        title="Trợ lý Sức khỏe AI"
+        subtitle="Hỗ trợ sàng lọc triệu chứng & gợi ý chuyên khoa"
         badgeText="AI 24/7"
         leftIconBox="sparkles"
         rightActions={[
-          { icon: 'time-outline', label: 'Lịch sử trò chuyện' },
           {
             icon: 'refresh-outline',
             label: 'Làm mới cuộc trò chuyện',
