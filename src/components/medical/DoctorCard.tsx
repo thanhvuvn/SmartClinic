@@ -52,7 +52,7 @@ export const FeaturedDoctorCard: React.FC<FeaturedDoctorCardProps> = ({
           <Text style={styles.specialtyMeta} numberOfLines={1}>
             {doctor.specialty} • {doctor.experienceYears} năm KN
           </Text>
-          <Text style={styles.doctorNameSm} numberOfLines={1}>
+          <Text style={styles.doctorNameSm} numberOfLines={2}>
             {doctor.name}
           </Text>
           <Text style={styles.hospitalSm} numberOfLines={1}>
@@ -109,9 +109,8 @@ export const DoctorProfileHeaderCard: React.FC<DoctorProfileHeaderCardProps> = (
               variant="teal"
               icon="checkmark-circle"
             />
-            <Badge label="BV ĐHYD TP.HCM" variant="blue" />
           </View>
-          <Text style={styles.doctorNameLg} numberOfLines={1}>
+          <Text style={styles.doctorNameLg} numberOfLines={2}>
             {doctor.name}
           </Text>
           <Text style={styles.degreeText} numberOfLines={1}>
@@ -194,7 +193,7 @@ export const BookingDoctorSummaryCard: React.FC<BookingDoctorSummaryCardProps> =
           </View>
         </View>
         <View style={{ flex: 1, minWidth: 0, marginLeft: 12 }}>
-          <Text style={styles.doctorNameLg} numberOfLines={1}>
+          <Text style={styles.doctorNameLg} numberOfLines={2}>
             {doctor.name}
           </Text>
           <Text style={styles.degreeText} numberOfLines={1}>

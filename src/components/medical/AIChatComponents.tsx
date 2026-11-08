@@ -155,7 +155,7 @@ export const AIClinicalResponseCard: React.FC<AIClinicalResponseCardProps> = ({
                 <View style={styles.aiDocNameRow}>
                   <Text
                     style={[styles.aiDocName, { flexShrink: 1 }]}
-                    numberOfLines={1}
+                    numberOfLines={2}
                   >
                     {doc.name}
                   </Text>
