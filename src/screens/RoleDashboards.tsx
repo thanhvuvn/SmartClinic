@@ -16,8 +16,6 @@ import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from 
 import {
   DOCTORS,
   PATIENT_PROFILE,
-  PRESCRIPTION_DRUGS,
-  SPECIALTIES,
   formatRelativeDate,
 } from '../data/mockData';
 import { useAppContext } from '../context/AppContext';
@@ -31,7 +29,6 @@ import {
   SettingToggleRow,
   ToastBanner,
   AnimatedEntry,
-  PressableScale,
   PulsingDot,
 } from '../components';
 

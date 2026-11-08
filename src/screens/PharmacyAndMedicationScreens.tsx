@@ -4,12 +4,10 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  Alert,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TOUCH, TYPOGRAPHY } from '../theme';
-import { PRESCRIPTION_DRUGS } from '../data/mockData';
 import { useAppContext } from '../context/AppContext';
 import { sharePrescription } from '../utils/shareUtils';
 import {

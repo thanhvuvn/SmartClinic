@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { COLORS, GRADIENTS, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../../theme';
+import { COLORS, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../../theme';
 import { HospitalItem, HOSPITALS } from '../../data/mockData';
 import {
   openGoogleMapsDirections,
@@ -42,16 +42,17 @@ export const HospitalMapModal: React.FC<HospitalMapModalProps> = ({
   onClose,
   onBookAtHospital,
 }) => {
-  const [selectedHosp, setSelectedHosp] = useState<HospitalItem>(
-    initialHospital || HOSPITALS[0]
-  );
+  const [manualSelection, setManualSelection] = useState<{
+    initialId?: string;
+    hospital: HospitalItem;
+  } | null>(null);
+  const selectedHosp =
+    manualSelection && manualSelection.initialId === initialHospital?.id
+      ? manualSelection.hospital
+      : initialHospital || HOSPITALS[0];
+  const setSelectedHosp = (hosp: HospitalItem) =>
+    setManualSelection({ initialId: initialHospital?.id, hospital: hosp });
   const [travelMode, setTravelMode] = useState<TravelMode>('two-wheeler');
-
-  useEffect(() => {
-    if (initialHospital) {
-      setSelectedHosp(initialHospital);
-    }
-  }, [initialHospital]);
 
   const handleOpenDirections = () => {
     openGoogleMapsDirections({

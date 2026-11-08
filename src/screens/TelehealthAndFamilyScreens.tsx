@@ -8,7 +8,6 @@ import {
   Platform,
   Image,
   StyleSheet,
-  Alert,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -33,7 +32,6 @@ import {
   ActivePrescriptionCard,
   ToastBanner,
   AnimatedEntry,
-  PressableScale,
   AnimatedSuccessBadge,
 } from '../components';
 
@@ -888,13 +886,6 @@ export const TeleconsultationScreen: React.FC<{
       now.getMinutes()
     ).padStart(2, '0')}`;
 
-    const patientMsg: DoctorChatMessage = {
-      id: `pt-${Date.now()}`,
-      sender: 'patient',
-      text: content,
-      time: timeStr,
-    };
-
     let doctorReply =
       'Bác sĩ đã ghi nhận. Anh nhớ uống thuốc đúng cử, hạn chế nhìn màn hình sau 21:00 và tái khám sau 2 tuần nhé!';
     if (content.toLowerCase().includes('buồn ngủ')) {
@@ -905,14 +896,21 @@ export const TeleconsultationScreen: React.FC<{
         'Anh uống hết đơn 14 ngày rồi đặt lịch tái khám trên ứng dụng. Nếu cơn đau giảm trên 80% thì chỉ cần duy trì chế độ sinh hoạt điều độ.';
     }
 
-    const docMsg: DoctorChatMessage = {
-      id: `dr-${Date.now() + 1}`,
-      sender: 'doctor',
-      text: doctorReply,
-      time: timeStr,
-    };
-
-    setMessages((prev) => [...prev, patientMsg, docMsg]);
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: `pt-${prev.length + 1}`,
+        sender: 'patient',
+        text: content,
+        time: timeStr,
+      },
+      {
+        id: `dr-${prev.length + 2}`,
+        sender: 'doctor',
+        text: doctorReply,
+        time: timeStr,
+      },
+    ]);
     if (!customText) {
       setInputText('');
     }

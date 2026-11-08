@@ -2,12 +2,11 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   StyleSheet,
   ViewStyle,
 } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { COLORS, RADIUS, SHADOWS, TYPOGRAPHY } from '../../theme';
+import { COLORS, TYPOGRAPHY } from '../../theme';
 import { SpecialtyItem } from '../../data/mockData';
 import { PressableScale } from '../common/Animations';
 

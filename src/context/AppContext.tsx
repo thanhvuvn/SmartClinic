@@ -264,7 +264,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     const randNum = Math.floor(1000 + Math.random() * 8999);
     const sttNum = Math.floor(15 + Math.random() * 20);
     const code = `#SC-2411-${randNum}`;
-    const timeRange = `${chosenSlot.time} - ${chosenSlot.period === 'morning' ? 'Ca Sáng' : 'Ca Chiều'}`;
     const isVideo = consultMode === 'chat' || consultMode === 'video';
 
     const newTicket: LatestBookingTicket = {

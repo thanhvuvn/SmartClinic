@@ -19,8 +19,6 @@ import {
   DOCTORS,
   SPECIALTIES,
   HOSPITALS,
-  APPOINTMENTS,
-  PRESCRIPTION_DRUGS,
   PATIENT_PROFILE,
   formatRelativeDate,
   AppointmentItem,

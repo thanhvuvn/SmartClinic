@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, RADIUS, SHADOWS, TOUCH } from '../../theme';
+import { COLORS, SHADOWS, TOUCH } from '../../theme';
 import { Badge } from '../common/Badge';
 import { PulsingDot } from '../common/Animations';
 

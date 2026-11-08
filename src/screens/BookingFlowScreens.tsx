@@ -4,20 +4,15 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Alert,
   StyleSheet,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, LAYOUT, RADIUS, SHADOWS, SPACING, TOUCH, TYPOGRAPHY } from '../theme';
 import {
   DoctorItem,
-  DOCTORS,
   BOOKING_DAYS,
   TIME_SLOTS,
   TimeSlotItem,
-  SPECIALTIES,
-  HOSPITALS,
-  APPOINTMENTS,
   PATIENT_PROFILE,
 } from '../data/mockData';
 import {
@@ -33,20 +28,9 @@ import {
   BookingDoctorSummaryCard,
   HorizontalDateSelector,
   TimeSlotGrid,
-  AppInput,
-  SearchBar,
-  AIHeroBanner,
-  SmartPromoBanner,
-  SpecialtyGrid,
-  FeaturedDoctorCard,
-  HospitalCard,
-  AppointmentCard,
-  PatientMasterIdentityCard,
-  VssIDInsuranceCard,
   HospitalMapModal,
   AnimatedEntry,
   PressableScale,
-  PulsingDot,
 } from '../components';
 import { findHospitalForDoctor } from '../utils/mapNavigation';
 import { shareDoctorProfile } from '../utils/shareUtils';
