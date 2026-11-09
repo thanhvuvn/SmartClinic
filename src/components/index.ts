@@ -24,4 +24,5 @@ export * from './medical/PatientEHRCard';
 export * from './medical/PrescriptionCard';
 export * from './medical/AIChatComponents';
 export * from './medical/HospitalMapModal';
+export * from './medical/AdminCharts';
 

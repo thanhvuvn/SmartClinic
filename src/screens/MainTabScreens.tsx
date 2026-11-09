@@ -18,7 +18,6 @@ import { COLORS, LAYOUT, RADIUS, SHADOWS, SPACING, TOUCH, TYPOGRAPHY } from '../
 import {
   DOCTORS,
   SPECIALTIES,
-  HOSPITALS,
   PATIENT_PROFILE,
   formatRelativeDate,
   AppointmentItem,
@@ -119,7 +118,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onOpenProfile,
   onNavigate,
 }) => {
-  const { appointments } = useAppContext();
+  const { appointments, doctors, hospitals } = useAppContext();
   const [search, setSearch] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -142,7 +141,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const selectedSpecialtyObj = SPECIALTIES.find((s) => s.id === selectedSpecialty);
 
-  const filteredDoctors = DOCTORS.filter((doc) => {
+  const filteredDoctors = doctors.filter((doc) => {
+    if (!doc.verified) return false;
     const matchesSearch =
       !search.trim() ||
       doc.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -159,7 +159,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     return matchesSearch && matchesSpecialty;
   });
 
-  const filteredHospitals = HOSPITALS.filter((h) => {
+  const filteredHospitals = hospitals.filter((h) => {
     if (!search.trim()) return true;
     return (
       h.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -402,7 +402,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             badgeIcon="navigate"
             actionText="Xem bản đồ"
             onActionPress={() => {
-              setSelectedMapHospital(HOSPITALS[0]);
+              setSelectedMapHospital(hospitals[0]);
               setMapModalVisible(true);
             }}
           />

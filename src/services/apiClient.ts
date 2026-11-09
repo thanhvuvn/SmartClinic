@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   AppointmentItem,
   DoctorItem,
+  HospitalItem,
   PrescriptionDrug,
 } from '../data/mockData';
 import {
@@ -46,6 +47,8 @@ export interface PersistedAppState {
   isPiiMasked: boolean;
   cabinetMeds?: MedicineCabinetItem[];
   doctorReviews?: DoctorReviewItem[];
+  doctors?: DoctorItem[];
+  hospitals?: HospitalItem[];
   updatedAt: string;
 }
 

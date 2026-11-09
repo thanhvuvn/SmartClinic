@@ -11,7 +11,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from '../../theme';
-import { HospitalItem, HOSPITALS } from '../../data/mockData';
+import { HospitalItem } from '../../data/mockData';
+import { useAppContext } from '../../context/AppContext';
 import {
   openGoogleMapsDirections,
   openNearbyHospitalsOnGoogleMaps,
@@ -42,6 +43,7 @@ export const HospitalMapModal: React.FC<HospitalMapModalProps> = ({
   onClose,
   onBookAtHospital,
 }) => {
+  const { hospitals } = useAppContext();
   const [manualSelection, setManualSelection] = useState<{
     initialId?: string;
     hospital: HospitalItem;
@@ -49,7 +51,7 @@ export const HospitalMapModal: React.FC<HospitalMapModalProps> = ({
   const selectedHosp =
     manualSelection && manualSelection.initialId === initialHospital?.id
       ? manualSelection.hospital
-      : initialHospital || HOSPITALS[0];
+      : initialHospital || hospitals[0];
   const setSelectedHosp = (hosp: HospitalItem) =>
     setManualSelection({ initialId: initialHospital?.id, hospital: hosp });
   const [travelMode, setTravelMode] = useState<TravelMode>('two-wheeler');
@@ -132,8 +134,11 @@ export const HospitalMapModal: React.FC<HospitalMapModalProps> = ({
               </View>
 
               {/* Hospital Pins on Map */}
-              {HOSPITALS.map((hosp) => {
-                const pos = PIN_POSITIONS[hosp.id] || { top: 60, left: '50%' };
+              {hospitals.map((hosp, idx) => {
+                const pos = PIN_POSITIONS[hosp.id] || {
+                  top: 38 + (idx % 3) * 24,
+                  left: `${28 + (idx % 4) * 16}%`,
+                };
                 const isSelected = hosp.id === selectedHosp.id;
                 return (
                   <TouchableOpacity
@@ -202,7 +207,7 @@ export const HospitalMapModal: React.FC<HospitalMapModalProps> = ({
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.hospSelectorRow}
             >
-              {HOSPITALS.map((h) => {
+              {hospitals.map((h) => {
                 const active = h.id === selectedHosp.id;
                 return (
                   <PressableScale

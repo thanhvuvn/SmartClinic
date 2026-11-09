@@ -14,14 +14,25 @@ export interface MapDestination {
 /**
  * Tìm HospitalItem tương ứng từ thông tin Bác sĩ
  */
-export function findHospitalForDoctor(doctor: DoctorItem): HospitalItem {
-  const matched = HOSPITALS.find(
+export function findHospitalForDoctor(
+  doctor: DoctorItem,
+  hospitalList: HospitalItem[] = HOSPITALS
+): HospitalItem {
+  const matched = hospitalList.find(
     (h) =>
       doctor.hospital.toLowerCase().includes(h.name.toLowerCase()) ||
       h.name.toLowerCase().includes(doctor.hospital.toLowerCase()) ||
       (doctor.latitude && Math.abs(h.latitude - doctor.latitude) < 0.005)
   );
-  return matched || HOSPITALS[0];
+  if (matched) return matched;
+  return {
+    ...HOSPITALS[0],
+    id: `hosp-doc-${doctor.id}`,
+    name: doctor.hospital,
+    address: doctor.address,
+    latitude: doctor.latitude || HOSPITALS[0].latitude,
+    longitude: doctor.longitude || HOSPITALS[0].longitude,
+  };
 }
 
 /**

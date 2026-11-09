@@ -7,6 +7,8 @@ import {
   DOCTORS,
   DoctorItem,
   formatRelativeDate,
+  HOSPITALS,
+  HospitalItem,
   PATIENT_PROFILE,
   PRESCRIPTION_DRUGS,
   PrescriptionDrug,
@@ -41,6 +43,29 @@ export interface LatestBookingTicket {
   queueNumber: string;
   consultMode: string;
   paymentMethod: string;
+}
+
+export interface NewDoctorInput {
+  name: string;
+  degree: string;
+  specialty: string;
+  hospital: string;
+  address: string;
+  latitude?: number;
+  longitude?: number;
+  feeNumeric: number;
+  experienceYears: number;
+  licenseCode: string;
+}
+
+export interface NewHospitalInput {
+  name: string;
+  address: string;
+  phone?: string;
+  gateInfo?: string;
+  parkingInfo?: string;
+  workingHours?: string;
+  tag?: string;
 }
 
 export interface MedicineCabinetItem {
@@ -95,6 +120,10 @@ interface AppContextValue {
   diagnosisNote: string;
   setDiagnosisNote: (note: string) => void;
   doctors: DoctorItem[];
+  addDoctor: (input: NewDoctorInput) => DoctorItem;
+  approveDoctor: (doctorId: string) => void;
+  hospitals: HospitalItem[];
+  addHospital: (input: NewHospitalInput) => HospitalItem;
 
   // 5. Medicine Cabinet & Doctor Reviews
   cabinetMeds: MedicineCabinetItem[];
@@ -262,7 +291,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   const [diagnosisNote, setDiagnosisNote] = useState<string>(
     'Đau đầu căng thẳng (Tension headache) / Rối loạn vận mạch não nhẹ'
   );
-  const [doctors] = useState<DoctorItem[]>(DOCTORS);
+  const [doctors, setDoctors] = useState<DoctorItem[]>(DOCTORS);
+  const [hospitals, setHospitals] = useState<HospitalItem[]>(HOSPITALS);
   const [cabinetMeds, setCabinetMeds] =
     useState<MedicineCabinetItem[]>(INITIAL_CABINET_MEDS);
   const [doctorReviews, setDoctorReviews] = useState<DoctorReviewItem[]>(
@@ -305,6 +335,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         if (Array.isArray(saved.doctorReviews) && saved.doctorReviews.length > 0) {
           setDoctorReviews(saved.doctorReviews);
         }
+        if (Array.isArray(saved.doctors) && saved.doctors.length > 0) {
+          setDoctors(saved.doctors);
+        }
+        if (Array.isArray(saved.hospitals) && saved.hospitals.length > 0) {
+          setHospitals(saved.hospitals);
+        }
       }
       hydratedRef.current = true;
       setIsHydrated(true);
@@ -327,6 +363,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       isPiiMasked,
       cabinetMeds,
       doctorReviews,
+      doctors,
+      hospitals,
       updatedAt: new Date().toISOString(),
     });
   }, [
@@ -339,6 +377,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     isPiiMasked,
     cabinetMeds,
     doctorReviews,
+    doctors,
+    hospitals,
   ]);
 
   const createBooking = ({
@@ -500,6 +540,81 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     ]);
   };
 
+  const addDoctor = (input: NewDoctorInput): DoctorItem => {
+    const name = input.name.trim();
+    const newDoctor: DoctorItem = {
+      id: `doc-new-${doctors.length + 1}`,
+      name,
+      degree: input.degree.trim() || `Bác sĩ chuyên khoa ${input.specialty}`,
+      specialty: input.specialty,
+      subSpecialty: `${input.specialty} • ${input.experienceYears} năm KN`,
+      hospital: input.hospital,
+      address: input.address,
+      latitude: input.latitude,
+      longitude: input.longitude,
+      experienceYears: input.experienceYears,
+      rating: 0,
+      reviewCount: 0,
+      patientCount: '0',
+      responseTime: '—',
+      fee: `${input.feeNumeric.toLocaleString('vi-VN')} đ`,
+      feeNumeric: input.feeNumeric,
+      bhytSupport: 'Hỗ trợ BHYT theo quy định',
+      availableText: 'Chờ duyệt CCHN',
+      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        name
+      )}&background=E0EAFF&color=006194&size=200`,
+      verified: false,
+      bio: `Mã chứng chỉ hành nghề: ${input.licenseCode.trim()}. Hồ sơ đang chờ quản trị viên xác thực.`,
+      strengths: [input.specialty],
+    };
+    setDoctors((prev) => [newDoctor, ...prev]);
+    return newDoctor;
+  };
+
+  const approveDoctor = (doctorId: string) => {
+    setDoctors((prev) =>
+      prev.map((d) =>
+        d.id === doctorId
+          ? { ...d, verified: true, availableText: 'Lịch trống: Ngày mai' }
+          : d
+      )
+    );
+  };
+
+  const addHospital = (input: NewHospitalInput): HospitalItem => {
+    const trimmedName = input.name.trim();
+    const existing = hospitals.find(
+      (h) => h.name.toLowerCase() === trimmedName.toLowerCase()
+    );
+    if (existing) return existing;
+
+    const newHosp: HospitalItem = {
+      id: `hosp-${hospitals.length}`,
+      name: trimmedName,
+      rating: 4.8,
+      distance: '2.4 km',
+      travelTime: '10 phút',
+      tag: input.tag?.trim() || 'Bệnh viện liên kết • BHYT',
+      image:
+        'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=300&auto=format&fit=crop&q=80',
+      address: input.address.trim() || 'TP. Hồ Chí Minh',
+      latitude: 10.768 + (hospitals.length % 4) * 0.006,
+      longitude: 106.666 + (hospitals.length % 4) * 0.008,
+      phone: input.phone?.trim() || '19001234',
+      gateInfo:
+        input.gateInfo?.trim() ||
+        'Cổng chính — Khu tiếp đón Khám bệnh & BHYT',
+      parkingInfo:
+        input.parkingInfo?.trim() ||
+        'Bãi gửi xe máy & ô tô nội viện có hướng dẫn viên',
+      workingHours:
+        input.workingHours?.trim() || '07:00 - 17:00 (T2 - T7) • Cấp cứu 24/7',
+    };
+    setHospitals((prev) => [newHosp, ...prev]);
+    return newHosp;
+  };
+
   const togglePiiMask = () => {
     setIsPiiMasked((prev) => !prev);
   };
@@ -516,6 +631,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     );
     setCabinetMeds(INITIAL_CABINET_MEDS);
     setDoctorReviews(INITIAL_DOCTOR_REVIEWS);
+    setDoctors(DOCTORS);
+    setHospitals(HOSPITALS);
     setIsPiiMasked(true);
   };
 
@@ -536,6 +653,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         diagnosisNote,
         setDiagnosisNote,
         doctors,
+        addDoctor,
+        approveDoctor,
+        hospitals,
+        addHospital,
         cabinetMeds,
         addCabinetMedicine,
         doctorReviews,

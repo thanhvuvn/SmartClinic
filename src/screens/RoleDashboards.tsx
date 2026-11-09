@@ -16,7 +16,9 @@ import { COLORS, GRADIENTS, LAYOUT, RADIUS, SHADOWS, SPACING, TYPOGRAPHY } from 
 import {
   DOCTORS,
   PATIENT_PROFILE,
+  SPECIALTIES,
   formatRelativeDate,
+  getRelativeDayMeta,
 } from '../data/mockData';
 import { useAppContext } from '../context/AppContext';
 import {
@@ -30,6 +32,11 @@ import {
   ToastBanner,
   AnimatedEntry,
   PulsingDot,
+  WeeklyLoadChart,
+  SegmentBreakdownBar,
+  SpecialtyDistributionChart,
+  getAppointmentDateKey,
+  formatVnd,
 } from '../components';
 
 // ==========================================
@@ -46,13 +53,171 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
   onLogout,
   onNavigate,
 }) => {
-  const { appointments, cancelAppointment } = useAppContext();
+  const {
+    appointments,
+    cancelAppointment,
+    doctors,
+    addDoctor,
+    approveDoctor,
+    hospitals,
+    addHospital,
+    familyMembers,
+  } = useAppContext();
   const [activeTab, setActiveTab] = useState<AdminTab>('overview');
   const [docFilter, setDocFilter] = useState('all');
   const [searchDoc, setSearchDoc] = useState('');
   const [autoSyncVssID, setAutoSyncVssID] = useState(true);
   const [autoGdtTax, setAutoGdtTax] = useState(true);
+  const [adminToast, setAdminToast] = useState<string | null>(null);
+
+  // Biểu mẫu thêm bác sĩ
+  const [showAddDoc, setShowAddDoc] = useState(false);
+  const [newDocName, setNewDocName] = useState('');
+  const [newDocDegree, setNewDocDegree] = useState('');
+  const [newDocSpecialty, setNewDocSpecialty] = useState(SPECIALTIES[0].name);
+  const [newDocHospitalId, setNewDocHospitalId] = useState(
+    hospitals[0]?.id || 'hosp-0'
+  );
+  const [customHospName, setCustomHospName] = useState('');
+  const [customHospAddress, setCustomHospAddress] = useState('');
+  const [newDocFee, setNewDocFee] = useState('300000');
+  const [newDocExp, setNewDocExp] = useState('5');
+  const [newDocLicense, setNewDocLicense] = useState('');
+  const [docErrors, setDocErrors] = useState<Record<string, string>>({});
+
+  // Biểu mẫu thêm bệnh viện liên kết độc lập
+  const [showAddHosp, setShowAddHosp] = useState(false);
+  const [hospName, setHospName] = useState('');
+  const [hospAddress, setHospAddress] = useState('');
+  const [hospPhone, setHospPhone] = useState('');
+  const [hospGate, setHospGate] = useState('');
+  const [hospErrors, setHospErrors] = useState<Record<string, string>>({});
+
+  // Số liệu tính từ dữ liệu thật trong AppContext
   const upcomingCount = appointments.filter((a) => a.status === 'upcoming').length;
+  const completedCount = appointments.filter((a) => a.status === 'completed').length;
+  const cancelledCount = appointments.filter((a) => a.status === 'cancelled').length;
+  const todayKey = getRelativeDayMeta(0).fullDate;
+  const todayCount = appointments.filter(
+    (a) => a.status !== 'cancelled' && getAppointmentDateKey(a) === todayKey
+  ).length;
+  const paidOnline = appointments.filter(
+    (a) => a.status !== 'cancelled' && a.statusBadge.includes('Đã thanh toán')
+  );
+  const bhytHolds = appointments.filter(
+    (a) => a.status !== 'cancelled' && a.statusBadge.includes('BHYT')
+  );
+  const otherPayments =
+    appointments.filter((a) => a.status !== 'cancelled').length -
+    paidOnline.length -
+    bhytHolds.length;
+  const onlineRevenue = paidOnline.reduce((s, a) => s + a.doctor.feeNumeric, 0);
+  const verifiedDocs = doctors.filter((d) => d.verified).length;
+  const pendingDocs = doctors.length - verifiedDocs;
+  const activeSpecialties = new Set(
+    doctors.filter((d) => d.verified).map((d) => d.specialty)
+  ).size;
+
+  const filteredAdminDoctors = doctors.filter((d) => {
+    if (docFilter === 'active' && !d.verified) return false;
+    if (docFilter === 'pending' && d.verified) return false;
+    const q = searchDoc.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      d.name.toLowerCase().includes(q) ||
+      d.specialty.toLowerCase().includes(q) ||
+      d.hospital.toLowerCase().includes(q) ||
+      d.bio.toLowerCase().includes(q)
+    );
+  });
+
+  const resetDocForm = () => {
+    setNewDocName('');
+    setNewDocDegree('');
+    setNewDocSpecialty(SPECIALTIES[0].name);
+    setNewDocHospitalId(hospitals[0]?.id || 'hosp-0');
+    setCustomHospName('');
+    setCustomHospAddress('');
+    setNewDocFee('300000');
+    setNewDocExp('5');
+    setNewDocLicense('');
+    setDocErrors({});
+  };
+
+  const handleSubmitDoctor = () => {
+    const errors: Record<string, string> = {};
+    const fee = Number(newDocFee.replace(/[^0-9]/g, ''));
+    const exp = Number(newDocExp.replace(/[^0-9]/g, ''));
+    if (newDocName.trim().length < 5) {
+      errors.name = 'Nhập đầy đủ học hàm và họ tên (VD: BS. Nguyễn Văn A)';
+    }
+    if (newDocLicense.trim().length < 4) {
+      errors.license = 'Nhập mã chứng chỉ hành nghề (CCHN) do Sở Y tế cấp';
+    }
+    if (newDocHospitalId === 'custom' && customHospName.trim().length < 4) {
+      errors.customHosp = 'Nhập tên bệnh viện / cơ sở y tế công tác';
+    }
+    if (!newDocFee.trim() || Number.isNaN(fee) || fee < 50000) {
+      errors.fee = 'Phí khám tối thiểu 50.000 đ';
+    }
+    if (!newDocExp.trim() || Number.isNaN(exp) || exp > 60) {
+      errors.exp = 'Số năm kinh nghiệm từ 0 đến 60';
+    }
+    setDocErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
+    const hospital =
+      newDocHospitalId === 'custom'
+        ? addHospital({
+            name: customHospName,
+            address: customHospAddress || 'TP. Hồ Chí Minh',
+          })
+        : hospitals.find((h) => h.id === newDocHospitalId) || hospitals[0];
+    const created = addDoctor({
+      name: newDocName,
+      degree: newDocDegree,
+      specialty: newDocSpecialty,
+      hospital: hospital.name,
+      address: hospital.address,
+      latitude: hospital.latitude,
+      longitude: hospital.longitude,
+      feeNumeric: fee,
+      experienceYears: exp,
+      licenseCode: newDocLicense,
+    });
+    resetDocForm();
+    setShowAddDoc(false);
+    setDocFilter('pending');
+    setAdminToast(`Đã thêm ${created.name}. Hồ sơ đang chờ duyệt CCHN.`);
+  };
+
+  const handleSubmitHospital = () => {
+    const errors: Record<string, string> = {};
+    if (hospName.trim().length < 4) {
+      errors.name = 'Vui lòng nhập tên bệnh viện hoặc phòng khám';
+    }
+    if (hospAddress.trim().length < 6) {
+      errors.address = 'Vui lòng nhập địa chỉ cơ sở y tế';
+    }
+    setHospErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
+    const created = addHospital({
+      name: hospName,
+      address: hospAddress,
+      phone: hospPhone,
+      gateInfo: hospGate,
+    });
+    setHospName('');
+    setHospAddress('');
+    setHospPhone('');
+    setHospGate('');
+    setHospErrors({});
+    setShowAddHosp(false);
+    setAdminToast(
+      `Đã thêm cơ sở "${created.name}". Đã đồng bộ ra Trang chủ & Bản đồ!`
+    );
+  };
 
   const renderOverview = () => (
     <ScrollView
@@ -101,10 +266,10 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
         </LinearGradient>
       </AnimatedEntry>
 
-      {/* 4 KPI Stat Cards */}
-      <AnimatedEntry delay={60} direction="up">
+      {/* 4 KPI Stat Cards (Calculated from real AppContext state) */}
+      <AnimatedEntry delay={40} direction="up">
         <SectionHeader
-          title="Số liệu vận hành hôm nay"
+          title="Số liệu vận hành thực tế"
           subtitle={`Cập nhật ngày ${formatRelativeDate(0)}`}
         />
         <View style={styles.kpiGrid}>
@@ -113,16 +278,16 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
               <View style={styles.kpiIconBlue}>
                 <Ionicons name="calendar" size={18} color={COLORS.primary} />
               </View>
-              <Badge label="+18%" variant="teal" />
+              <Badge label={`Hôm nay: ${todayCount}`} variant="teal" />
             </View>
             <Text style={styles.kpiValue} numberOfLines={1}>
-              {140 + appointments.length}
+              {appointments.length}
             </Text>
             <Text style={styles.kpiTitle} numberOfLines={1}>
-              Lịch khám hôm nay
+              Tổng lịch hẹn hệ thống
             </Text>
             <Text style={styles.kpiSub} numberOfLines={1}>
-              {upcomingCount} chờ khám • Realtime
+              {upcomingCount} sắp tới • {completedCount} hoàn tất
             </Text>
           </View>
 
@@ -131,16 +296,16 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
               <View style={styles.kpiIconTeal}>
                 <Ionicons name="cash-outline" size={18} color={COLORS.secondary} />
               </View>
-              <Badge label="Đạt chỉ tiêu" variant="teal" />
+              <Badge label={`${paidOnline.length} đơn online`} variant="teal" />
             </View>
             <Text style={[styles.kpiValue, { color: COLORS.secondary }]} numberOfLines={1}>
-              48.5M đ
+              {formatVnd(onlineRevenue)}
             </Text>
             <Text style={styles.kpiTitle} numberOfLines={1}>
-              Doanh thu viện phí
+              Thu viện phí trực tuyến
             </Text>
             <Text style={styles.kpiSub} numberOfLines={1}>
-              96 lượt thanh toán
+              {bhytHolds.length} phiếu giữ chỗ BHYT
             </Text>
           </View>
 
@@ -149,16 +314,19 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
               <View style={styles.kpiIconBlue}>
                 <Ionicons name="medkit-outline" size={18} color={COLORS.primary} />
               </View>
-              <Badge label="90% trực" variant="blue" />
+              <Badge
+                label={pendingDocs > 0 ? `${pendingDocs} chờ duyệt` : '100% duyệt'}
+                variant={pendingDocs > 0 ? 'warning' : 'blue'}
+              />
             </View>
             <Text style={styles.kpiValue} numberOfLines={1}>
-              38 / 42
+              {verifiedDocs} / {doctors.length}
             </Text>
             <Text style={styles.kpiTitle} numberOfLines={1}>
-              Bác sĩ đang trực
+              Bác sĩ đã xác thực CCHN
             </Text>
             <Text style={styles.kpiSub} numberOfLines={1}>
-              8 chuyên khoa hoạt động
+              {activeSpecialties} chuyên khoa hoạt động
             </Text>
           </View>
 
@@ -167,51 +335,100 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
               <View style={styles.kpiIconTeal}>
                 <Ionicons name="people-outline" size={18} color={COLORS.secondary} />
               </View>
-              <Badge label="+64 mới" variant="teal" />
+              <Badge label="Đồng bộ VssID" variant="teal" />
             </View>
             <Text style={styles.kpiValue} numberOfLines={1}>
-              12,480
+              {1 + familyMembers.length}
             </Text>
             <Text style={styles.kpiTitle} numberOfLines={1}>
               Hồ sơ bệnh nhân EHR
             </Text>
             <Text style={styles.kpiSub} numberOfLines={1}>
-              100% đồng bộ VssID
+              1 chủ hộ + {familyMembers.length} thành viên
             </Text>
           </View>
         </View>
       </AnimatedEntry>
 
-      {/* Specialty Load Distribution */}
-      <AnimatedEntry delay={180} direction="up">
+      {/* Chart 1: Weekly Appointment Load (7 Days) */}
+      <AnimatedEntry delay={50} direction="up">
         <View style={[styles.card, SHADOWS.sm]}>
           <SectionHeader
-            title="Tỷ lệ đặt khám theo chuyên khoa"
+            title="Biểu đồ lịch khám 7 ngày tới"
+            leftIcon="stats-chart-outline"
+          />
+          <WeeklyLoadChart appointments={appointments} />
+        </View>
+      </AnimatedEntry>
+
+      {/* Chart 2: Appointment Status & Payment Breakdown */}
+      <AnimatedEntry delay={60} direction="up">
+        <View style={[styles.card, SHADOWS.sm]}>
+          <SectionHeader
+            title="Tỷ lệ trạng thái lịch hẹn"
+            leftIcon="pie-chart-outline"
+          />
+          <SegmentBreakdownBar
+            data={[
+              {
+                key: 'upcoming',
+                label: 'Sắp tới (Chờ khám)',
+                value: upcomingCount,
+                color: COLORS.primary,
+              },
+              {
+                key: 'completed',
+                label: 'Đã hoàn tất khám',
+                value: completedCount,
+                color: COLORS.secondary,
+              },
+              {
+                key: 'cancelled',
+                label: 'Đã hủy lịch',
+                value: cancelledCount,
+                color: COLORS.error,
+              },
+            ]}
+          />
+
+          <View style={{ height: 1, backgroundColor: COLORS.divider, marginVertical: 14 }} />
+
+          <Text style={[styles.docName, { marginBottom: 10 }]}>
+            Cơ cấu hình thức thanh toán & BHYT
+          </Text>
+          <SegmentBreakdownBar
+            data={[
+              {
+                key: 'online',
+                label: 'Đã thanh toán Online (VietQR/VNPAY/MoMo)',
+                value: paidOnline.length,
+                color: COLORS.secondary,
+              },
+              {
+                key: 'bhyt',
+                label: 'Giữ chỗ đối chiếu BHYT tại viện',
+                value: bhytHolds.length,
+                color: COLORS.warning,
+              },
+              {
+                key: 'confirmed',
+                label: 'Lịch hẹn tiêu chuẩn đã xác nhận',
+                value: Math.max(0, otherPayments),
+                color: COLORS.primary,
+              },
+            ]}
+          />
+        </View>
+      </AnimatedEntry>
+
+      {/* Chart 3: Specialty Load Distribution (Dynamic from appointments) */}
+      <AnimatedEntry delay={60} direction="up">
+        <View style={[styles.card, SHADOWS.sm]}>
+          <SectionHeader
+            title="Phân bổ lịch khám theo chuyên khoa"
             leftIcon="bar-chart-outline"
           />
-          {[
-            { name: 'Nội Thần Kinh (TS. BS. Lê Thu Trang)', count: 42, pct: 85, color: COLORS.primary },
-            { name: 'Tim Mạch Can Thiệp (BS. CKII. Nguyễn Văn Minh)', count: 36, pct: 72, color: COLORS.secondary },
-            { name: 'Nhãn Khoa / Mắt (ThS. BS. Nguyễn Minh Đức)', count: 28, pct: 56, color: '#0284C7' },
-            { name: 'Ngoại Thần Kinh (PGS. BS. Trần Anh Tuấn)', count: 21, pct: 44, color: '#0D9488' },
-          ].map((item) => (
-            <View key={item.name} style={styles.barRow}>
-              <View style={styles.barLabelRow}>
-                <Text style={styles.barName} numberOfLines={1}>
-                  {item.name}
-                </Text>
-                <Text style={styles.barCount}>{item.count} ca ({item.pct}%)</Text>
-              </View>
-              <View style={styles.barTrack}>
-                <View
-                  style={[
-                    styles.barFill,
-                    { width: `${item.pct}%`, backgroundColor: item.color },
-                  ]}
-                />
-              </View>
-            </View>
-          ))}
+          <SpecialtyDistributionChart appointments={appointments} />
         </View>
       </AnimatedEntry>
     </ScrollView>
@@ -221,6 +438,7 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
     <ScrollView
       contentContainerStyle={styles.scrollPad}
       showsVerticalScrollIndicator={false}
+      keyboardShouldPersistTaps="handled"
     >
       <AppInput
         leftIcon="search-outline"
@@ -234,27 +452,145 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
         selectedKey={docFilter}
         onSelect={setDocFilter}
         options={[
-          { key: 'all', label: `Tất cả (${DOCTORS.length})` },
-          { key: 'active', label: 'Đang trực (4)' },
-          { key: 'pending', label: 'Chờ duyệt CCHN (1)' },
+          { key: 'all', label: `Tất cả (${doctors.length})` },
+          { key: 'active', label: `Đang trực (${verifiedDocs})` },
+          { key: 'pending', label: `Chờ duyệt CCHN (${pendingDocs})` },
         ]}
         style={{ marginBottom: 14 }}
       />
 
       <AppButton
-        title="+ Thêm bác sĩ mới vào hệ thống"
-        variant="primary"
-        size="md"
-        onPress={() =>
-          Alert.alert(
-            'Thêm Bác sĩ mới',
-            'Mở biểu mẫu cấp tài khoản Bác sĩ & xác thực chứng chỉ hành nghề Y khoa Bộ Y Tế.'
-          )
+        title={
+          showAddDoc
+            ? 'Đóng biểu mẫu thêm bác sĩ'
+            : '+ Thêm bác sĩ mới vào hệ thống'
         }
+        variant={showAddDoc ? 'outline' : 'primary'}
+        size="md"
+        leftIcon={showAddDoc ? 'close-outline' : 'person-add-outline'}
+        onPress={() => setShowAddDoc((prev) => !prev)}
         style={{ marginBottom: 14 }}
       />
 
-      {DOCTORS.map((doc) => (
+      {showAddDoc && (
+        <View style={[styles.card, SHADOWS.sm]}>
+          <SectionHeader
+            title="Cấp hồ sơ Bác sĩ & Chứng chỉ hành nghề"
+            leftIcon="medkit-outline"
+          />
+          <AppInput
+            label="HỌ TÊN & HỌC HÀM / HỌC VỊ (*)"
+            placeholder="VD: ThS. BS. Phạm Quốc Bảo"
+            value={newDocName}
+            onChangeText={(v) => {
+              setNewDocName(v);
+              if (docErrors.name) setDocErrors((p) => ({ ...p, name: '' }));
+            }}
+            error={docErrors.name}
+            leftIcon="person-outline"
+          />
+          <AppInput
+            label="CHỨC DANH / CHUYÊN MÔN SÂU"
+            placeholder="VD: Chuyên gia Nội Cơ Xương Khớp"
+            value={newDocDegree}
+            onChangeText={setNewDocDegree}
+            leftIcon="ribbon-outline"
+          />
+          <AppInput
+            label="MÃ CHỨNG CHỈ HÀNH NGHỀ (CCHN) (*)"
+            placeholder="VD: 048291/HCM-CCHN"
+            value={newDocLicense}
+            onChangeText={(v) => {
+              setNewDocLicense(v);
+              if (docErrors.license) setDocErrors((p) => ({ ...p, license: '' }));
+            }}
+            error={docErrors.license}
+            leftIcon="shield-checkmark-outline"
+          />
+
+          <Text style={[styles.docSub, { fontWeight: '700', marginBottom: 6 }]}>
+            CHỌN CHUYÊN KHOA (*)
+          </Text>
+          <SegmentedControl
+            variant="chips"
+            selectedKey={newDocSpecialty}
+            onSelect={setNewDocSpecialty}
+            options={SPECIALTIES.map((s) => ({ key: s.name, label: s.name }))}
+            style={{ marginBottom: 12 }}
+          />
+
+          <Text style={[styles.docSub, { fontWeight: '700', marginBottom: 6 }]}>
+            BỆNH VIỆN CÔNG TÁC (*)
+          </Text>
+          <SegmentedControl
+            variant="chips"
+            selectedKey={newDocHospitalId}
+            onSelect={setNewDocHospitalId}
+            options={[
+              ...hospitals.map((h) => ({ key: h.id, label: h.name })),
+              { key: 'custom', label: '+ Nhập bệnh viện mới' },
+            ]}
+            style={{ marginBottom: 12 }}
+          />
+
+          {newDocHospitalId === 'custom' && (
+            <>
+              <AppInput
+                label="TÊN BỆNH VIỆN / CƠ SỞ Y TẾ MỚI (*)"
+                placeholder="VD: Bệnh viện Nhân Dân 115"
+                value={customHospName}
+                onChangeText={(v) => {
+                  setCustomHospName(v);
+                  if (docErrors.customHosp)
+                    setDocErrors((p) => ({ ...p, customHosp: '' }));
+                }}
+                error={docErrors.customHosp}
+                leftIcon="business-outline"
+              />
+              <AppInput
+                label="ĐỊA CHỈ CƠ SỞ Y TẾ"
+                placeholder="VD: 527 Sư Vạn Hạnh, Phường 12, Quận 10, TP.HCM"
+                value={customHospAddress}
+                onChangeText={setCustomHospAddress}
+                leftIcon="location-outline"
+              />
+            </>
+          )}
+
+          <View style={{ flexDirection: 'row', gap: 10 }}>
+            <View style={{ flex: 1 }}>
+              <AppInput
+                label="PHÍ TƯ VẤN (VNĐ) (*)"
+                placeholder="300000"
+                keyboardType="numeric"
+                value={newDocFee}
+                onChangeText={setNewDocFee}
+                error={docErrors.fee}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <AppInput
+                label="SỐ NĂM KINH NGHIỆM (*)"
+                placeholder="8"
+                keyboardType="numeric"
+                value={newDocExp}
+                onChangeText={setNewDocExp}
+                error={docErrors.exp}
+              />
+            </View>
+          </View>
+
+          <AppButton
+            title="Lưu hồ sơ Bác sĩ vào hệ thống"
+            variant="primary"
+            size="md"
+            leftIcon="checkmark-circle-outline"
+            onPress={handleSubmitDoctor}
+          />
+        </View>
+      )}
+
+      {filteredAdminDoctors.map((doc) => (
         <View key={doc.id} style={[styles.card, SHADOWS.sm]}>
           <View style={styles.docManageRow}>
             <Image source={{ uri: doc.avatar }} style={styles.docAvatar} />
@@ -262,53 +598,154 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
               <View style={styles.docNameBadgeRow}>
                 <Text
                   style={[styles.docName, { flexShrink: 1 }]}
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
+                  numberOfLines={2}
                 >
                   {doc.name}
                 </Text>
                 <Badge
-                  label="Đã xác thực"
-                  variant="teal"
-                  icon="checkmark-circle"
+                  label={doc.verified ? 'Đã xác thực' : 'Chờ duyệt CCHN'}
+                  variant={doc.verified ? 'teal' : 'warning'}
+                  icon={doc.verified ? 'checkmark-circle' : 'time-outline'}
                 />
               </View>
               <Text style={styles.docSub} numberOfLines={1}>
-                {doc.degree}
+                {doc.degree} • Khoa {doc.specialty}
               </Text>
               <Text style={styles.docHospitalLine} numberOfLines={1}>
                 {doc.hospital}
               </Text>
               <Text style={styles.docMeta} numberOfLines={1}>
-                Phí khám: {doc.fee} • ★ {doc.rating} ({doc.reviewCount} lượt)
+                Phí khám: {doc.fee} • {doc.experienceYears} năm KN • ★{' '}
+                {doc.rating || 'Mới'} ({doc.reviewCount} lượt)
               </Text>
             </View>
           </View>
 
           <View style={styles.docActionRow}>
-            <AppButton
-              title="Phân lịch trực"
-              variant="tonal"
-              size="sm"
-              leftIcon="calendar-outline"
-              fullWidth={false}
-              style={{ flex: 1 }}
-              onPress={() =>
-                Alert.alert('Lịch trực', `Đã mở bảng phân ca trực cho ${doc.name}`)
-              }
-            />
-            <AppButton
-              title="Cấu hình BHYT"
-              variant="outline"
-              size="sm"
-              leftIcon="create-outline"
-              fullWidth={false}
-              style={{ flex: 1 }}
-              onPress={() =>
-                Alert.alert('Cấu hình', `Chỉnh sửa thông tin ${doc.name}`)
-              }
-            />
+            {!doc.verified ? (
+              <AppButton
+                title="Duyệt CCHN & Mở lịch khám"
+                variant="primary"
+                size="sm"
+                leftIcon="shield-checkmark-outline"
+                fullWidth={false}
+                style={{ flex: 1 }}
+                onPress={() => {
+                  approveDoctor(doc.id);
+                  setDocFilter('all');
+                  setAdminToast(
+                    `Đã duyệt CCHN cho ${doc.name}. Bác sĩ đã hiển thị trên Trang chủ Bệnh nhân!`
+                  );
+                }}
+              />
+            ) : (
+              <>
+                <AppButton
+                  title="Phân lịch trực"
+                  variant="tonal"
+                  size="sm"
+                  leftIcon="calendar-outline"
+                  fullWidth={false}
+                  style={{ flex: 1 }}
+                  onPress={() =>
+                    Alert.alert(
+                      'Lịch trực',
+                      `Đã mở bảng phân ca trực cho ${doc.name}`
+                    )
+                  }
+                />
+                <AppButton
+                  title="Cấu hình BHYT"
+                  variant="outline"
+                  size="sm"
+                  leftIcon="create-outline"
+                  fullWidth={false}
+                  style={{ flex: 1 }}
+                  onPress={() =>
+                    Alert.alert(
+                      'Cấu hình',
+                      `Chỉnh sửa thông tin BHYT cho ${doc.name}`
+                    )
+                  }
+                />
+              </>
+            )}
           </View>
+        </View>
+      ))}
+
+      {/* Linked Hospitals Management Section */}
+      <SectionHeader
+        title={`Cơ sở y tế & Bệnh viện liên kết (${hospitals.length})`}
+        actionText={showAddHosp ? 'Đóng' : '+ Thêm bệnh viện'}
+        onActionPress={() => setShowAddHosp((prev) => !prev)}
+      />
+
+      {showAddHosp && (
+        <View style={[styles.card, SHADOWS.sm]}>
+          <Text style={[styles.docName, { marginBottom: 10 }]}>
+            Thêm Bệnh viện / Phòng khám liên kết mới
+          </Text>
+          <AppInput
+            label="TÊN BỆNH VIỆN / PHÒNG KHÁM (*)"
+            placeholder="VD: Bệnh viện Đại học Y Dược - Cơ sở 2"
+            value={hospName}
+            onChangeText={(v) => {
+              setHospName(v);
+              if (hospErrors.name) setHospErrors((p) => ({ ...p, name: '' }));
+            }}
+            error={hospErrors.name}
+            leftIcon="business-outline"
+          />
+          <AppInput
+            label="ĐỊA CHỈ (*)"
+            placeholder="VD: 201 Nguyễn Chí Thanh, Phường 12, Quận 5, TP.HCM"
+            value={hospAddress}
+            onChangeText={(v) => {
+              setHospAddress(v);
+              if (hospErrors.address)
+                setHospErrors((p) => ({ ...p, address: '' }));
+            }}
+            error={hospErrors.address}
+            leftIcon="location-outline"
+          />
+          <AppInput
+            label="HOTLINE TỔNG ĐÀI"
+            placeholder="VD: 02838555678"
+            keyboardType="phone-pad"
+            value={hospPhone}
+            onChangeText={setHospPhone}
+            leftIcon="call-outline"
+          />
+          <AppInput
+            label="HƯỚNG DẪN CỔNG VÀO & GỬI XE"
+            placeholder="VD: Cổng số 1 — Khu tiếp đón Khám BHYT"
+            value={hospGate}
+            onChangeText={setHospGate}
+            leftIcon="navigate-outline"
+          />
+          <AppButton
+            title="Lưu cơ sở y tế vào hệ thống"
+            variant="primary"
+            size="md"
+            leftIcon="checkmark-circle-outline"
+            onPress={handleSubmitHospital}
+          />
+        </View>
+      )}
+
+      {hospitals.map((h) => (
+        <View key={h.id} style={[styles.card, SHADOWS.sm]}>
+          <View style={styles.aptRowTop}>
+            <Text style={[styles.docName, { flex: 1 }]} numberOfLines={1}>
+              {h.name}
+            </Text>
+            <Badge label={h.tag} variant="teal" />
+          </View>
+          <Text style={styles.docSub}>{h.address}</Text>
+          <Text style={styles.docMeta}>
+            Cổng vào: {h.gateInfo} • Hotline: {h.phone}
+          </Text>
         </View>
       ))}
     </ScrollView>
@@ -458,6 +895,13 @@ export const AdminDashboardScreen: React.FC<AdminDashboardScreenProps> = ({
           );
         })}
       </View>
+
+      <ToastBanner
+        visible={!!adminToast}
+        title="Quản trị hệ thống"
+        message={adminToast || ''}
+        onDismiss={() => setAdminToast(null)}
+      />
     </View>
   );
 };

@@ -46,12 +46,12 @@ export const DoctorDetailScreen: React.FC<DoctorDetailScreenProps> = ({
   onBack,
   onBookSlot,
 }) => {
-  const { doctorReviews } = useAppContext();
+  const { doctorReviews, hospitals } = useAppContext();
   const [selectedDay, setSelectedDay] = useState('d2');
   const [reviewFilter, setReviewFilter] = useState('all');
   const [mapModalVisible, setMapModalVisible] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
-  const doctorHospital = findHospitalForDoctor(doctor);
+  const doctorHospital = findHospitalForDoctor(doctor, hospitals);
   const allDocReviews = doctorReviews.filter(
     (r) => r.doctorId === doctor.id || doctor.id !== 'doc-1'
   );
